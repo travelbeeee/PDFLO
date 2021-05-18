@@ -35,4 +35,12 @@ public class Member extends BaseEntity {
         this.type = type;
         this.point = point;
     }
+
+    public void changeType(MemberType type){
+        this.type = type;
+    }
+
+    public void changePassword(String password){
+        this.password = password;
+    }
 }
