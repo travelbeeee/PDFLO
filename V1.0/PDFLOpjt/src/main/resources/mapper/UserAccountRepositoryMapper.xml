@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="travelbeeee.PDFLOpjt.repository.UserAccountRepository">
+    <insert id="insert" parameterType="UserAccount">
+        insert into useraccounttable (userid, balance) values (#{userId}, #{balance})
+    </insert>
+    <update id="update" parameterType="UserAccount">
+        update useraccounttable set balance = #{balance} where userid = #{userId}
+    </update>
+    <delete id="delete" parameterType="int">
+        delete from useraccounttable where userid = #{userId}
+    </delete>
+    <delete id="deleteAll">
+        delete from useraccounttable
+    </delete>
+    <select id="selectByUser" parameterType="int" resultType="UserAccount">
+        select * from useraccounttable where userid = #{uesrId}
+    </select>
+</mapper>

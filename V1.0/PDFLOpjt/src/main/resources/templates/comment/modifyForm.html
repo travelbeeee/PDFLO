@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>후기수정하기</title>
+</head>
+<body>
+    <form th:action="@{/comment/modify/{commentId}(commentId=${comment.commentId})}" method="post">
+        <input type="text" placeholder="후기를 남겨주세요." name="comments" th:value="${comment.comments}">
+        <input type="number" placeholder="점수를 남겨주세요. (0~5점)" name="score" min="0" max="5" required="true" step="0.5">
+        <input type="submit" value="후기남기기">
+    </form>
+</body>
+</html>

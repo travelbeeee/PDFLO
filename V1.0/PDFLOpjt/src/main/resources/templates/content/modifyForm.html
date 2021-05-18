@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>수정페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+<th:block th:replace="fragments/header.html"></th:block>
+    <form th:action="@{/content/modify/{contentId}(contentId=${contentId})}" method="post" enctype="multipart/form-data">
+        제목 : <input type="text" name="title" th:value="${title}"><br>
+        판매할 지식을 소개해주세요. <textarea name="content" cols="30" rows="10" th:text="${content}"></textarea><br>
+        가격 : <input type="text" name="price" th:value="${price}"><br>
+        썸네일파일을 등록해주세요.<input type="file" name="thumbnailFile"><br>
+        판매할 PDF파일을 등록해주세요. <input type="file" name="pdfFile"><br>
+        <input type="submit" value="수정하기">
+    </form>
+</body>
+</html>

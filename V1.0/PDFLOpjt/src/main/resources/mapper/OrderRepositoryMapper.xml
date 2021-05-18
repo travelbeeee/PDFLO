@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="travelbeeee.PDFLOpjt.repository.OrderRepository">
+    <insert id="insert" parameterType="Order">
+        <selectKey keyProperty="orderId" order="BEFORE" resultType="int">
+            SELECT ordertable_seq.nextval from dual
+        </selectKey>
+        insert into ordertable (userid, contentid, orderid, localdate)
+        values (#{userId}, ${contentId}, #{orderId}, #{localdate})
+    </insert>
+    <delete id="delete" parameterType="int">
+        delete from ordertable where orderid = #{orderId}
+    </delete>
+    <delete id="deleteAll">
+        delete from ordertable
+    </delete>
+    <select id="selectByContent" parameterType="int" resultType="Order">
+        select * from ordertable where contentid = #{contentId}
+    </select>
+    <select id="selectByUser" parameterType="int" resultType="Order">
+        select * from ordertable where userid = #{userId}
+    </select>
+    <select id="selectByContentUser" parameterType="int" resultType="Order">
+        select * from ordertable where contentid = #{param1} and userid = #{param2}
+    </select>
+    <select id="selectSelling" parameterType="int" resultType="Order">
+        select o.userid, o.contentid, o.orderid, o.localdate from (select * from contenttable where userid = #{userId}) C inner join ordertable O  on C.contentid = O.contentid
+    </select>
+</mapper>

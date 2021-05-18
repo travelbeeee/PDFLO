@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>PDF등록페이지</title>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+    <form th:action="@{/content/upload}" method="post" enctype="multipart/form-data">
+        제목 : <input type="text" name="title"><br>
+        판매할 지식을 소개해주세요. <textarea name="content" cols="30" rows="10"></textarea><br>
+        가격 : <input type="text" name="price"><br>
+        썸네일파일을 등록해주세요.<input type="file" name="thumbnailFile"><br>
+        판매할 PDF파일을 등록해주세요. <input type="file" name="pdfFile"><br>
+        <input type="submit" value="등록하기">
+    </form>
+</body>
+</html>

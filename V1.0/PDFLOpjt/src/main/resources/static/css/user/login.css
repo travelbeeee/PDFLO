@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@700&display=swap');
+
+body{
+    background-color : #F5F5F5;
+}
+
+.loginBox{
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color : white;
+
+    position : absolute;
+    top : 50%;
+    left : 50%;
+    margin-top : -270px;
+    margin-left : -240px;
+
+    width: 480px;
+    height: 540px;
+
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 2px 2px 14px #00000029;
+    border-radius: 20px;
+    opacity: 1;
+}
+
+.loginBox *{
+    display :block;
+}
+

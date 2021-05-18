@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메일인증페이지</title>
+</head>
+<body>
+인증코드를 입력해주세요.<br>
+<form action="/user/auth" method="post">
+    <input type="text" name="code">
+    <input type="submit" value="인증하기">
+</form>
+</body>
+</html>

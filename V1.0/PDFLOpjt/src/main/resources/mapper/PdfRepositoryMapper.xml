@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="travelbeeee.PDFLOpjt.repository.PdfRepository">
+    <insert id="insert" parameterType="Pdf">
+        <selectKey keyProperty="pdfId" order="BEFORE" resultType="int">
+            SELECT pdftable_seq.nextval from dual
+        </selectKey>
+        insert into pdftable (contentid, pdfid, originfilename, saltedfilename, location)
+        values (#{contentId}, ${pdfId}, #{originFileName}, #{saltedFileName}, #{location})
+    </insert>
+    <update id="updateContentId" parameterType="Pdf">
+        update pdftable set contentid = #{contentId} where pdfid = #{pdfId}
+    </update>
+    <delete id="delete" parameterType="int">
+        delete from pdftable where pdfid = #{pdfId}
+    </delete>
+    <delete id="deleteAll">
+        delete from pdftable
+    </delete>
+    <select id="selectById" parameterType="int" resultType="Pdf">
+        select * from pdftable where pdfid = #{pdfId}
+    </select>
+</mapper>

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>메인 페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+    <!-- 게시물이 있다면 게시물 뿌려주기 -->
+    <!-- 그렇지 않다면 "아직 구매할 수 있는 pdf가 없어요!, 첫번째 판매자가 되보세요" -->
+    <img class="main-cover" th:src="@{/img/main-cover.png}" alt="커버사진">
+    <th:block th:if="${#arrays.isEmpty(contents)}">
+        <p>아직 구매할 수 있는 PDF가 없습니다!</p>
+        <a th:href="@{/content/writing}">첫 번째 판매자가 되어보세요!</a>
+    </th:block>
+
+    <div class="contentBox" th:each="content : ${contents}">
+        <img class="contentThumbnail" th:src="${content.thumbnailLocation}" alt="썸네일이미지">
+        <p class="contentTitle" th:text="${content.title}">제목</p>
+        <p class="contentDate" th:text="${content.localdate}">날짜</p>
+        <a class="contentDetail" th:href="@{/content/{contentId}(contentId=${content.contentId})}">자세히보기</a>
+    </div>
+</body>
+</html>

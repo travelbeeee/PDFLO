@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>나의구매내역페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+    <th:block th:if="${#arrays.isEmpty(orders)}">
+        <p>아직 구매한 PDF가 없습니다!</p>
+    </th:block>
+    <div th:each="order : ${orders}">
+        <a th:href="@{/content/{contentId}(contentId=${order.contentId})}"><p>제목 : </p><p th:text="${order.title}"></p></a>
+        <p>구매날짜 : </p><p th:text="${order.localdate}"></p>
+    </div>
+</body>
+</html>

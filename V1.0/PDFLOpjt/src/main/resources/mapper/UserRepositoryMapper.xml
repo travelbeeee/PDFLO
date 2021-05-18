@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="travelbeeee.PDFLOpjt.repository.UserRepository">
+    <insert id="insert" parameterType="User">
+        <selectKey keyProperty="userId" order="BEFORE" resultType="int">
+            SELECT usertable_seq.nextval from dual
+        </selectKey>
+        INSERT INTO usertable (userid, username, userpwd, email, salt, auth)
+        VALUES (#{userId} ,#{username}, #{userpwd}, #{email}, #{salt}, #{auth})
+    </insert>
+    <update id="update" parameterType="User">
+        UPDATE usertable set userpwd = #{userpwd} where userid = #{userId}
+    </update>
+    <update id="updateAuth" parameterType="int">
+        UPDATE usertable set auth = 'AUTHORIZATION' where userid = #{userId}
+    </update>
+    <delete id="delete">
+        DELETE FROM usertable where userid = #{userId}
+    </delete>
+    <select id="selectById" parameterType="int" resultType="User">
+        SELECT * FROM usertable where userid = #{userId}
+    </select>
+    <select id="selectByName" parameterType="String" resultType="User">
+        SELECT * FROM usertable where username = #{username}
+    </select>
+    <select id="selectByNamePwd" parameterType="String" resultType="User">
+        SELECT * FROM usertable where username = #{param1} and userpwd = #{param2}
+    </select>
+    <delete id="deleteAll">
+        DELETE FROM usertable
+    </delete>
+    <select id="selectByEmail" parameterType="String" resultType="User">
+        SELECT * FROM usertable where email = #{email}
+    </select>
+</mapper>
