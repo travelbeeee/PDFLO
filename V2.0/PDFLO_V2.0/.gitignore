@@ -1,6 +1,5 @@
 # ignore properties file
 /src/main/resources/mail.properties
-/src/main/resources/application.properties
 
 HELP.md
 .gradle

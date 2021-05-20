@@ -29,4 +29,12 @@ public class Item extends BaseEntity {
 
     @OneToMany(mappedBy = "item")
     private List<Comment> comments = new ArrayList<>();
+
+    public Item(String title, String content, Integer price, Thumbnail thumbnail, Pdf pdf) {
+        this.title = title;
+        this.content = content;
+        this.price = price;
+        this.thumbnail = thumbnail;
+        this.pdf = pdf;
+    }
 }

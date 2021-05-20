@@ -8,6 +8,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+/**
+ * 회원가입
+ * 아이디 / 비밀번호 / 이메일을 입력받는다.
+ */
 @Data
 @AllArgsConstructor
 public class SignUpDto {

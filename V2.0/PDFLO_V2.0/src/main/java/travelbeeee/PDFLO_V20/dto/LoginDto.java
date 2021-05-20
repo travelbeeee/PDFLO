@@ -2,11 +2,14 @@ package travelbeeee.PDFLO_V20.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+/**
+ * 로그인
+ * 아이디 / 비밀번호를 입력받는다.
+ */
 @Data
 @AllArgsConstructor
 public class LoginDto {

@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO_V20.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
 import travelbeeee.PDFLO_V20.domain.FileInformation;
@@ -8,6 +9,7 @@ import travelbeeee.PDFLO_V20.domain.FileInformation;
 import javax.persistence.*;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Thumbnail extends BaseEntity {
     @Id @GeneratedValue
@@ -16,4 +18,8 @@ public class Thumbnail extends BaseEntity {
 
     @Embedded
     private FileInformation fileInfo;
+
+    public Thumbnail(FileInformation fileInfo) {
+        this.fileInfo = fileInfo;
+    }
 }
