@@ -9,6 +9,6 @@ import travelbeeee.PDFLO_V20.domain.entity.PointHistory;
 import java.util.List;
 
 public interface PointHistoryRepository extends JpaRepository<PointHistory, Long> {
-    @Query("select p from PointHistory where p.member.id = :memberId")
+    @Query("select p from PointHistory p where p.member.id = :memberId")
     List<PointHistory> findMemberPointHistory(@Param("memberId") Long memberId);
 }

@@ -32,13 +32,13 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean login(LoginDto loginDto) throws PDFLOException, NoSuchAlgorithmException {
         List<Member> findMembers = memberRepository.findByUsername(loginDto.getUsername());
-        if(!findMembers.isEmpty()){ // 존재하지않는 회원아이디
+        if(findMembers.isEmpty()){ // 존재하지않는 회원아이디
             throw new PDFLOException(ErrorCode.LOGIN_INPUT_INVALID);
         }
 
         Member findMember = findMembers.get(0);
 
-        if(findMember.getPassword() != sha256Encryption.sha256(loginDto.getPassword(), findMember.getSalt())){ // 비밀번호가 틀림
+        if(!findMember.getPassword().equals(sha256Encryption.sha256(loginDto.getPassword(), findMember.getSalt()))){ // 비밀번호가 틀림
             throw new PDFLOException(ErrorCode.LOGIN_INPUT_INVALID);
         }
 

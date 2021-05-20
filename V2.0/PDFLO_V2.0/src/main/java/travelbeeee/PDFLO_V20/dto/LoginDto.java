@@ -1,11 +1,14 @@
 package travelbeeee.PDFLO_V20.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-@Getter
+@Data
+@AllArgsConstructor
 public class LoginDto {
     @NotNull
     @Pattern(regexp = "^(?=.*[0-9])[a-zA-z]{1}[a-zA-Z0-9]{4,14}$",
