@@ -20,4 +20,10 @@ public class PointHistory extends BaseEntity {
 
     private Integer amount;
     private PointType type;
+
+    public PointHistory(Member member, Integer amount, PointType type) {
+        this.member = member;
+        this.amount = amount;
+        this.type = type;
+    }
 }

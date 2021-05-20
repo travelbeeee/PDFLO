@@ -40,7 +40,9 @@ public class Member extends BaseEntity {
         this.type = type;
     }
 
-    public void changePassword(String password){
-        this.password = password;
-    }
+    public void changePassword(String password){ this.password = password; }
+
+    public void getPoint(Integer point){ this.point += point;}
+
+    public void losePoint(Integer point) { this.point -= point;}
 }
