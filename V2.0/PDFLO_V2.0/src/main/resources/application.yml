@@ -18,4 +18,4 @@ logging.level:
 # org.hibernate.type: trace
 
 file:
-  location: ./src/main/resources/static
+  location: ../FileStorage
