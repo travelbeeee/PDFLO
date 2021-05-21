@@ -23,6 +23,7 @@ import travelbeeee.PDFLO_V20.utility.Sha256Encryption;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -66,7 +67,8 @@ public class ItemServiceImpl implements ItemService {
                 thumbnailFile.getOriginalFilename(), sha256Encryption.makeSalt())
                 , "/THUMBNAIL", thumbnailExtension));
 
-        fileManager.fileUpload(thumbnailFile.getInputStream(), fileLocation + "/THUMBNAIL", thumbnail.getFileInfo().getSaltedFileName());
+        fileManager.fileUpload(thumbnailFile.getInputStream(), fileLocation + "/THUMBNAIL",
+                thumbnail.getFileInfo().getSaltedFileName() + thumbnail.getFileInfo().getExtension());
         thumbnailRepository.save(thumbnail);
 
         return thumbnail;
@@ -78,7 +80,8 @@ public class ItemServiceImpl implements ItemService {
                 pdfFile.getOriginalFilename(), sha256Encryption.makeSalt()),
                 "/PDF", ".PDF"));
 
-        fileManager.fileUpload(pdfFile.getInputStream(), fileLocation + "/PDF", pdf.getFileInfo().getSaltedFileName());
+        fileManager.fileUpload(pdfFile.getInputStream(), fileLocation + "/PDF",
+                pdf.getFileInfo().getSaltedFileName() + pdf.getFileInfo().getExtension());
         pdfRepository.save(pdf);
 
         return pdf;
@@ -105,8 +108,10 @@ public class ItemServiceImpl implements ItemService {
         Pdf pdf = item.getPdf();
         Thumbnail thumbnail = item.getThumbnail();
 
-        fileManager.fileDelete(fileLocation + pdf.getFileInfo().getLocation(), pdf.getFileInfo().getSaltedFileName());
-        fileManager.fileDelete(fileLocation + thumbnail.getFileInfo().getLocation(), thumbnail.getFileInfo().getSaltedFileName());
+        fileManager.fileDelete(fileLocation + pdf.getFileInfo().getLocation(),
+                pdf.getFileInfo().getSaltedFileName() + pdf.getFileInfo().getExtension());
+        fileManager.fileDelete(fileLocation + thumbnail.getFileInfo().getLocation(),
+                thumbnail.getFileInfo().getSaltedFileName() + thumbnail.getFileInfo().getExtension());
 
         pdfRepository.delete(pdf);
         thumbnailRepository.delete(thumbnail);
@@ -132,11 +137,18 @@ public class ItemServiceImpl implements ItemService {
         Pdf pdf = item.getPdf();
         Thumbnail thumbnail = item.getThumbnail();
 
-        fileManager.fileDelete(fileLocation + pdf.getFileInfo().getLocation(), pdf.getFileInfo().getSaltedFileName());
-        fileManager.fileDelete(fileLocation + thumbnail.getFileInfo().getLocation(), thumbnail.getFileInfo().getSaltedFileName());
+        fileManager.fileDelete(fileLocation + pdf.getFileInfo().getLocation(),
+                pdf.getFileInfo().getSaltedFileName() + pdf.getFileInfo().getExtension());
+        fileManager.fileDelete(fileLocation + thumbnail.getFileInfo().getLocation(),
+                thumbnail.getFileInfo().getSaltedFileName() + thumbnail.getFileInfo().getExtension());
 
         pdfRepository.delete(pdf);
         thumbnailRepository.delete(thumbnail);
         itemRepository.delete(item);
+    }
+
+    @Override
+    public List<Item> findAll() {
+        return itemRepository.findAll();
     }
 }

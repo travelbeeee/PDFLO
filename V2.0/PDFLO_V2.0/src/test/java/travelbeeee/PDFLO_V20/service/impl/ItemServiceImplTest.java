@@ -39,8 +39,8 @@ class ItemServiceImplTest {
     @Test
     public void Item_업로드_테스트() throws Exception{
         //given
-        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/project/TESTFILES/profile2.JPG"));
-        FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/project/TESTFILES/test1.PDF"));
+        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/profile2.JPG"));
+        FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/pdf1.PDF"));
 
         MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1" + "." + "JPG", "JPG", thumbnailFileInputStream);
         MockMultipartFile pdfFile = new MockMultipartFile("testFile2", "testFile2" + "." + "PDF", "PDF", pdfFileInputStream);
@@ -56,8 +56,8 @@ class ItemServiceImplTest {
     @Test
     public void Item_삭제_테스트() throws Exception{
         //given
-        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/project/TESTFILES/profile2.JPG"));
-        FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/project/TESTFILES/test1.PDF"));
+        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/profile2.JPG"));
+        FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/pdf1.PDF"));
 
         MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1" + "." + "JPG", "JPG", thumbnailFileInputStream);
         MockMultipartFile pdfFile = new MockMultipartFile("testFile2", "testFile2" + "." + "PDF", "PDF", pdfFileInputStream);
@@ -78,8 +78,8 @@ class ItemServiceImplTest {
     @Test
     public void Item_수정_테스트() throws Exception{
         //given
-        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/project/TESTFILES/profile2.JPG"));
-        FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/project/TESTFILES/pdf1.PDF"));
+        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/profile2.JPG"));
+        FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/pdf1.PDF"));
 
         MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1" + "." + "JPG", "JPG", thumbnailFileInputStream);
         MockMultipartFile pdfFile = new MockMultipartFile("testFile2", "testFile2" + "." + "PDF", "PDF", pdfFileInputStream);
@@ -94,8 +94,8 @@ class ItemServiceImplTest {
         List<Item> items = itemRepository.findByMember(member);
         Item item = items.get(0);
 
-        FileInputStream newThumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/project/TESTFILES/thumbnail4.JPG"));
-        FileInputStream newPdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/project/TESTFILES/pdf2.PDF"));
+        FileInputStream newThumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/thumbnail4.JPG"));
+        FileInputStream newPdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/pdf2.PDF"));
 
         MockMultipartFile newThumbnailFile = new MockMultipartFile("testFile3", "testFile3" + "." + "JPG", "JPG", newThumbnailFileInputStream);
         MockMultipartFile newPdfFile = new MockMultipartFile("testFile4", "testFile4" + "." + "PDF", "PDF", newPdfFileInputStream);
