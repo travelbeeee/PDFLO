@@ -1,0 +1,23 @@
+
+<nav class="nav-container">
+    <a th:href="@{/}">
+        <img th:src="@{/img/logo.svg}" alt="로고파일" src="C:/Users/HyunSeok/Desktop/studyWithMe/gitHub/Spring_Practice/PDFLO/PDFLOpjt/src/main/resources/static/img/logo.svg">
+    </a>
+    <form action="">
+        <input type="search">
+        <input type="image" th:src="@{/img/ic-search.svg}" src="C:\Users\HyunSeok\Desktop\studyWithMe\gitHub\Spring_Practice\PDFLO\PDFLOpjt\src\main\resources\static\img\ic-search.svg">
+    </form>
+    <!-- 로그인을 했다면 프로필 사진을 아니면 일반 사진-->
+    <img th:if="${session['profile']} != null" th:src="${session['profile']}" alt="프로필사진">
+    <img th:if="${session['profile']} == null" th:src="@{/img/profile-non.png}" alt="기본사진">
+    <div class="dropdown">
+        ^
+        <div class="dropdown-content">
+            <a th:if="${session['userId']} != null" th:href="@{/user/mypage}">마이페이지</a>
+            <a th:if="${session['userId']} != null" th:href="@{/content/upload}">PDF등록하기</a>
+            <a th:if="${session['userId']} != null" th:href="@{/user/logout}">로그아웃하기</a>
+            <a th:if="${session['userId']} == null" th:href="@{/user/login}">로그인</a>
+            <a th:if="${session['userId']} == null" th:href="@{/user/signUp}">회원가입</a>
+        </div>
+    </div>
+</nav>

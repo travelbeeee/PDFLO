@@ -21,7 +21,8 @@ public enum ErrorCode {
     MEMBER_ALREADY_REGISTERED_PROFILE(400, "이미 프로필 사진을 등록했습니다. 수정 기능을 이용해주세요."),
     DOWNLOAD_NO_PERMISSION(400, "구매자만 PDF 다운로드가 가능합니다."),
     MEMBER_NO_EXIST(400, "없는 회원입니다."),
-    EMAIL_NO_EXIST(400, "입력한 이메일은 없는 이메일입니다.");
+    EMAIL_NO_EXIST(400, "입력한 이메일은 없는 이메일입니다."),
+    ITEM_NO_EXIST(400, "없는 상품입니다.");
 
     final int status;
     final String message;

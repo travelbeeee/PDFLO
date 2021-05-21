@@ -1,15 +1,16 @@
 package travelbeeee.PDFLO_V20.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
-import travelbeeee.PDFLO_V20.dto.ItemDto;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item extends BaseEntity {
     @Id @GeneratedValue
@@ -19,7 +20,6 @@ public class Item extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
 
     private String title;
     private String content;
@@ -45,4 +45,11 @@ public class Item extends BaseEntity {
         this.pdf = pdf;
     }
 
+    public void changeItem(String title, String content, Integer price, Thumbnail thumbnail, Pdf pdf){
+        this.title = title;
+        this.content = content;
+        this.price = price;
+        this.thumbnail = thumbnail;
+        this.pdf = pdf;
+    }
 }

@@ -52,6 +52,7 @@ public class MemberServiceImpl implements MemberService {
         if(!findMembers.isEmpty()){ // 이미 존재하는 회원아이디
             throw new PDFLOException(ErrorCode.MEMBER_NAME_DUPLICATION);
         }
+
         String salt = sha256Encryption.makeSalt();
         Member newMember = new Member(joinDto.getUsername(), sha256Encryption.sha256(joinDto.getPassword(), salt), salt, joinDto.getEmail(),
                 MemberType.UNAUTHORIZATION, 0);

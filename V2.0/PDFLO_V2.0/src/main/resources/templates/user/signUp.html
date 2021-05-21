@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>회원가입페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+    <link rel="stylesheet" href="/css/user/signUp.css">
+</head>
+<body>
+<th:block th:replace="fragments/header.html"></th:block>
+<div class="signUpBox">
+    <div class="signUpTitle">회원가입하기</div>
+    <form action="/user/signUp" method="post">
+        <input type="text" id = "username" name = "username" placeholder="아이디를 입력해주세요.">
+        <input type="email" id = "email" name = "email" placeholder="이메일을 입력해주세요.">
+        <input type="password" id = "userpwd" name = "userpwd" placeholder="비밀번호를 입력해주세요.">
+        <input type="submit" value="Sign Up">
+    </form>
+</div>
+</body>
+</html>

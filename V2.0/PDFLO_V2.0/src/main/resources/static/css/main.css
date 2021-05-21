@@ -1,0 +1,15 @@
+.main-cover{
+    width : 100%;
+    height : 300px;
+}
+
+.contentBox{
+    margin : auto;
+    width : 500px;
+    height : 300px;
+}
+
+.contentBox .contentThumbnail{
+    width : 300px;
+    height : 250px;
+}

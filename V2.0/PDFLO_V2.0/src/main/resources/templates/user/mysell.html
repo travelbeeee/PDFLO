@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>내 판매내역</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+    판매 총 금액 : <p th:text="${totalPrice}"></p>
+    <div th:each="sell : ${sells}">
+        구매자 : <p th:text="${sell.username}"></p>
+        구매날짜 : <p th:text="${sell.localdate}"></p>
+        상품제목 : <p th:text="${sell.title}"></p>
+    </div>
+</body>
+</html>

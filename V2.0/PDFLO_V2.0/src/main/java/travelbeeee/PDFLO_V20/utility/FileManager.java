@@ -21,7 +21,7 @@ public class FileManager {
         return true;
     }
 
-    public boolean fileDelete(InputStream inputStream, String location, String fileName) {
+    public boolean fileDelete(String location, String fileName) {
         File file = new File(location + "/" + fileName);
         if(file.exists()) file.delete();
         return false;
