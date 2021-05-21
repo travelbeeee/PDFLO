@@ -50,15 +50,6 @@ public class FileManager {
         return new FileInformation(fileName, location, extension);
     }
 
-    public boolean fileUpload(InputStream inputStream, String location, String fileName) {
-        try{
-            Files.copy(inputStream, Paths.get(location + "/" + fileName), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
     public boolean fileDelete(String location, String fileName) {
         File file = new File(location + "/" + fileName);
         if(file.exists()) file.delete();
