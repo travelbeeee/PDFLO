@@ -23,4 +23,5 @@ public interface MemberService {
     List<PointHistory> findMemberPointHistory(Long memberId); // 포인트 내역 조회
     List<Item> findMemberItem(Long memberId); // 회원이 등록한 아이템 조회
     void uploadProfile(Long memberId, ProfileDto profileDto) throws PDFLOException, NoSuchAlgorithmException, IOException;
+    void deleteProfile(Long memberId) throws PDFLOException;
 }

@@ -137,6 +137,14 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
 
+        Optional<Profile> findProfile = profileRepository.findProfileByMember(memberId);
+        if(!findProfile.isEmpty()){ // 기존 프로필 지우기
+            Profile deleteProfile = findProfile.get();
+            fileManager.fileDelete(deleteProfile.getFileInfo().getLocation(),
+                    deleteProfile.getFileInfo().getSaltedFileName(), deleteProfile.getFileInfo().getExtension());
+            profileRepository.delete(deleteProfile);
+        }
+
         MultipartFile profile = profileDto.getProfile();
         FileInformation fileInformation = fileManager.fileUpload(profile, FileType.PROFILE);
         Member member = findMember.get();
@@ -144,5 +152,22 @@ public class MemberServiceImpl implements MemberService {
         Profile newProfile = new Profile(member, fileInformation);
         profileRepository.save(newProfile);
     }
+
+    @Transactional
+    @Override
+    public void deleteProfile(Long memberId) throws PDFLOException {
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
+
+        Optional<Profile> findProfile = profileRepository.findProfileByMember(memberId);
+        if(findProfile.isEmpty()) throw new PDFLOException(ErrorCode.PROFILE_NO_EXIST);
+
+        Profile profile = findProfile.get();
+        fileManager.fileDelete(profile.getFileInfo().getLocation(), profile.getFileInfo().getSaltedFileName(), profile.getFileInfo().getExtension());
+
+        profileRepository.delete(profile);
+    }
+
+
 
 }
