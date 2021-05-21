@@ -10,6 +10,7 @@ import travelbeeee.PDFLO_V20.domain.entity.Item;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
 import travelbeeee.PDFLO_V20.domain.entity.Pdf;
 import travelbeeee.PDFLO_V20.domain.entity.Thumbnail;
+import travelbeeee.PDFLO_V20.domain.enumType.FileType;
 import travelbeeee.PDFLO_V20.dto.ItemDto;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
@@ -36,10 +37,6 @@ public class ItemServiceImpl implements ItemService {
     private final PdfRepository pdfRepository;
     private final ThumbnailRepository thumbnailRepository;
     private final FileManager fileManager;
-    private final Sha256Encryption sha256Encryption;
-
-    @Value("${file.location}")
-    private String fileLocation;
 
     @Transactional
     @Override
@@ -47,44 +44,22 @@ public class ItemServiceImpl implements ItemService {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
 
-        Member member = findMember.get();
-
         MultipartFile pdfFile = itemDto.getPdfFile();
         MultipartFile thumbnailFile = itemDto.getThumbnailFile();
 
-        Pdf pdf = uploadPdf(pdfFile);
-        Thumbnail thumbnail = uploadThumbnail(thumbnailFile);
+        FileInformation pdfFileInformation = fileManager.fileUpload(pdfFile, FileType.PDF);
+        FileInformation thumbnailFileInformation = fileManager.fileUpload(thumbnailFile, FileType.THUMBNAIL);
+
+        Pdf pdf = new Pdf(pdfFileInformation);
+        Thumbnail thumbnail = new Thumbnail(thumbnailFileInformation);
+
+        Member member = findMember.get();
 
         Item item = new Item(member, itemDto.getTitle(), itemDto.getContent(), itemDto.getPrice(), thumbnail, pdf);
-        itemRepository.save(item);
-    }
 
-    @Transactional
-    private Thumbnail uploadThumbnail(MultipartFile thumbnailFile) throws NoSuchAlgorithmException, IOException {
-        String thumbnailExtension = thumbnailFile.getOriginalFilename().substring(thumbnailFile.getOriginalFilename().indexOf("."));
-
-        Thumbnail thumbnail = new Thumbnail(new FileInformation(sha256Encryption.sha256(
-                thumbnailFile.getOriginalFilename(), sha256Encryption.makeSalt())
-                , "/THUMBNAIL", thumbnailExtension));
-
-        fileManager.fileUpload(thumbnailFile.getInputStream(), fileLocation + "/THUMBNAIL",
-                thumbnail.getFileInfo().getSaltedFileName() + thumbnail.getFileInfo().getExtension());
-        thumbnailRepository.save(thumbnail);
-
-        return thumbnail;
-    }
-
-    @Transactional
-    private Pdf uploadPdf(MultipartFile pdfFile) throws NoSuchAlgorithmException, IOException {
-        Pdf pdf = new Pdf(new FileInformation(sha256Encryption.sha256(
-                pdfFile.getOriginalFilename(), sha256Encryption.makeSalt()),
-                "/PDF", ".PDF"));
-
-        fileManager.fileUpload(pdfFile.getInputStream(), fileLocation + "/PDF",
-                pdf.getFileInfo().getSaltedFileName() + pdf.getFileInfo().getExtension());
         pdfRepository.save(pdf);
-
-        return pdf;
+        thumbnailRepository.save(thumbnail);
+        itemRepository.save(item);
     }
 
     /**
@@ -108,10 +83,8 @@ public class ItemServiceImpl implements ItemService {
         Pdf pdf = item.getPdf();
         Thumbnail thumbnail = item.getThumbnail();
 
-        fileManager.fileDelete(fileLocation + pdf.getFileInfo().getLocation(),
-                pdf.getFileInfo().getSaltedFileName() + pdf.getFileInfo().getExtension());
-        fileManager.fileDelete(fileLocation + thumbnail.getFileInfo().getLocation(),
-                thumbnail.getFileInfo().getSaltedFileName() + thumbnail.getFileInfo().getExtension());
+        fileManager.fileDelete(pdf.getFileInfo().getLocation(), pdf.getFileInfo().getSaltedFileName(), pdf.getFileInfo().getExtension());
+        fileManager.fileDelete(thumbnail.getFileInfo().getLocation(), thumbnail.getFileInfo().getSaltedFileName(), thumbnail.getFileInfo().getExtension());
 
         pdfRepository.delete(pdf);
         thumbnailRepository.delete(thumbnail);
@@ -119,9 +92,14 @@ public class ItemServiceImpl implements ItemService {
         MultipartFile pdfFile = itemDto.getPdfFile();
         MultipartFile thumbnailFile = itemDto.getThumbnailFile();
 
-        Pdf newPdf = uploadPdf(pdfFile);
-        Thumbnail newThumbnail = uploadThumbnail(thumbnailFile);
+        FileInformation newPdfFileInformation = fileManager.fileUpload(pdfFile, FileType.PDF);
+        FileInformation newThumbnailFileInformation = fileManager.fileUpload(thumbnailFile, FileType.THUMBNAIL);
 
+        Pdf newPdf = new Pdf(newPdfFileInformation);
+        Thumbnail newThumbnail = new Thumbnail(newThumbnailFileInformation);
+
+        pdfRepository.save(newPdf);
+        thumbnailRepository.save(newThumbnail);
         item.changeItem(itemDto.getTitle(), item.getContent(), itemDto.getPrice(), newThumbnail, newPdf);
     }
 
@@ -137,10 +115,8 @@ public class ItemServiceImpl implements ItemService {
         Pdf pdf = item.getPdf();
         Thumbnail thumbnail = item.getThumbnail();
 
-        fileManager.fileDelete(fileLocation + pdf.getFileInfo().getLocation(),
-                pdf.getFileInfo().getSaltedFileName() + pdf.getFileInfo().getExtension());
-        fileManager.fileDelete(fileLocation + thumbnail.getFileInfo().getLocation(),
-                thumbnail.getFileInfo().getSaltedFileName() + thumbnail.getFileInfo().getExtension());
+        fileManager.fileDelete(pdf.getFileInfo().getLocation(), pdf.getFileInfo().getSaltedFileName(), pdf.getFileInfo().getExtension());
+        fileManager.fileDelete(thumbnail.getFileInfo().getLocation(), thumbnail.getFileInfo().getSaltedFileName(), thumbnail.getFileInfo().getExtension());
 
         pdfRepository.delete(pdf);
         thumbnailRepository.delete(thumbnail);
