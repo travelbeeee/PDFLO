@@ -50,8 +50,8 @@ public class FileManager {
         return new FileInformation(fileName, location, extension);
     }
 
-    public boolean fileDelete(String location, String fileName) {
-        File file = new File(location + "/" + fileName);
+    public boolean fileDelete(String location, String fileName, String extension) {
+        File file = new File(location + "/" + fileName + extension);
         if(file.exists()) file.delete();
         return false;
     }
