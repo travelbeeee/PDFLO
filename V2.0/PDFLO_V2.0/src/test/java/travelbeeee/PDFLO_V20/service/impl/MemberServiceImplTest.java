@@ -4,10 +4,13 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
 import travelbeeee.PDFLO_V20.dto.LoginDto;
+import travelbeeee.PDFLO_V20.dto.ProfileDto;
 import travelbeeee.PDFLO_V20.dto.SignUpDto;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.repository.MemberRepository;
@@ -16,6 +19,8 @@ import travelbeeee.PDFLO_V20.service.MemberService;
 import travelbeeee.PDFLO_V20.utility.Sha256Encryption;
 
 import javax.persistence.EntityManager;
+import java.io.File;
+import java.io.FileInputStream;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+//@Rollback(value = false)
 class MemberServiceImplTest {
     @Autowired
     MemberService memberService;
@@ -77,11 +83,11 @@ class MemberServiceImplTest {
         memberService.signUp(signUpDto);
 
         LoginDto loginDto = new LoginDto("member2", "password1");
-        
+
         assertThrows(PDFLOException.class, () ->
                 memberService.login(loginDto));
     }
-    
+
     @Test
     public void 로그인_비밀번호_에러() throws PDFLOException, NoSuchAlgorithmException {
         SignUpDto signUpDto = new SignUpDto("member1", "password1", "email1");
@@ -94,7 +100,7 @@ class MemberServiceImplTest {
     }
 
     @Test
-    public void 회원삭제() throws Exception{
+    public void 회원삭제() throws Exception {
         // given
         Member member = new Member("member1", "password1", null, null, null, null);
         memberRepository.save(member);
@@ -111,7 +117,7 @@ class MemberServiceImplTest {
     }
 
     @Test
-    public void 비밀번호_수정() throws Exception{
+    public void 비밀번호_수정() throws Exception {
         // given
         SignUpDto signUpDto = new SignUpDto("member1", "password1", "email1");
         memberService.signUp(signUpDto);
@@ -128,7 +134,7 @@ class MemberServiceImplTest {
     }
 
     @Test
-    public void 멤버_포인트_충전_테스트() throws Exception{
+    public void 멤버_포인트_충전_테스트() throws Exception {
         // given
         SignUpDto signUpDto = new SignUpDto("member1", "password1", "email1");
         memberService.signUp(signUpDto);
@@ -148,7 +154,7 @@ class MemberServiceImplTest {
     }
 
     @Test
-    public void 멤버_포인트_사용_예외_잔액부족() throws Exception{
+    public void 멤버_포인트_사용_예외_잔액부족() throws Exception {
         // given
         SignUpDto signUpDto = new SignUpDto("member1", "password1", "email1");
         memberService.signUp(signUpDto);
@@ -158,5 +164,40 @@ class MemberServiceImplTest {
 
         assertThrows(PDFLOException.class, () ->
                 memberService.usePoint(member.getId(), 5000, PointType.USE));
+    }
+
+    @Test
+    public void 프로필_업로드_테스트() throws Exception {
+        // given
+        FileInputStream profileFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/profile1.JPG"));
+        MockMultipartFile profile = new MockMultipartFile("testFile1", "testFile1.JPG", "JPG", profileFileInputStream);
+
+        ProfileDto profileDto = new ProfileDto(profile);
+
+        Member member = new Member("member1", "password1", "salt1", null, null, null);
+        memberRepository.save(member);
+
+        // when
+        memberService.uploadProfile(member.getId(), profileDto);
+
+        // then
+    }
+
+    @Test
+    public void 프로필_삭제_테스트() throws Exception{
+        // given
+        FileInputStream profileFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/profile1.JPG"));
+        MockMultipartFile profile = new MockMultipartFile("testFile1", "testFile1.JPG", "JPG", profileFileInputStream);
+
+        ProfileDto profileDto = new ProfileDto(profile);
+
+        Member member = new Member("member1", "password1", "salt1", null, null, null);
+        memberRepository.save(member);
+        memberService.uploadProfile(member.getId(), profileDto);
+
+        // when
+        memberService.deleteProfile(member.getId());
+
+        // then
     }
 }

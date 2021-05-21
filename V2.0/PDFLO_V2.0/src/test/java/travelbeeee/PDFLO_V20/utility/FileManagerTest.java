@@ -14,19 +14,4 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class FileManagerTest {
 
-    @Autowired
-    FileManager fileManager;
-
-    @Value("${file.location}")
-    private String fileLocation;
-    @Test
-    public void test() throws Exception{
-        // given
-        InputStream inputStream = new ByteArrayInputStream("Test".getBytes(StandardCharsets.UTF_8));
-        fileManager.fileUpload(inputStream, fileLocation, "Fileeee.txt");
-        // when
-
-        // then
-    }
-
 }

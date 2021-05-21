@@ -21,11 +21,8 @@ import java.util.List;
 
 @SpringBootTest
 @Transactional
-//@Rollback(value = false)
+@Rollback(value = false)
 class ItemServiceImplTest {
-
-    @Value("${file.location}")
-    private String fileLocation;
 
     @Autowired
     ItemService itemService;
@@ -39,11 +36,11 @@ class ItemServiceImplTest {
     @Test
     public void Item_업로드_테스트() throws Exception{
         //given
-        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/profile2.JPG"));
+        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/thumbnail1.JPG"));
         FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/pdf1.PDF"));
 
-        MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1" + "." + "JPG", "JPG", thumbnailFileInputStream);
-        MockMultipartFile pdfFile = new MockMultipartFile("testFile2", "testFile2" + "." + "PDF", "PDF", pdfFileInputStream);
+        MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1.JPG", "JPG", thumbnailFileInputStream);
+        MockMultipartFile pdfFile = new MockMultipartFile("testFile2", "testFile2.PDF", "PDF", pdfFileInputStream);
 
         ItemDto itemDto = new ItemDto("title", "content", 10000, thumbnailFile, pdfFile);
 
@@ -56,7 +53,7 @@ class ItemServiceImplTest {
     @Test
     public void Item_삭제_테스트() throws Exception{
         //given
-        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/profile2.JPG"));
+        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/thumbnail1.JPG"));
         FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/pdf1.PDF"));
 
         MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1" + "." + "JPG", "JPG", thumbnailFileInputStream);
@@ -69,7 +66,7 @@ class ItemServiceImplTest {
 
         itemService.uploadItem(member.getId(), itemDto);
 
-        List<Item> items = itemRepository.findByMember(member);
+        List<Item> items = itemRepository.findByMember(member.getId());
         Item item = items.get(0);
 
         itemService.deleteItem(member.getId(), item.getId());
@@ -78,7 +75,7 @@ class ItemServiceImplTest {
     @Test
     public void Item_수정_테스트() throws Exception{
         //given
-        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/profile2.JPG"));
+        FileInputStream thumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/thumbnail1.JPG"));
         FileInputStream pdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/pdf1.PDF"));
 
         MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1" + "." + "JPG", "JPG", thumbnailFileInputStream);
@@ -91,10 +88,10 @@ class ItemServiceImplTest {
 
         itemService.uploadItem(member.getId(), itemDto);
 
-        List<Item> items = itemRepository.findByMember(member);
+        List<Item> items = itemRepository.findByMember(member.getId());
         Item item = items.get(0);
 
-        FileInputStream newThumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/thumbnail4.JPG"));
+        FileInputStream newThumbnailFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/thumbnail2.JPG"));
         FileInputStream newPdfFileInputStream = new FileInputStream(new File("C:/Users/sochu/바탕 화면/study/github/PDFLO/V2.0/TESTFILES/pdf2.PDF"));
 
         MockMultipartFile newThumbnailFile = new MockMultipartFile("testFile3", "testFile3" + "." + "JPG", "JPG", newThumbnailFileInputStream);
