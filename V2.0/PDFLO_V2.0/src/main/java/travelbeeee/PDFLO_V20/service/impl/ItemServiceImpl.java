@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import travelbeeee.PDFLO_V20.domain.FileInformation;
-import travelbeeee.PDFLO_V20.domain.entity.Item;
-import travelbeeee.PDFLO_V20.domain.entity.Member;
-import travelbeeee.PDFLO_V20.domain.entity.Pdf;
-import travelbeeee.PDFLO_V20.domain.entity.Thumbnail;
+import travelbeeee.PDFLO_V20.domain.entity.*;
 import travelbeeee.PDFLO_V20.domain.enumType.FileType;
 import travelbeeee.PDFLO_V20.dto.ItemDto;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
@@ -126,5 +123,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> findAll() {
         return itemRepository.findAll();
+    }
+
+    @Override
+    public List<Comment> findComment(Long itemId) {
+        return itemRepository.findComment(itemId);
     }
 }
