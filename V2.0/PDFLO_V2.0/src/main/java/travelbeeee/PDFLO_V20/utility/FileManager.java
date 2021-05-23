@@ -1,10 +1,7 @@
 package travelbeeee.PDFLO_V20.utility;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.jni.FileInfo;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import travelbeeee.PDFLO_V20.domain.FileInformation;

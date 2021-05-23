@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO_V20.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 public class Comment extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "comment_id")
@@ -23,4 +25,11 @@ public class Comment extends BaseEntity {
 
     private String comment;
     private Double score;
+
+    public Comment(Member member, Item item, String comment, Double score) {
+        this.member = member;
+        this.item = item;
+        this.comment = comment;
+        this.score = score;
+    }
 }
