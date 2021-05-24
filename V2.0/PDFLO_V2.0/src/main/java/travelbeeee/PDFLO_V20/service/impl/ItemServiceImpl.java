@@ -124,9 +124,4 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> findAll() {
         return itemRepository.findAll();
     }
-
-    @Override
-    public List<Comment> findComment(Long itemId) {
-        return itemRepository.findComment(itemId);
-    }
 }
