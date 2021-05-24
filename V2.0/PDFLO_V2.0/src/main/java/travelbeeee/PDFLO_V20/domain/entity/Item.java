@@ -3,6 +3,7 @@ package travelbeeee.PDFLO_V20.domain.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
 
 import javax.persistence.*;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@ToString(exclude = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item extends BaseEntity {
     @Id @GeneratedValue
