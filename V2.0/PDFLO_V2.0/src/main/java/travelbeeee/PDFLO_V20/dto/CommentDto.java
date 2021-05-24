@@ -11,4 +11,9 @@ public class CommentDto {
 
     @NotNull
     private Double score;
+
+    public CommentDto(String comment, Double score) {
+        this.comment = comment;
+        this.score = score;
+    }
 }
