@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = {"order", "item"})
 public class OrderItem extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "order_item_id")

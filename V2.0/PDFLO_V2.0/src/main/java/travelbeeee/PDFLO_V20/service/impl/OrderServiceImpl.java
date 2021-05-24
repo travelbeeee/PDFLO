@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
@@ -37,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
      *  - Item마다 Member의 PointHistory 추가
      *  - Item마다 OrderItem 추가
      */
+    @Transactional
     @Override
     public void putOrder(Long memberId, List<Long> itemIds) throws PDFLOException {
         // 1)
@@ -65,12 +66,18 @@ public class OrderServiceImpl implements OrderService {
         if(member.getPoint() < totalPrice) throw new PDFLOException(ErrorCode.MEMBER_INSUFFICIENT_BALANCE);
 
         Order order = new Order(member);
+        orderRepository.save(order);
+
         for (Item item : items) {
             OrderItem orderItem = new OrderItem(order, item, item.getPrice());
             orderItemRepository.save(orderItem);
             pointHistoryRepository.save(new PointHistory(member, item.getPrice(), PointType.USE));
         }
-        orderRepository.save(order);
         member.losePoint(totalPrice);
+    }
+
+    @Override
+    public List<Order> findOrderByMember(Long memberId) {
+        return orderRepository.findAllWithOrderItemByMember(memberId);
     }
 }

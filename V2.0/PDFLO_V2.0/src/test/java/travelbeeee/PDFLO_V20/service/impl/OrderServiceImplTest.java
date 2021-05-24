@@ -88,4 +88,43 @@ class OrderServiceImplTest {
         Assertions.assertThat(orderItems.size()).isEqualTo(3);
     }
 
+    @Test
+    public void 회원_주문내역조회() throws Exception{
+        // given
+        Member member1 = new Member("member1", null, null, null, null, 10000);
+        Member member2 = new Member("member2", null, null, null, null, 10000);
+
+        Item item1 = new Item(member2, "item1", null, 1000, null, null);
+        Item item2 = new Item(member2, "item2", null, 2000, null, null);
+        Item item3 = new Item(member2, "item3", null, 3000, null, null);
+
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+        itemRepository.save(item1);
+        itemRepository.save(item2);
+        itemRepository.save(item3);
+
+        List<Long> items1 = new ArrayList<>();
+        items1.add(item1.getId());
+        items1.add(item2.getId());
+
+        List<Long> items2 = new ArrayList<>();
+        items2.add(item3.getId());
+
+        orderService.putOrder(member1.getId(), items1);
+        orderService.putOrder(member1.getId(), items2);
+
+        em.flush();
+        em.clear();
+
+        // then
+        List<Order> orders = orderService.findOrderByMember(member1.getId());
+
+        Assertions.assertThat(orders.size()).isEqualTo(2);
+        Assertions.assertThat(orders.get(0).getMember().getUsername()).isEqualTo("member1");
+        Assertions.assertThat(orders.get(1).getMember().getUsername()).isEqualTo("member1");
+        Assertions.assertThat(orders.get(0).getOrderItems().size()).isEqualTo(2);
+        Assertions.assertThat(orders.get(1).getOrderItems().size()).isEqualTo(1);
+    }
+
 }
