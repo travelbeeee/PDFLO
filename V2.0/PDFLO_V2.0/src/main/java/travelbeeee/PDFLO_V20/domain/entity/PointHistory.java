@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO_V20.domain.entity;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
@@ -8,6 +9,7 @@ import travelbeeee.PDFLO_V20.domain.enumType.PointType;
 import javax.persistence.*;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PointHistory extends BaseEntity {
     @Id @GeneratedValue

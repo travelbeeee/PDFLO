@@ -188,7 +188,6 @@ class CommentServiceImplTest {
     @Test
     public void 댓글_수정_정상() throws Exception{
         // given
-        // given
         Member member = new Member("member1", null, null, null, null, null);
         memberRepository.save(member);
 

@@ -30,4 +30,12 @@ public class Order extends BaseEntity {
     public Order(Member member) {
         this.member = member;
     }
+
+    public int getTotalPrice(){
+        int totalPrice = 0;
+        for (OrderItem orderItem : orderItems) {
+            totalPrice += orderItem.getOrderPrice();
+        }
+        return totalPrice;
+    }
 }

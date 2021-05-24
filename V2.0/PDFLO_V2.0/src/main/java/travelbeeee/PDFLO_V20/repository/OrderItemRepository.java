@@ -8,10 +8,14 @@ import travelbeeee.PDFLO_V20.domain.entity.Order;
 import travelbeeee.PDFLO_V20.domain.entity.OrderItem;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
 
+import javax.mail.FetchProfile;
 import java.util.List;
 import java.util.Optional;
 
 public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query("select oi from OrderItem oi where oi.order.member = :member and oi.item = :item")
     Optional<OrderItem> findByMemberAndItem(@Param("member") Member member, @Param("item") Item item);
+
+    @Query("select oi from OrderItem oi where oi.order.member = :member and oi.item in :items")
+    Optional<OrderItem> findByMemberAndItems(@Param("member") Member member, @Param("items") List<Item> items);
 }

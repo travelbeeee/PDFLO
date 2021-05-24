@@ -7,6 +7,7 @@ import travelbeeee.PDFLO_V20.domain.entity.Comment;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
 
+import javax.mail.FetchProfile;
 import java.util.List;
 
 public interface ItemRepository extends JpaRepository<Item, Long> {
@@ -15,4 +16,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("select c from Comment c where c.item.id = :itemId")
     List<Comment> findComment(@Param("itemId") Long itemId);
+
+    @Query("select i from Item i join fetch i.member where i.id in :itemIds")
+    List<Item> findSelectedItemWithMember(@Param("itemIds") List<Long> itemIds);
 }
