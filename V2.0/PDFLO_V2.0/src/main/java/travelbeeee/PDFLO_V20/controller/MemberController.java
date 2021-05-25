@@ -29,9 +29,10 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MailSender mailSender;
+
     /**
-     *  회원가입 폼 페이지로 넘겨준다.
-     *  로그인 상태로 회원가입을 진행하려고 하면 에러 발생.
+     * 회원가입 폼 페이지로 넘겨준다.
+     * 로그인 상태로 회원가입을 진행하려고 하면 에러 발생.
      */
     @GetMapping("/member/signUp")
     public String signUpForm(HttpSession httpSession, Model model) throws PDFLOException {
@@ -41,12 +42,12 @@ public class MemberController {
     }
 
     /**
-     *  회원가입 진행
-     *  아이디, 비밀번호, 이메일 입력 오류시 다시 회원가입 폼 페이지로 보내기.
+     * 회원가입 진행
+     * 아이디, 비밀번호, 이메일 입력 오류시 다시 회원가입 폼 페이지로 보내기.
      */
     @PostMapping("/member/signUp")
     public String signUp(@Valid SignUpForm signUpForm, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return "/member/signUp";
         }
         memberService.signUp(signUpForm);
@@ -66,16 +67,16 @@ public class MemberController {
     }
 
     /**
-     *  로그인 진행
-     *  아이디, 비밀번호 입력 오류시 다시 회원가입 폼 페이지로 보내기.
-     *  아이디, 비밀번호가 제대로 입력되었다면 세션에 로그인 상태 유지를 위한 Id 값을 추가
-     *  메일 인증을 진행한 회원이라면 메인 페이지로
-     *  메일 인증을 아직 진행하지 않은 회원이라면 메일 인증 페이지로
-     *  프로필 사진이 있는 회원이라면 사진을 추가해서 메인페이지로 넘겨주자.
+     * 로그인 진행
+     * 아이디, 비밀번호 입력 오류시 다시 회원가입 폼 페이지로 보내기.
+     * 아이디, 비밀번호가 제대로 입력되었다면 세션에 로그인 상태 유지를 위한 Id 값을 추가
+     * 메일 인증을 진행한 회원이라면 메인 페이지로
+     * 메일 인증을 아직 진행하지 않은 회원이라면 메일 인증 페이지로
+     * 프로필 사진이 있는 회원이라면 사진을 추가해서 메인페이지로 넘겨주자.
      */
     @PostMapping("/member/login")
     public String login(@Valid LoginForm loginForm, BindingResult bindingResult, HttpSession httpSession) throws PDFLOException, NoSuchAlgorithmException, MessagingException {
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return "/member/login";
         }
 
@@ -106,13 +107,13 @@ public class MemberController {
      */
     @PostMapping("/member/authenticateMail")
     public String auth(HttpSession httpSession, int code) throws PDFLOException {
-        Long memberId = (Long)httpSession.getAttribute("id");
-        int authCode = (int)httpSession.getAttribute("authCode");
+        Long memberId = (Long) httpSession.getAttribute("id");
+        int authCode = (int) httpSession.getAttribute("authCode");
 
-        if(authCode != code) {
+        if (authCode != code) {
             throw new PDFLOException(ErrorCode.MAIL_AUTHCODE_INCORRECT);
         }
-        
+
         memberService.authorize(memberId);
         return "redirect:/";
     }
@@ -181,5 +182,21 @@ public class MemberController {
         memberService.updatePassword(memberId, newPassword);
 
         return "redirect:/";
+    }
+
+    /**
+     * 마이페이지로 이동하기.
+     * 회원 이름 / 회원 포인트를 View에 뿌려주자.
+     */
+    @GetMapping("/member/mypage")
+    public String mypage(HttpSession httpSession, Model model) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+
+        Long memberId = (Long) httpSession.getAttribute("id");
+        Member member = memberService.findMember(memberId);
+        model.addAttribute("username", member.getUsername());
+        model.addAttribute("point", member.getPoint());
+
+        return "/member/mypage";
     }
 }
