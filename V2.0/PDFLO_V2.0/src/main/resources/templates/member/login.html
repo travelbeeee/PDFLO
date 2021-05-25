@@ -13,9 +13,9 @@
 <th:block th:replace="fragments/header.html"></th:block>
 <div class="loginBox">
     <div class="loginTitle">로그인하기</div>
-    <form action="/user/login" method="post">
-        <input type="text" id = "username" name = "username" placeholder="아이디를 입력해주세요.">
-        <input type="password" id = "userpwd" name = "userpwd" placeholder="비밀번호를 입력해주세요.">
+    <form action="/member/login" th:object="${loginForm}" method="post">
+        <input type="text" th:field="*{username}" placeholder="아이디를 입력해주세요.">
+        <input type="password" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
         <input type="submit" value="로그인하기">
     </form>
 </div>

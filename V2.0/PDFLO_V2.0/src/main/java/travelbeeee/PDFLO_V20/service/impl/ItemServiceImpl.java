@@ -1,14 +1,13 @@
 package travelbeeee.PDFLO_V20.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import travelbeeee.PDFLO_V20.domain.FileInformation;
 import travelbeeee.PDFLO_V20.domain.entity.*;
 import travelbeeee.PDFLO_V20.domain.enumType.FileType;
-import travelbeeee.PDFLO_V20.dto.ItemDto;
+import travelbeeee.PDFLO_V20.domain.form.ItemForm;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.repository.ItemRepository;
@@ -17,7 +16,6 @@ import travelbeeee.PDFLO_V20.repository.PdfRepository;
 import travelbeeee.PDFLO_V20.repository.ThumbnailRepository;
 import travelbeeee.PDFLO_V20.service.ItemService;
 import travelbeeee.PDFLO_V20.utility.FileManager;
-import travelbeeee.PDFLO_V20.utility.Sha256Encryption;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -37,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public void uploadItem(Long memberId, ItemDto itemDto) throws NoSuchAlgorithmException, IOException, PDFLOException {
+    public void uploadItem(Long memberId, ItemForm itemDto) throws NoSuchAlgorithmException, IOException, PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
 
@@ -70,7 +68,7 @@ public class ItemServiceImpl implements ItemService {
      */
     @Transactional
     @Override
-    public void modifyItem(Long memberId, Long itemId, ItemDto itemDto) throws PDFLOException, NoSuchAlgorithmException, IOException {
+    public void modifyItem(Long memberId, Long itemId, ItemForm itemDto) throws PDFLOException, NoSuchAlgorithmException, IOException {
         Optional<Item> findItem = itemRepository.findById(itemId);
         if(findItem.isEmpty()) throw new PDFLOException(ErrorCode.ITEM_NO_EXIST);
 

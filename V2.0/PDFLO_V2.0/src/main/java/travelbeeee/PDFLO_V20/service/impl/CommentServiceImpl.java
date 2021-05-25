@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import travelbeeee.PDFLO_V20.domain.entity.*;
-import travelbeeee.PDFLO_V20.dto.CommentDto;
+import travelbeeee.PDFLO_V20.domain.form.CommentForm;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.repository.*;
@@ -31,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void uploadComment(Long memberId, Long itemId, CommentDto commentDto) throws PDFLOException {
+    public void uploadComment(Long memberId, Long itemId, CommentForm commentForm) throws PDFLOException {
         // 1)
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
@@ -50,7 +50,7 @@ public class CommentServiceImpl implements CommentService {
         Optional<Comment> findComment = commentRepository.findByMemberIdAndItemId(memberId, itemId);
         if(!findComment.isEmpty()) throw new PDFLOException(ErrorCode.COMMENT_ALREADY_WRITTEN);
 
-        Comment comment = new Comment(member, item, commentDto.getComment(), commentDto.getScore());
+        Comment comment = new Comment(member, item, commentForm.getComment(), commentForm.getScore());
         commentRepository.save(comment);
     }
 
@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void modifyComment(Long memberId, Long commentId, CommentDto commentDto) throws PDFLOException {
+    public void modifyComment(Long memberId, Long commentId, CommentForm commentForm) throws PDFLOException {
         // 1)
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
@@ -76,7 +76,7 @@ public class CommentServiceImpl implements CommentService {
         if(comment.getMember().getId() != memberId) throw new PDFLOException(ErrorCode.COMMENT_NO_PERMISSION_WRITER);
 
         // 4)
-        comment.modifyComment(commentDto);
+        comment.modifyComment(commentForm);
     }
 
     /**

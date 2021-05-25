@@ -7,14 +7,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import travelbeeee.PDFLO_V20.domain.entity.*;
-import travelbeeee.PDFLO_V20.dto.CommentDto;
+import travelbeeee.PDFLO_V20.domain.form.CommentForm;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.repository.*;
 import travelbeeee.PDFLO_V20.service.CommentService;
 
-import javax.mail.FetchProfile;
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +58,7 @@ class CommentServiceImplTest {
         OrderItem orderItem = new OrderItem(order, item, 10000);
         orderItemRepository.save(orderItem);
 
-        CommentDto newCommentDto = new CommentDto("comment", 4.0D);
+        CommentForm newCommentDto = new CommentForm("comment", 4.0D);
         commentService.uploadComment(member.getId(), item.getId(), newCommentDto);
 
         em.flush();
@@ -81,7 +79,7 @@ class CommentServiceImplTest {
         Item item1 = new Item(member1, "item1", null, null, null, null);
         itemRepository.save(item1);
 
-        CommentDto comment1 = new CommentDto("comment1", 4.5D);
+        CommentForm comment1 = new CommentForm("comment1", 4.5D);
         // when --> then PDFLOException Error
 
         PDFLOException pdfloException = assertThrows(
@@ -100,7 +98,7 @@ class CommentServiceImplTest {
         Item item1 = new Item(member1, "item1", null, null, null, null);
         itemRepository.save(item1);
 
-        CommentDto comment1 = new CommentDto("comment1", 4.5D);
+        CommentForm comment1 = new CommentForm("comment1", 4.5D);
         // when --> then PDFLOException Error
 
         PDFLOException pdfloException = assertThrows(
@@ -119,7 +117,7 @@ class CommentServiceImplTest {
         Item item1 = new Item(member1, "item1", null, null, null, null);
         itemRepository.save(item1);
 
-        CommentDto comment1 = new CommentDto("comment1", 4.5D);
+        CommentForm comment1 = new CommentForm("comment1", 4.5D);
         // when --> then PDFLOException Error
 
         PDFLOException pdfloException = assertThrows(
@@ -150,7 +148,7 @@ class CommentServiceImplTest {
         em.flush();
         em.clear();
 
-        CommentDto newCommentDto = new CommentDto("newComment", 4.0D);
+        CommentForm newCommentDto = new CommentForm("newComment", 4.0D);
         PDFLOException pdfloException = assertThrows(
                 PDFLOException.class, () -> commentService.uploadComment(member.getId(), item.getId(), newCommentDto)
         );
@@ -204,7 +202,7 @@ class CommentServiceImplTest {
         commentRepository.save(comment);
 
         // when
-        commentService.modifyComment(member.getId(), comment.getId(), new CommentDto("newComment", 4.5D));
+        commentService.modifyComment(member.getId(), comment.getId(), new CommentForm("newComment", 4.5D));
 
         // then
         Optional<Comment> findComment = commentRepository.findById(comment.getId());

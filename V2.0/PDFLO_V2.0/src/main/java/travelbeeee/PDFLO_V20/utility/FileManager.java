@@ -53,7 +53,7 @@ public class FileManager {
         return false;
     }
 
-    public byte[] fileDownload(String location, String fileName) throws IOException {
-        return Files.readAllBytes(Paths.get(location + "/" + fileName));
+    public byte[] fileDownload(String location, String fileName, String extension) throws IOException {
+        return Files.readAllBytes(Paths.get(location + "/" + fileName + extension));
     }
 }

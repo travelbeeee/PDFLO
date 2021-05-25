@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
-import travelbeeee.PDFLO_V20.dto.CommentDto;
+import travelbeeee.PDFLO_V20.domain.form.CommentForm;
 
 import javax.persistence.*;
 
@@ -34,8 +34,8 @@ public class Comment extends BaseEntity {
         this.score = score;
     }
 
-    public void modifyComment(CommentDto commentDto) {
-        this.comment = commentDto.getComment();
-        this.score = commentDto.getScore();
+    public void modifyComment(CommentForm commentForm) {
+        this.comment = commentForm.getComment();
+        this.score = commentForm.getScore();
     }
 }

@@ -21,6 +21,8 @@ public class PointHistory extends BaseEntity {
     private Member member;
 
     private Integer amount;
+
+    @Enumerated(EnumType.STRING)
     private PointType type;
 
     public PointHistory(Member member, Integer amount, PointType type) {

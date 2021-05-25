@@ -7,10 +7,7 @@ import lombok.ToString;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
 import travelbeeee.PDFLO_V20.domain.enumType.MemberType;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter @ToString
@@ -24,6 +21,8 @@ public class Member extends BaseEntity {
     private String password;
     private String salt;
     private String email;
+
+    @Enumerated(EnumType.STRING)
     private MemberType type;
     private Integer point;
 

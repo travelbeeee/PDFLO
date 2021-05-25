@@ -5,7 +5,8 @@ import org.springframework.stereotype.Repository;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    List<Member> findByUsername(String username);
+    Optional<Member> findByUsername(String username);
 }

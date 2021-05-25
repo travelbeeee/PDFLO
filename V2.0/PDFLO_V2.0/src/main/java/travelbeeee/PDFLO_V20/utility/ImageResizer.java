@@ -17,7 +17,7 @@ public class ImageResizer {
         int index = oPath.lastIndexOf(".");
         String ext = oPath.substring(index + 1); // 파일 확장자
 
-        String tPath = oFile.getParent() + File.separator + "resized_" + oFile.getName(); // 썸네일저장 경로
+        String tPath = oFile.getParent() + File.separator + "resized-" + oFile.getName(); // 썸네일저장 경로
         File tFile = new File(tPath);
 
         try {

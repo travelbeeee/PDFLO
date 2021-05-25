@@ -1,4 +1,4 @@
-package travelbeeee.PDFLO_V20.dto;
+package travelbeeee.PDFLO_V20.domain.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @AllArgsConstructor
-public class ItemDto {
+public class ItemForm {
     @NotNull
     String title;
     @NotNull

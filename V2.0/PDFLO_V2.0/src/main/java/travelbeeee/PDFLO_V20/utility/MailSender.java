@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO_V20.utility;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -9,18 +10,20 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.Random;
 
-@Service @RequiredArgsConstructor
+@Service
+@RequiredArgsConstructor
+@Slf4j
 public class MailSender {
     private final JavaMailSender javaMailSender;
 
-    public int mailSending(String userMail) throws MessagingException {
+    public int sendingAuthMail(String userMail) throws MessagingException {
         String fromEmail = "sochun2528@gmail.com";
         String toEmail = userMail;
         String title = "회원가입인증메일입니다.";
 
         Random r = new Random();
         int code = r.nextInt(4589362) + 49311;
-
+        log.info("Code 생성 : " + code);
         String content = System.getProperty("line.separator")+ //한줄씩 줄간격을 두기위해 작성
                 System.getProperty("line.separator")+
                 "안녕하세요 회원님 저희 홈페이지를 찾아주셔서 감사합니다"

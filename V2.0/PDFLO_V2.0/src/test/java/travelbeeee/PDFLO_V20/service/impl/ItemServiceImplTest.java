@@ -2,7 +2,6 @@ package travelbeeee.PDFLO_V20.service.impl;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.Rollback;
@@ -10,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
 import travelbeeee.PDFLO_V20.domain.enumType.MemberType;
-import travelbeeee.PDFLO_V20.dto.ItemDto;
+import travelbeeee.PDFLO_V20.domain.form.ItemForm;
 import travelbeeee.PDFLO_V20.repository.ItemRepository;
 import travelbeeee.PDFLO_V20.repository.MemberRepository;
 import travelbeeee.PDFLO_V20.service.ItemService;
@@ -42,7 +41,7 @@ class ItemServiceImplTest {
         MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1.JPG", "JPG", thumbnailFileInputStream);
         MockMultipartFile pdfFile = new MockMultipartFile("testFile2", "testFile2.PDF", "PDF", pdfFileInputStream);
 
-        ItemDto itemDto = new ItemDto("title", "content", 10000, thumbnailFile, pdfFile);
+        ItemForm itemDto = new ItemForm("title", "content", 10000, thumbnailFile, pdfFile);
 
         Member member = new Member("member1", "password1", "salt1", "email1", MemberType.UNAUTHORIZATION, 0);
         memberRepository.save(member);
@@ -59,7 +58,7 @@ class ItemServiceImplTest {
         MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1" + "." + "JPG", "JPG", thumbnailFileInputStream);
         MockMultipartFile pdfFile = new MockMultipartFile("testFile2", "testFile2" + "." + "PDF", "PDF", pdfFileInputStream);
 
-        ItemDto itemDto = new ItemDto("title", "content", 10000, thumbnailFile, pdfFile);
+        ItemForm itemDto = new ItemForm("title", "content", 10000, thumbnailFile, pdfFile);
 
         Member member = new Member("member1", "password1", "salt1", "email1", MemberType.UNAUTHORIZATION, 0);
         memberRepository.save(member);
@@ -81,7 +80,7 @@ class ItemServiceImplTest {
         MockMultipartFile thumbnailFile = new MockMultipartFile("testFile1", "testFile1" + "." + "JPG", "JPG", thumbnailFileInputStream);
         MockMultipartFile pdfFile = new MockMultipartFile("testFile2", "testFile2" + "." + "PDF", "PDF", pdfFileInputStream);
 
-        ItemDto itemDto = new ItemDto("title", "content", 10000, thumbnailFile, pdfFile);
+        ItemForm itemDto = new ItemForm("title", "content", 10000, thumbnailFile, pdfFile);
 
         Member member = new Member("member1", "password1", "salt1", "email1", MemberType.UNAUTHORIZATION, 0);
         memberRepository.save(member);
@@ -97,7 +96,7 @@ class ItemServiceImplTest {
         MockMultipartFile newThumbnailFile = new MockMultipartFile("testFile3", "testFile3" + "." + "JPG", "JPG", newThumbnailFileInputStream);
         MockMultipartFile newPdfFile = new MockMultipartFile("testFile4", "testFile4" + "." + "PDF", "PDF", newPdfFileInputStream);
 
-        ItemDto newItemDto = new ItemDto("newTitle", "newContent", 15000, newThumbnailFile, newPdfFile);
+        ItemForm newItemDto = new ItemForm("newTitle", "newContent", 15000, newThumbnailFile, newPdfFile);
 
         itemService.modifyItem(member.getId(), item.getId(), newItemDto);
     }
