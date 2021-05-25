@@ -117,6 +117,9 @@ public class MemberController {
         return "redirect:/";
     }
 
+    /**
+     * 로그인 상태라면 세션을 날려서 로그인 상태를 초기화해준다.
+     */
     @GetMapping("/member/logout")
     public String logout(HttpSession httpSession) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
@@ -125,12 +128,18 @@ public class MemberController {
         return "redirect:/";
     }
 
+    /**
+     * 회원을 삭제하기 전에 비밀번호를 한 번 더 확인하는 페이지로 보낸다.
+     */
     @GetMapping("/member/delete")
     public String checkPasswordBeforeDelete(HttpSession httpSession) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
         return "/member/delete";
     }
 
+    /**
+     * 확인한 비밀번호가 맞다면 회원을 삭제한다.
+     */
     @PostMapping("/member/delete")
     public String memberDelete(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
         PermissionChecker.checkPermission(httpSession);
@@ -142,12 +151,18 @@ public class MemberController {
         return "redirect:/";
     }
 
+    /**
+     * 비밀번호를 수정하기 전에 비밀번호를 한 번 더 확인하는 페이지로 보낸다.
+     */
     @GetMapping("/member/modify")
     public String checkPasswordBeforeModify(HttpSession httpSession) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
         return "/member/modify";
     }
 
+    /**
+     * 확인한 비밀번호가 맞다면 비밀번호 수정 페이지로 이동한다.
+     */
     @PostMapping("/member/modifyForm")
     public String memberModifyForm(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
         PermissionChecker.checkPermission(httpSession);
@@ -156,6 +171,9 @@ public class MemberController {
         return "/member/modifyForm";
     }
 
+    /**
+     * 입력한 새로운 비밀번호로 데이터를 수정한다.
+     */
     @PostMapping("/member/modify")
     public String memberModify(HttpSession httpSession, String newPassword) throws PDFLOException, NoSuchAlgorithmException {
         PermissionChecker.checkPermission(httpSession);
