@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
 import travelbeeee.PDFLO_V20.domain.enumType.MemberType;
+import travelbeeee.PDFLO_V20.domain.enumType.PointType;
 import travelbeeee.PDFLO_V20.domain.form.LoginForm;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
@@ -198,5 +199,29 @@ public class MemberController {
         model.addAttribute("point", member.getPoint());
 
         return "/member/mypage";
+    }
+
+    /**
+     * 포인트충전 페이지로 이동하기
+     */
+    @GetMapping("/member/charge")
+    public String pointChargeForm(HttpSession httpSession) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+
+        return "/member/chargePoint";
+    }
+
+    /**
+     * 포인트충전하기 --> mypage 로 redirect
+     */
+    @PostMapping("/member/charge")
+    public String pointCharge(HttpSession httpSession, Integer point) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+
+        Long memberId = (Long) httpSession.getAttribute("id");
+
+        memberService.usePoint(memberId, point, PointType.CHARGE);
+
+        return "redirect:/member/mypage";
     }
 }
