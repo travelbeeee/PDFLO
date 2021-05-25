@@ -4,6 +4,7 @@ public enum ErrorCode {
     MEMBER_NAME_DUPLICATION(400, "ID가 이미 사용중입니다."),
     LOGIN_INPUT_INVALID(400, "ID, Password가 틀렸습니다."),
     SIGNUP_INPUT_INVALID(400, "ID, Password, Email을 양식에 맞게 작성해주세요."),
+    PASSWORD_INPUT_INVALID(400, "Password가 틀렸습니다"),
     PASSWORD_UPDATE_SAME_PASSWORD(400, "동일한 비밀번호로는 변경할 수 없습니다."),
     COMMENT_NO_PERMISSION_BUYING(400, "구매자만 후기를 남길 수 있습니다."),
     COMMENT_ALREADY_WRITTEN(400, "이미 후기를 작성하셨습니다."),

@@ -23,7 +23,6 @@ public class MailSender {
 
         Random r = new Random();
         int code = r.nextInt(4589362) + 49311;
-        log.info("Code 생성 : " + code);
         String content = System.getProperty("line.separator")+ //한줄씩 줄간격을 두기위해 작성
                 System.getProperty("line.separator")+
                 "안녕하세요 회원님 저희 홈페이지를 찾아주셔서 감사합니다"

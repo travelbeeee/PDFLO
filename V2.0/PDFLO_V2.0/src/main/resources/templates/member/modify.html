@@ -5,13 +5,18 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>회원정보 수정 페이지입니다.</title>
+    <title>회원탈퇴페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+    <link rel="stylesheet" href="/css/user/login.css">
 </head>
 <body>
-    새로운 비밀번호를 입력해주세요.
-    <form action="/user/modify" method="post">
-        <input type="password" name="newpwd">
-        <input type="submit" value="비밀번호변경하기">
+<th:block th:replace="fragments/header.html"></th:block>
+<div class="deleteFormBox">
+    <div>비밀번호를 다시 한 번 입력해주세요.</div>
+    <form action="/member/modifyForm" method="post">
+        <input type="password" id="password" name="password" placeholder="비밀번호를 입력해주세요.">
+        <input type="submit" value="확인">
     </form>
+</div>
 </body>
 </html>

@@ -85,7 +85,6 @@ public class MemberController {
 
         if (member.getType().equals(MemberType.UNAUTHORIZATION)) {
             int authCode = mailSender.sendingAuthMail(member.getEmail());
-            log.info("메일로보낸 authCode : " + authCode);
             httpSession.setAttribute("authCode", authCode);
             return "/member/authenticateForm";
         }
@@ -102,14 +101,13 @@ public class MemberController {
         return "redirect:/";
     }
 
+    /**
+     * 입력된 코드가 우리가 메일로 보낸 인증 코드와 동일하면 member를 인증회원으로 Update해준다.
+     */
     @PostMapping("/member/authenticateMail")
     public String auth(HttpSession httpSession, int code) throws PDFLOException {
         Long memberId = (Long)httpSession.getAttribute("id");
         int authCode = (int)httpSession.getAttribute("authCode");
-
-        log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        log.info("AuthCode : " + authCode);
-        log.info("InputCode : " + code);
 
         if(authCode != code) {
             throw new PDFLOException(ErrorCode.MAIL_AUTHCODE_INCORRECT);
@@ -127,14 +125,43 @@ public class MemberController {
         return "redirect:/";
     }
 
+    @GetMapping("/member/delete")
+    public String checkPasswordBeforeDelete(HttpSession httpSession) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+        return "/member/delete";
+    }
+
     @PostMapping("/member/delete")
-    public String userDelete(HttpSession httpSession) throws PDFLOException {
+    public String memberDelete(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
         PermissionChecker.checkPermission(httpSession);
 
-        memberService.delete((Long) httpSession.getAttribute("userId"));
+        Long memberId = (Long) httpSession.getAttribute("id");
+        memberService.checkPassword(memberId, password);
+        memberService.delete(memberId);
         httpSession.invalidate();
-
         return "redirect:/";
     }
 
+    @GetMapping("/member/modify")
+    public String checkPasswordBeforeModify(HttpSession httpSession) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+        return "/member/modify";
+    }
+
+    @PostMapping("/member/modifyForm")
+    public String memberModifyForm(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
+        PermissionChecker.checkPermission(httpSession);
+        Long memberId = (Long) httpSession.getAttribute("id");
+        memberService.checkPassword(memberId, password);
+        return "/member/modifyForm";
+    }
+
+    @PostMapping("/member/modify")
+    public String memberModify(HttpSession httpSession, String newPassword) throws PDFLOException, NoSuchAlgorithmException {
+        PermissionChecker.checkPermission(httpSession);
+        Long memberId = (Long) httpSession.getAttribute("id");
+        memberService.updatePassword(memberId, newPassword);
+
+        return "redirect:/";
+    }
 }

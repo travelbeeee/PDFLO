@@ -5,12 +5,13 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>포인트충전페이지</title>
+    <title>회원정보 수정 페이지입니다.</title>
 </head>
 <body>
-    <form action="/user/deposit" method="post">
-        <input type="text" name="price" placeholder="충전할 금액을 입력해주세요">
-        <input type="submit" value="충전하기">
-    </form>
+새로운 비밀번호를 입력해주세요.
+<form action="/member/modify" method="post">
+    <input type="password" name="newPassword">
+    <input type="submit" value="비밀번호변경하기">
+</form>
 </body>
 </html>

@@ -12,6 +12,6 @@ public class PermissionChecker {
     }
 
     public static void checkNoPermission(HttpSession httpSession) throws PDFLOException {
-        if(httpSession.getAttribute("id") != null) throw new PDFLOException(ErrorCode.MEMBER_ALREADY_LOGIN);
+        if(httpSession.getAttribute("auth") != null) throw new PDFLOException(ErrorCode.MEMBER_ALREADY_LOGIN);
     }
 }

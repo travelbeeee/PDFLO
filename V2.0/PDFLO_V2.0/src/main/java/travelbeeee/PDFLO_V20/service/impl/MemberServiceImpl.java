@@ -89,6 +89,17 @@ public class MemberServiceImpl implements MemberService {
         member.changeType(MemberType.AUTHORIZATION);
     }
 
+    @Override
+    public void checkPassword(Long memberId, String password) throws PDFLOException, NoSuchAlgorithmException {
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
+
+        Member member = findMember.get();
+        if (!member.getPassword().equals(sha256Encryption.sha256(password, member.getSalt()))) {
+            throw new PDFLOException(ErrorCode.PASSWORD_INPUT_INVALID);
+        }
+    }
+
     @Transactional
     @Override
     public void updatePassword(Long memberId, String newPassword) throws NoSuchAlgorithmException, PDFLOException {
@@ -129,7 +140,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void uploadProfile(Long memberId, ProfileForm profileDto) throws PDFLOException, NoSuchAlgorithmException {
+    public void uploadProfile(Long memberId, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
 
@@ -141,7 +152,7 @@ public class MemberServiceImpl implements MemberService {
             profileRepository.delete(deleteProfile);
         }
 
-        MultipartFile profile = profileDto.getProfile();
+        MultipartFile profile = profileForm.getProfile();
         FileInformation fileInformation = fileManager.fileUpload(profile, FileType.PROFILE);
         Member member = findMember.get();
 
