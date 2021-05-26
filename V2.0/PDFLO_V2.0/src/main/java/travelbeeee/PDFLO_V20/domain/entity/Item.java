@@ -12,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@ToString(exclude = "member")
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Item extends BaseEntity {
     @Id @GeneratedValue

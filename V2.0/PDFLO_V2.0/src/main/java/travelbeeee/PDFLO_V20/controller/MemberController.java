@@ -237,6 +237,9 @@ public class MemberController {
         return "/member/profile";
     }
 
+    /**
+     * 파일을 제대로 입력했다면, 프로필을 등록하기.
+     */
     @PostMapping("/member/profile")
     public String profileUpload(HttpSession httpSession, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException, IOException {
         PermissionChecker.checkPermission(httpSession);
@@ -249,6 +252,9 @@ public class MemberController {
         return "redirect:/member/mypage";
     }
 
+    /**
+     * 해당 회원의 프로필 파일 삭제하기.
+     */
     @PostMapping("/member/deleteProfile")
     public String deleteProfile(HttpSession httpSession) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
@@ -258,4 +264,6 @@ public class MemberController {
 
         return "redirect:/member/mypage";
     }
+
+
 }

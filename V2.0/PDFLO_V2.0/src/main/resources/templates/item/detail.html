@@ -12,11 +12,27 @@
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
 
-    <img th:src="${thumbnailLocation}" alt="썸네일페이지">
-    제목 : <th:block th:text="${title}"/><br>
-    내용 : <th:block th:text="${content}"/><br>
-    가격 : <th:block th:text="${price}"/><br>
-
+    <img th:src="${item.thumbnailLocation}" alt="썸네일페이지">
+    제목 : <th:block th:text="${item.title}"/><br>
+    내용 : <th:block th:text="${item.content}"/><br>
+    가격 : <th:block th:text="${item.price}"/><br>
+    작성자 : <th:block th:text="${item.username}"/><br>
+    <br><br><br>
+    작성된 후기!<br>
+    <div th:each="comment : ${item.comments}">
+        <p>작성자 : <span th:text="${comment.username}"></span></p>
+        <p>후기 : <span th:text="${comment.comment}"></span></p>
+        <p>별점 : <span th:text="${comment.score}"></span></p>
+        <p>작성날짜 : <span th:text="${comment.createdDate}"></span></p>
+        <!--
+        <a th:href="@{/comment/modify/{commentId}(commentId=${comment.commentId})}">후기 수정하기</a>
+        <form th:action="@{/comment/delete/{commentId}(commentId=${comment.commentId})}" method="post">
+            <input type="submit" value="후기 삭제하기">
+        </form>
+        -->
+        <br><br>
+    </div>
+    <!--
     <div th:if="${isSeller} == false">
         <form th:action="@{/content/buy/{contentId}(contentId=${contentId})}" method="post">
             <input type="submit" value="구매하기">
@@ -31,6 +47,8 @@
             <input type="submit" value="삭제하기">
         </form>
     </div>
+    -->
+    <!--
     <form th:action="@{/comment/write/{contentId}(contentId=${contentId})}" method="post">
         <input type="text" placeholder="후기를 남겨주세요." name="comments">
         <div class="starRev">
@@ -49,17 +67,7 @@
         <input type="submit" value="후기남기기">
     </form>
     <br>
-    작성된 후기!<br>
-    <div th:each="comment : ${comments}">
-        <p>작성자 : <span th:text="${comment.username}"></span></p>
-        <p>후기 : <span th:text="${comment.comments}"></span></p>
-        <p>별점 : <span th:text="${comment.score}"></span></p>
-        <p>작성날짜 : <span th:text="${comment.localdate}"></span></p>
-        <a th:href="@{/comment/modify/{commentId}(commentId=${comment.commentId})}">후기 수정하기</a>
-        <form th:action="@{/comment/delete/{commentId}(commentId=${comment.commentId})}" method="post">
-            <input type="submit" value="후기 삭제하기">
-        </form>
-    </div>
+    -->
 </body>
 <script>
 $('.starRev span').click(function(){

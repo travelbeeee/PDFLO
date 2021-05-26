@@ -119,12 +119,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findAll() {
-        return itemRepository.findAll();
+    public List<Item> findAllWithMemberAndThumbnail() {
+        return itemRepository.findAllWithMemberAndThumbnail();
     }
 
     @Override
-    public List<Item> findAllWithMember() {
-        return itemRepository.findAllWithMember();
+    public Item findWithMemberAndPdfAndThumbnailAndCommentById(Long itemId) throws PDFLOException {
+        Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailAndCommentById(itemId);
+        if(findItem.isEmpty()) {
+            throw new PDFLOException(ErrorCode.ITEM_NO_EXIST);
+        }
+        return findItem.get();
     }
 }

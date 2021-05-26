@@ -3,6 +3,7 @@ package travelbeeee.PDFLO_V20.domain.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
 import travelbeeee.PDFLO_V20.domain.form.CommentForm;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@ToString(exclude = {"member", "item"})
 public class Comment extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "comment_id")

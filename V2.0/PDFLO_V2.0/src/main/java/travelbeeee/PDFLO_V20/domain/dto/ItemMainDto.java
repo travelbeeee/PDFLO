@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 
 /**
  * Main 페이지에 뿌리는 ItemDto
- * Main 페이지에는 상품의 아이디 / 제목 / 작성자 / 작성날짜 / 썸네일위치 를 뿌려주자.
+ * Main 페이지에는 제목 / 작성자 / 작성날짜 / 썸네일위치 를 뿌려주자.
+ * --> detail 페이지로 넘어가기 위해 상품번호도 넘겨주자.
  */
 @Data
 @AllArgsConstructor

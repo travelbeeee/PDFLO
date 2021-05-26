@@ -12,6 +12,7 @@ import travelbeeee.PDFLO_V20.service.ItemService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,11 +26,12 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model){
-        List<Item> items = itemService.findAllWithMember();
+        List<Item> items = itemService.findAllWithMemberAndThumbnail();
         List<ItemMainDto> itemMainDtos = new ArrayList<>();
-        for (Item item : items) {
-            itemMainDtos.add(new ItemMainDto(item, rootLocation));
-        }
+        itemMainDtos = items.stream()
+                .map(i -> new ItemMainDto(i, rootLocation))
+                .collect(Collectors.toList());
+
         model.addAttribute("items", itemMainDtos);
         return "main";
     }
