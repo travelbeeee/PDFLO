@@ -11,6 +11,7 @@ import travelbeeee.PDFLO_V20.domain.entity.Member;
 import travelbeeee.PDFLO_V20.domain.enumType.MemberType;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
 import travelbeeee.PDFLO_V20.domain.form.LoginForm;
+import travelbeeee.PDFLO_V20.domain.form.ProfileForm;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.service.MemberService;
@@ -21,6 +22,7 @@ import travelbeeee.PDFLO_V20.domain.form.SignUpForm;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 @Controller
@@ -225,5 +227,35 @@ public class MemberController {
         return "redirect:/member/mypage";
     }
 
+    /**
+     * 프로필 등록 페이지로 넘어가기
+     */
+    @GetMapping("/member/profile")
+    public String profileForm(HttpSession httpSession, Model model) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+        model.addAttribute("profileForm", new ProfileForm());
+        return "/member/profile";
+    }
 
+    @PostMapping("/member/profile")
+    public String profileUpload(HttpSession httpSession, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException, IOException {
+        PermissionChecker.checkPermission(httpSession);
+        if (profileForm.getProfile().isEmpty()) {
+            return "/member/profile";
+        }
+
+        Long memberId = (Long) httpSession.getAttribute("id");
+        memberService.uploadProfile(memberId, profileForm);
+        return "redirect:/member/mypage";
+    }
+
+    @PostMapping("/member/deleteProfile")
+    public String deleteProfile(HttpSession httpSession) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+
+        Long memberId = (Long) httpSession.getAttribute("id");
+        memberService.deleteProfile(memberId);
+
+        return "redirect:/member/mypage";
+    }
 }
