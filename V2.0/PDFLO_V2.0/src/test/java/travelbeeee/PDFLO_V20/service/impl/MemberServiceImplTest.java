@@ -163,6 +163,9 @@ class MemberServiceImplTest {
                 memberService.usePoint(member.getId(), 5000, PointType.USE));
     }
 
+    /**
+     * 파일 저장되었는지 로컬 폴더로 직접 확인!
+     */
     @Test
     public void 프로필_업로드_테스트() throws Exception {
         // given
@@ -180,6 +183,9 @@ class MemberServiceImplTest {
         // then
     }
 
+    /**
+     * 파일 삭제되었는지 로컬 폴더로 직접 확인!
+     */
     @Test
     public void 프로필_삭제_테스트() throws Exception{
         // given
@@ -194,7 +200,6 @@ class MemberServiceImplTest {
 
         // when
         memberService.deleteProfile(member.getId());
-
         // then
     }
 
