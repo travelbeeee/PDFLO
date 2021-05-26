@@ -25,7 +25,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class FileManager {
 
-    @Value("${file.location}")
+    @Value("${file.relative_location}")
     private String rootLocation;
 
     private HashMap<FileType,String> locationMap = new HashMap<FileType,String>();
@@ -46,13 +46,13 @@ public class FileManager {
     public FileInformation fileUpload(MultipartFile file, FileType fileType) throws NoSuchAlgorithmException {
         String fileName = sha256Encryption.sha256(file.getOriginalFilename(), sha256Encryption.makeSalt());
         String extension = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
-        String location = rootLocation + locationMap.get(fileType);
+        String location = locationMap.get(fileType);
 
         Resize resize = resizeMap.get(fileType);
         try{
-            Files.copy(file.getInputStream(), Paths.get(location + "/" + fileName + extension), StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), Paths.get(rootLocation + location + "/" + fileName + extension), StandardCopyOption.REPLACE_EXISTING);
             if(resize.needResize){
-                resizeImage(location + "/" + fileName + extension, resize.width, resize.height);
+                resizeImage(rootLocation + location + "/" + fileName + extension, resize.width, resize.height);
             }
         }catch(IOException e){
             return null;
@@ -61,8 +61,8 @@ public class FileManager {
     }
 
     public boolean fileDelete(String location, String fileName, String extension) {
-        File file = new File(location + "/" + fileName + extension);
-        File resizeFile = new File(location + "/resized-" + fileName + extension);
+        File file = new File(rootLocation + location + "/" + fileName + extension);
+        File resizeFile = new File(rootLocation + location + "/resized-" + fileName + extension);
 
         if(file.exists()) file.delete();
         if(resizeFile.exists()) resizeFile.delete();
@@ -70,7 +70,7 @@ public class FileManager {
     }
 
     public byte[] fileDownload(String location, String fileName, String extension) throws IOException {
-        return Files.readAllBytes(Paths.get(location + "/" + fileName + extension));
+        return Files.readAllBytes(Paths.get(rootLocation + location + "/" + fileName + extension));
     }
 
     public void resizeImage(String oPath, int tWidth, int tHeight){ //원본 경로를 받아와 resize 후 저장한다.
@@ -90,7 +90,6 @@ public class FileManager {
             Image image = oImage.getScaledInstance(tWidth, tHeight, Image.SCALE_SMOOTH);
             graphic.drawImage(image, 0, 0, tWidth, tHeight, null);
             graphic.dispose(); // 리소스를 모두 해제
-
             ImageIO.write(tImage, ext, tFile);
         } catch (IOException e) {
             e.printStackTrace();

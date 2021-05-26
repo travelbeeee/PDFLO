@@ -2,8 +2,11 @@ package travelbeeee.PDFLO_V20.domain.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -12,15 +15,15 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
 public class ItemForm {
-    @NotNull
+    @NotEmpty(message = "제목을 입력해주세요.")
     String title;
-    @NotNull
+    @NotEmpty(message = "내용을 입력해주세요.")
     String content;
-    @NotNull
-    int price;
-    @NotNull
+    @NotNull(message = "가격을 입력해주세요.")
+    Integer price;
     MultipartFile thumbnailFile;
-    @NotNull
     MultipartFile pdfFile;
 }

@@ -35,12 +35,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public void uploadItem(Long memberId, ItemForm itemDto) throws NoSuchAlgorithmException, IOException, PDFLOException {
+    public void uploadItem(Long memberId, ItemForm itemForm) throws NoSuchAlgorithmException, IOException, PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
 
-        MultipartFile pdfFile = itemDto.getPdfFile();
-        MultipartFile thumbnailFile = itemDto.getThumbnailFile();
+        MultipartFile pdfFile = itemForm.getPdfFile();
+        MultipartFile thumbnailFile = itemForm.getThumbnailFile();
 
         FileInformation pdfFileInformation = fileManager.fileUpload(pdfFile, FileType.PDF);
         FileInformation thumbnailFileInformation = fileManager.fileUpload(thumbnailFile, FileType.THUMBNAIL);
@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
 
         Member member = findMember.get();
 
-        Item item = new Item(member, itemDto.getTitle(), itemDto.getContent(), itemDto.getPrice(), thumbnail, pdf);
+        Item item = new Item(member, itemForm.getTitle(), itemForm.getContent(), itemForm.getPrice(), thumbnail, pdf);
 
         pdfRepository.save(pdf);
         thumbnailRepository.save(thumbnail);
@@ -121,5 +121,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> findAll() {
         return itemRepository.findAll();
+    }
+
+    @Override
+    public List<Item> findAllWithMember() {
+        return itemRepository.findAllWithMember();
     }
 }
