@@ -3,13 +3,13 @@
     height : 300px;
 }
 
-.contentBox{
+.itemBox{
     margin : auto;
     width : 500px;
     height : 300px;
 }
 
-.contentBox .contentThumbnail{
-    width : 300px;
-    height : 250px;
+.itemBox .itemThumbnail{
+    width : 400px;
+    height : 400px;
 }
