@@ -24,6 +24,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     @Query("select distinct(i) from Item i join fetch i.member join fetch i.thumbnail join fetch i.pdf where i.id = :itemId")
     Optional<Item> findWithMemberAndPdfAndThumbnailById(@Param("itemId") Long itemId);
 
-    @Query("select distinct(i) from Item i join fetch i.member join fetch i.thumbnail join fetch i.pdf join fetch i.comments where i.id = :itemId")
+    @Query("select i from Item i join fetch i.member join fetch i.thumbnail join fetch i.pdf join fetch i.comments where i.id = :itemId")
     Optional<Item> findWithMemberAndPdfAndThumbnailAndCommentById(@Param("itemId") Long itemId);
 }

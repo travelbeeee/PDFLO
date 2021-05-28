@@ -258,12 +258,9 @@ public class MemberController {
     @PostMapping("/member/deleteProfile")
     public String deleteProfile(HttpSession httpSession) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
-
         Long memberId = (Long) httpSession.getAttribute("id");
         memberService.deleteProfile(memberId);
 
         return "redirect:/member/mypage";
     }
-
-
 }

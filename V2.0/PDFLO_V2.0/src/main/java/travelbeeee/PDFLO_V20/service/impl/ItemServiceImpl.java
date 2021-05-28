@@ -125,7 +125,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item findWithMemberAndPdfAndThumbnailAndCommentById(Long itemId) throws PDFLOException {
-        Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailAndCommentById(itemId);
+        Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailById(itemId);
         if(findItem.isEmpty()) {
             throw new PDFLOException(ErrorCode.ITEM_NO_EXIST);
         }

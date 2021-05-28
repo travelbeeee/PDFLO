@@ -27,8 +27,8 @@ public enum ErrorCode {
     EMAIL_NO_EXIST(400, "입력한 이메일은 없는 이메일입니다."),
     ITEM_NO_EXIST(400, "없는 상품입니다."),
     PROFILE_NO_EXIST(400, "프로필 사진을 먼저 등록해주세요."),
-    COMMENT_NO_EXIST(400, "존재하지 않는 후기입니다.");
-
+    COMMENT_NO_EXIST(400, "존재하지 않는 후기입니다."),
+    CART_NO_EXIST(400, "존재하지 않는 장바구니입니다");
 
     final int status;
     final String message;
