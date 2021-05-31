@@ -6,12 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import travelbeeee.PDFLO_V20.domain.dto.ItemOrderDto;
 import travelbeeee.PDFLO_V20.domain.dto.OrderDto;
 import travelbeeee.PDFLO_V20.domain.dto.PointHistoryDto;
-import travelbeeee.PDFLO_V20.domain.entity.Member;
-import travelbeeee.PDFLO_V20.domain.entity.Order;
-import travelbeeee.PDFLO_V20.domain.entity.PointHistory;
+import travelbeeee.PDFLO_V20.domain.dto.SellingDto;
+import travelbeeee.PDFLO_V20.domain.entity.*;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
 import travelbeeee.PDFLO_V20.domain.form.ProfileForm;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
@@ -200,5 +201,43 @@ public class MemberMyPage {
         model.addAttribute("pointHistoryList", pointHistoryList);
 
         return "/member/pointHistory";
+    }
+
+    /**
+     *  회원이 판매 중인 상품 보기
+     */
+    @GetMapping("/member/myItem")
+    public String sellingItem(HttpSession httpSession, Model model) throws
+            PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+        Long memberId = (Long) httpSession.getAttribute("id");
+
+        List<Item> sellingItem = memberService.findSellingItem(memberId);
+        List<ItemOrderDto> itemList = sellingItem.stream()
+                .map(i -> new ItemOrderDto(i))
+                .collect(Collectors.toList());
+
+        model.addAttribute("itemList", itemList);
+
+        return "member/myItem";
+    }
+
+    /**
+     * 판매 중인 상품의 판매 내역 자세히 보기
+     */
+    @GetMapping("/member/myItem/{itemId}")
+    public String sellingHistory(HttpSession httpSession, Model model, @PathVariable("itemId") Long itemId) throws
+            PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+        Long memberId = (Long) httpSession.getAttribute("id");
+
+        List<OrderItem> sellingHistory = memberService.findSellingHistory(itemId);
+        List<SellingDto> sellingList = sellingHistory.stream()
+                .map(oi -> new SellingDto(oi))
+                .collect(Collectors.toList());
+
+        model.addAttribute("sellingList", sellingList);
+
+        return "member/sellHistory";
     }
 }

@@ -34,6 +34,8 @@ public class MemberServiceImpl implements MemberService {
     private final ItemRepository itemRepository;
     private final ProfileRepository profileRepository;
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+
     private final FileManager fileManager;
     private final Sha256Encryption sha256Encryption;
 
@@ -185,5 +187,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<Order> findOrder(Long memberId) {
         return orderRepository.findAllByMemberWithItem(memberId);
+    }
+
+    @Override
+    public List<Item> findSellingItem(Long memberId) {
+        return itemRepository.findByMember(memberId);
+    }
+
+    @Override
+    public List<OrderItem> findSellingHistory(Long itemId) {
+        return orderItemRepository.findAllWithMemberByItem(itemId);
     }
 }

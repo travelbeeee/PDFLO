@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>판매중인 아이템</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+
+    판매 중인 아이템!<br>
+    <div th:each="item : ${itemList}">
+        <p>제목 : <span th:text="${item.title}"></span></p>
+        <p>내용 : <span th:text="${item.content}"></span></p>
+        <p>상품 가격 : <span th:text="${item.price}"></span></p>
+        <a th:href="@{/member/myItem/{itemId}(itemId = ${item.itemId})}">판매내역 자세히 보기</a>
+        <br><br>
+    </div>
+</body>
+</html>

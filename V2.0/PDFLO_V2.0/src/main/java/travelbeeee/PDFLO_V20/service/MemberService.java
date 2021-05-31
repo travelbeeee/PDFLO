@@ -27,4 +27,6 @@ public interface MemberService {
     Optional<Profile> findProfileByMember(Long memberId);
     Member findMember(Long memberId) throws PDFLOException;
     List<Order> findOrder(Long memberId);
+    List<Item> findSellingItem(Long memberId);
+    List<OrderItem> findSellingHistory(Long itemId);
 }
