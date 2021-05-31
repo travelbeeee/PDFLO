@@ -13,6 +13,7 @@ import travelbeeee.PDFLO_V20.domain.dto.CartViewDto;
 import travelbeeee.PDFLO_V20.domain.dto.ItemViewDto;
 import travelbeeee.PDFLO_V20.domain.entity.Cart;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
+import travelbeeee.PDFLO_V20.domain.entity.Profile;
 import travelbeeee.PDFLO_V20.domain.enumType.MemberType;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
 import travelbeeee.PDFLO_V20.domain.form.LoginForm;
@@ -31,6 +32,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -40,7 +42,6 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MailSender mailSender;
-    private final CartService cartService;
     /**
      * 회원가입 폼 페이지로 넘겨준다.
      * 로그인 상태로 회원가입을 진행하려고 하면 에러 발생.
@@ -102,14 +103,13 @@ public class MemberController {
         }
 
         httpSession.setAttribute("auth", true);
-// 프로필은 Resize 개선 후 다시하자.
-//        Optional<Profile> findProfile = memberService.findProfileByMember(member.getId());
-//
-//        if(!findProfile.isEmpty()){
-//            Profile profile = findProfile.get();
-//            httpSession.setAttribute("profile", profile.getFileInfo().getLocation() +
-//                    "/resized-" + profile.getFileInfo().getSaltedFileName() + profile.getFileInfo().getExtension());
-//        }
+        Optional<Profile> findProfile = memberService.findProfileByMember(member.getId());
+
+        if(!findProfile.isEmpty()){
+            Profile profile = findProfile.get();
+            httpSession.setAttribute("profile", profile.getFileInfo().getLocation() +
+                    "/resized-" + profile.getFileInfo().getSaltedFileName() + profile.getFileInfo().getExtension());
+        }
         return "redirect:/";
     }
 
@@ -140,135 +140,4 @@ public class MemberController {
         return "redirect:/";
     }
 
-    /**
-     * 회원을 삭제하기 전에 비밀번호를 한 번 더 확인하는 페이지로 보낸다.
-     */
-    @GetMapping("/member/delete")
-    public String checkPasswordBeforeDelete(HttpSession httpSession) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-        return "/member/delete";
-    }
-
-    /**
-     * 확인한 비밀번호가 맞다면 회원을 삭제한다.
-     */
-    @PostMapping("/member/delete")
-    public String memberDelete(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
-        PermissionChecker.checkPermission(httpSession);
-
-        Long memberId = (Long) httpSession.getAttribute("id");
-        memberService.checkPassword(memberId, password);
-        memberService.delete(memberId);
-        httpSession.invalidate();
-        return "redirect:/";
-    }
-
-    /**
-     * 비밀번호를 수정하기 전에 비밀번호를 한 번 더 확인하는 페이지로 보낸다.
-     */
-    @GetMapping("/member/modify")
-    public String checkPasswordBeforeModify(HttpSession httpSession) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-        return "/member/modify";
-    }
-
-    /**
-     * 확인한 비밀번호가 맞다면 비밀번호 수정 페이지로 이동한다.
-     */
-    @PostMapping("/member/modifyForm")
-    public String memberModifyForm(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
-        PermissionChecker.checkPermission(httpSession);
-        Long memberId = (Long) httpSession.getAttribute("id");
-        memberService.checkPassword(memberId, password);
-        return "/member/modifyForm";
-    }
-
-    /**
-     * 입력한 새로운 비밀번호로 데이터를 수정한다.
-     */
-    @PostMapping("/member/modify")
-    public String memberModify(HttpSession httpSession, String newPassword) throws PDFLOException, NoSuchAlgorithmException {
-        PermissionChecker.checkPermission(httpSession);
-        Long memberId = (Long) httpSession.getAttribute("id");
-        memberService.updatePassword(memberId, newPassword);
-
-        return "redirect:/";
-    }
-
-    /**
-     * 마이페이지로 이동하기.
-     * 회원 이름 / 회원 포인트를 View에 뿌려주자.
-     */
-    @GetMapping("/member/mypage")
-    public String mypage(HttpSession httpSession, Model model) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-
-        Long memberId = (Long) httpSession.getAttribute("id");
-        Member member = memberService.findMember(memberId);
-        model.addAttribute("username", member.getUsername());
-        model.addAttribute("point", member.getPoint());
-
-        return "/member/mypage";
-    }
-
-    /**
-     * 포인트충전 페이지로 이동하기
-     */
-    @GetMapping("/member/charge")
-    public String pointChargeForm(HttpSession httpSession) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-
-        return "/member/chargePoint";
-    }
-
-    /**
-     * 포인트충전하기 --> mypage 로 redirect
-     */
-    @PostMapping("/member/charge")
-    public String pointCharge(HttpSession httpSession, Integer point) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-
-        Long memberId = (Long) httpSession.getAttribute("id");
-
-        memberService.usePoint(memberId, point, PointType.CHARGE);
-
-        return "redirect:/member/mypage";
-    }
-
-    /**
-     * 프로필 등록 페이지로 넘어가기
-     */
-    @GetMapping("/member/profile")
-    public String profileForm(HttpSession httpSession, Model model) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-        model.addAttribute("profileForm", new ProfileForm());
-        return "/member/profile";
-    }
-
-    /**
-     * 파일을 제대로 입력했다면, 프로필을 등록하기.
-     */
-    @PostMapping("/member/profile")
-    public String profileUpload(HttpSession httpSession, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException, IOException {
-        PermissionChecker.checkPermission(httpSession);
-        if (profileForm.getProfile().isEmpty()) {
-            return "/member/profile";
-        }
-
-        Long memberId = (Long) httpSession.getAttribute("id");
-        memberService.uploadProfile(memberId, profileForm);
-        return "redirect:/member/mypage";
-    }
-
-    /**
-     * 해당 회원의 프로필 파일 삭제하기.
-     */
-    @PostMapping("/member/deleteProfile")
-    public String deleteProfile(HttpSession httpSession) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-        Long memberId = (Long) httpSession.getAttribute("id");
-        memberService.deleteProfile(memberId);
-
-        return "redirect:/member/mypage";
-    }
 }

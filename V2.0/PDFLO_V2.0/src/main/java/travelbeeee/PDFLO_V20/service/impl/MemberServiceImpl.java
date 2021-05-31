@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import travelbeeee.PDFLO_V20.domain.FileInformation;
-import travelbeeee.PDFLO_V20.domain.entity.Item;
-import travelbeeee.PDFLO_V20.domain.entity.Member;
-import travelbeeee.PDFLO_V20.domain.entity.PointHistory;
-import travelbeeee.PDFLO_V20.domain.entity.Profile;
+import travelbeeee.PDFLO_V20.domain.entity.*;
 import travelbeeee.PDFLO_V20.domain.enumType.FileType;
 import travelbeeee.PDFLO_V20.domain.enumType.MemberType;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
@@ -17,10 +14,7 @@ import travelbeeee.PDFLO_V20.domain.form.SignUpForm;
 import travelbeeee.PDFLO_V20.domain.form.LoginForm;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
-import travelbeeee.PDFLO_V20.repository.ItemRepository;
-import travelbeeee.PDFLO_V20.repository.MemberRepository;
-import travelbeeee.PDFLO_V20.repository.PointHistoryRepository;
-import travelbeeee.PDFLO_V20.repository.ProfileRepository;
+import travelbeeee.PDFLO_V20.repository.*;
 import travelbeeee.PDFLO_V20.service.MemberService;
 import travelbeeee.PDFLO_V20.utility.FileManager;
 import travelbeeee.PDFLO_V20.utility.Sha256Encryption;
@@ -39,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
     private final PointHistoryRepository pointHistoryRepository;
     private final ItemRepository itemRepository;
     private final ProfileRepository profileRepository;
+    private final OrderRepository orderRepository;
     private final FileManager fileManager;
     private final Sha256Encryption sha256Encryption;
 
@@ -185,5 +180,10 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
         return findMember.get();
+    }
+
+    @Override
+    public List<Order> findOrder(Long memberId) {
+        return orderRepository.findAllByMemberWithItem(memberId);
     }
 }

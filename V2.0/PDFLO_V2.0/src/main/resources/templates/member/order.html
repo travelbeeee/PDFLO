@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>내주문내역</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+
+    주문내역!<br>
+    <div th:each="order : ${orderList}">
+        <p>주문날짜 : <span th:text="${order.createdDate}"></span></p>
+        <p>총가격 : <span th:text="${order.totalPrice}"></span></p>
+        <div th:each="item : ${order.itemOrderDtos}">
+            <p>제목 : <span th:text="${item.title}"></span></p>
+            <p>내용 : <span th:text="${item.content}"></span></p>
+            <p>가격 : <span th:text="${item.price}"></span></p>
+            <a th:href="@{/item/{itemId}(itemId=${item.itemId})}">자세히보기</a>
+            <br><br>
+        </div>
+        <br><br>
+    </div>
+</body>
+</html>

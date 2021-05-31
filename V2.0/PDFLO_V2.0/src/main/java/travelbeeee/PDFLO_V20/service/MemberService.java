@@ -1,9 +1,6 @@
 package travelbeeee.PDFLO_V20.service;
 
-import travelbeeee.PDFLO_V20.domain.entity.Member;
-import travelbeeee.PDFLO_V20.domain.entity.PointHistory;
-import travelbeeee.PDFLO_V20.domain.entity.Item;
-import travelbeeee.PDFLO_V20.domain.entity.Profile;
+import travelbeeee.PDFLO_V20.domain.entity.*;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
 import travelbeeee.PDFLO_V20.domain.form.LoginForm;
 import travelbeeee.PDFLO_V20.domain.form.ProfileForm;
@@ -29,4 +26,5 @@ public interface MemberService {
     void deleteProfile(Long memberId) throws PDFLOException;
     Optional<Profile> findProfileByMember(Long memberId);
     Member findMember(Long memberId) throws PDFLOException;
+    List<Order> findOrder(Long memberId);
 }

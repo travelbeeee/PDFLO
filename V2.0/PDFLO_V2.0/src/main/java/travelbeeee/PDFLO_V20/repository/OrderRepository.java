@@ -9,8 +9,11 @@ import travelbeeee.PDFLO_V20.domain.entity.Order;
 import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order,Long> {
-    @Query("select o from Order o where o.member = :member")
-    List<Order> findAllByMember(@Param("member") Member member);
+    @Query("select o from Order o where o.member.id = :memberId")
+    List<Order> findAllByMember(@Param("memberId") Long memberId);
+
+    @Query("select distinct(o) from Order o join fetch o.orderItems oi join fetch oi.item where o.member.id = :memberId")
+    List<Order> findAllByMemberWithItem(@Param("memberId") Long memberId);
 
     @Query("select distinct(o) from Order o join fetch o.orderItems where o.id = :orderId")
     List<Order> findWithOrderItemById(@Param("orderId") Long orderId);

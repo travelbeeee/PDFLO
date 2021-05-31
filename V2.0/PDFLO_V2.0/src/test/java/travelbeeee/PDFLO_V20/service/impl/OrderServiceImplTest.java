@@ -80,7 +80,7 @@ class OrderServiceImplTest {
         Assertions.assertThat(pointHistories.size()).isEqualTo(3);
         Assertions.assertThat(pointHistories.get(0).getType()).isEqualTo(PointType.USE);
         // 주문이 생겨야됨
-        List<Order> orders = orderRepository.findAllByMember(member1);
+        List<Order> orders = orderRepository.findAllByMember(member1.getId());
         Assertions.assertThat(orders.size()).isEqualTo(1);
         Assertions.assertThat(orders.get(0).getMember().getId()).isEqualTo(member1.getId());
         // OrderItem 3개
