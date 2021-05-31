@@ -73,6 +73,10 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
 
         for (Item item : items) {
+            Member seller = item.getMember();
+            seller.getPoint(item.getPrice());
+            pointHistoryRepository.save(new PointHistory(seller, item.getPrice(), PointType.EARN));
+
             OrderItem orderItem = new OrderItem(order, item, item.getPrice());
             orderItemRepository.save(orderItem);
             pointHistoryRepository.save(new PointHistory(member, item.getPrice(), PointType.USE));
