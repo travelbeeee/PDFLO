@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import travelbeeee.PDFLO_V20.domain.dto.OrderDto;
+import travelbeeee.PDFLO_V20.domain.dto.PointHistoryDto;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
 import travelbeeee.PDFLO_V20.domain.entity.Order;
 import travelbeeee.PDFLO_V20.domain.entity.PointHistory;
@@ -192,6 +193,12 @@ public class MemberMyPage {
 
         List<PointHistory> memberPointHistory = memberService.findMemberPointHistory(memberId);
 
-        return "";
+        List<PointHistoryDto> pointHistoryList = memberPointHistory.stream()
+                .map(ph -> new PointHistoryDto(ph))
+                .collect(Collectors.toList());
+
+        model.addAttribute("pointHistoryList", pointHistoryList);
+
+        return "/member/pointHistory";
     }
 }
