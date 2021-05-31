@@ -12,12 +12,25 @@
     <th:block th:replace="fragments/header.html"></th:block>
 
     장바구니!<br>
-    <div th:each="cart : ${cartList}">
-        <p>제목 : <span th:text="${cart.title}"></span></p>
-        <p>판매자 : <span th:text="${cart.username}"></span></p>
-        <p>작성날짜 : <span th:text="${cart.createdDate}"></span></p>
-        <a th:href="@{/item/{itemId}(itemId=${cart.itemId})}">자세히보기</a>
-        <br><br>
-    </div>
+    <form th:action="@{/order}" method="post">
+        <div th:each="cart : ${cartList}">
+            <p>제목 : <span th:text="${cart.title}"></span></p>
+            <p>작성날짜 : <span th:text="${cart.createdDate}"></span></p>
+            <a th:href="@{/item/{itemId}(itemId=${cart.itemId})}">자세히보기</a>
+            <input type="button" value="장바구니삭제" th:onclick="javascript: deleteCart('${cart.cartId}')"/>
+            <input type="checkbox" name="orderList" th:value="${cart.itemId}"/>
+            <br><br>
+        </div>
+        <input type="submit" value="주문하기">
+    </form>
 </body>
+<script>
+    function deleteCart(cartId){
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/member/cart/delete/' + cartId);
+        console.log
+        form.submit();
+    }
+</script>
 </html>

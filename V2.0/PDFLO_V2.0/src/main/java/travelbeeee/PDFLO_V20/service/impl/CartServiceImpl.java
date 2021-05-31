@@ -28,7 +28,8 @@ public class CartServiceImpl implements CartService {
      * 1) 회원 존재 확인
      * 2) 아이템 존재 확인
      * 3) 판매자가 자신의 아이템을 장바구니에 등록하는지 확인
-     * 4) Cart 엔티티 추가
+     * 4) 장바구니에 이미 담은 상품인지 확인
+     * 5) Cart 엔티티 추가
      */
     @Transactional
     @Override
@@ -46,6 +47,12 @@ public class CartServiceImpl implements CartService {
         Item item = findItem.get();
         if (item.getMember().getId() == member.getId()) {
             throw new PDFLOException(ErrorCode.MEMBER_IS_SELLER);
+
+        }
+
+        Optional<Cart> findCart = cartRepository.findByMemberAndItem(memberId, itemId);
+        if (!findCart.isEmpty()) {
+            throw new PDFLOException(ErrorCode.CART_ALREADY_EXIST);
         }
 
         Cart cart = new Cart(member, item);

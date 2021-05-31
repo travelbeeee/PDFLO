@@ -19,7 +19,7 @@
     가격 : <th:block th:text="${item.price}"/><br>
     작성자 : <th:block th:text="${item.username}"/><br>
     <br><br><br>
-    <form th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
+    <form th:action="@{/member/cart/{itemId}(itemId=${item.itemId})}" method="post">
         <input type="submit" value="장바구니에 추가하기">
     </form>
     <br><br><br>

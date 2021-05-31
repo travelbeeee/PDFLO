@@ -33,9 +33,4 @@ public class ItemViewDto {
                 + thumbnailFileInfo.getSaltedFileName() + thumbnailFileInfo.getExtension();
     }
 
-    public ItemViewDto(Cart c) {
-        this.itemId = c.getItem().getId();
-        this.title = c.getItem().getTitle();
-        this.createdDate = c.getCreatedDate();
-    }
 }

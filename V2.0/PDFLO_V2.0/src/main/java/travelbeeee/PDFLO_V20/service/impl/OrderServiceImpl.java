@@ -26,6 +26,7 @@ public class OrderServiceImpl implements OrderService {
     private final PointHistoryRepository pointHistoryRepository;
     private final ItemRepository itemRepository;
     private final OrderItemRepository orderItemRepository;
+    private final CartRepository cartRepository;
 
     /**
      * 아직 할인 쿠폰, 정책등을 정하지 않았으므로 그냥 Item 가격으로!
@@ -33,9 +34,11 @@ public class OrderServiceImpl implements OrderService {
      * 2) 구매하고싶은 상품 확인 -->  N + 1 문제가 발생하므로 Item을 Member와 같이 가져오자.
      * 3) 기존에 구매한 상품이 없는지 확인
      * 4) 회원이 등록한 상품이 없는지 확인
-     * 5) 주문 등록!
+     * 5) 회원이 상품 구매가 가능한 잔고인지 확인
+     * 6) 주문 등록!
      *  - Item마다 Member의 PointHistory 추가
      *  - Item마다 OrderItem 추가
+     *  - Item마다 장바구니에 담겨져있었다면 취소하기
      */
     @Transactional
     @Override
@@ -65,6 +68,7 @@ public class OrderServiceImpl implements OrderService {
         }
         if(member.getPoint() < totalPrice) throw new PDFLOException(ErrorCode.MEMBER_INSUFFICIENT_BALANCE);
 
+        // 6)
         Order order = new Order(member);
         orderRepository.save(order);
 
@@ -72,6 +76,11 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = new OrderItem(order, item, item.getPrice());
             orderItemRepository.save(orderItem);
             pointHistoryRepository.save(new PointHistory(member, item.getPrice(), PointType.USE));
+            Optional<Cart> findCart = cartRepository.findByMemberAndItem(memberId, item.getId());
+            if (!findCart.isEmpty()) {
+                Cart cart = findCart.get();
+                cartRepository.delete(cart);
+            }
         }
         member.losePoint(totalPrice);
     }
