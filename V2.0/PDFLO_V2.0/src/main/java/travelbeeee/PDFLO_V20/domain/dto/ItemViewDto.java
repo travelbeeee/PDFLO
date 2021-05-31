@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import travelbeeee.PDFLO_V20.domain.FileInformation;
+import travelbeeee.PDFLO_V20.domain.entity.Cart;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
 
 import java.time.LocalDateTime;
@@ -15,14 +16,14 @@ import java.time.LocalDateTime;
  */
 @Data
 @AllArgsConstructor
-public class ItemMainDto {
+public class ItemViewDto {
     Long itemId;
     String title;
     String username;
     LocalDateTime createdDate;
     String thumbnailLocation;
 
-    public ItemMainDto(Item item, String rootLocation) {
+    public ItemViewDto(Item item, String rootLocation) {
         this.itemId = item.getId();
         this.title = item.getTitle();
         this.username = item.getMember().getUsername();
@@ -30,5 +31,11 @@ public class ItemMainDto {
         FileInformation thumbnailFileInfo = item.getThumbnail().getFileInfo();
         this.thumbnailLocation = rootLocation + thumbnailFileInfo.getLocation() + "/resized-"
                 + thumbnailFileInfo.getSaltedFileName() + thumbnailFileInfo.getExtension();
+    }
+
+    public ItemViewDto(Cart c) {
+        this.itemId = c.getItem().getId();
+        this.title = c.getItem().getTitle();
+        this.createdDate = c.getCreatedDate();
     }
 }

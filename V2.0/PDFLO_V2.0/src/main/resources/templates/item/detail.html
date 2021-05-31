@@ -8,48 +8,7 @@
     <title>상세페이지</title>
     <th:block th:replace="fragments/head.html"></th:block>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <style>
-    .starR1{
-        background: url('http://miuu227.godohosting.com/images/icon/ico_review.png') no-repeat -52px 0;
-        background-size: auto 100%;
-        width: 15px;
-        height: 30px;
-        float:left;
-        text-indent: -9999px;
-        cursor: pointer;
-    }
-    .starR2{
-        background: url('http://miuu227.godohosting.com/images/icon/ico_review.png') no-repeat right 0;
-        background-size: auto 100%;
-        width: 15px;
-        height: 30px;
-        float:left;
-        text-indent: -9999px;
-        cursor: pointer;
-    }
-    .starR1.on{background-position:0 0;}
-    .starR2.on{background-position:-15px 0;}
 
-    </style>
-    <script>
-        function putItemOnCart(){
-            if(confirm("선택한 제품을 장바구니에 추가하시겠습니까?") == true){
-<!--                var item_id = ${item.id};-->
-<!--                $.ajax({-->
-<!--                    alert("ajax돌아가는중");-->
-<!--                    type:"post",-->
-<!--                    url:"/cart/" + itemId,-->
-<!--                    data:({"item_id" : item_id}),-->
-<!--                    success:function(){-->
-<!--                        alert("장바구니에 추가되었습니다.");-->
-<!--                    },-->
-<!--                    error:function(){-->
-<!--                        alert("Error !!!!!");-->
-<!--                    }-->
-<!--                });-->
-            }
-        }
-    </script>
 </head>
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
@@ -60,7 +19,9 @@
     가격 : <th:block th:text="${item.price}"/><br>
     작성자 : <th:block th:text="${item.username}"/><br>
     <br><br><br>
-    <button class="cart" type="button" onclick="putItemOnCart()">장바구니에 추가하기</button>
+    <form th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
+        <input type="submit" value="장바구니에 추가하기">
+    </form>
     <br><br><br>
     작성된 후기!<br>
     <div th:each="comment : ${item.comments}">
@@ -122,11 +83,27 @@ $('.starRev span').click(function(){
 	});
 
 $("#0.5").text();
-
-
 </script>
-
 <style>
-
+    .starR1{
+        background: url('http://miuu227.godohosting.com/images/icon/ico_review.png') no-repeat -52px 0;
+        background-size: auto 100%;
+        width: 15px;
+        height: 30px;
+        float:left;
+        text-indent: -9999px;
+        cursor: pointer;
+    }
+    .starR2{
+        background: url('http://miuu227.godohosting.com/images/icon/ico_review.png') no-repeat right 0;
+        background-size: auto 100%;
+        width: 15px;
+        height: 30px;
+        float:left;
+        text-indent: -9999px;
+        cursor: pointer;
+    }
+    .starR1.on{background-position:0 0;}
+    .starR2.on{background-position:-15px 0;}
 </style>
 </html>

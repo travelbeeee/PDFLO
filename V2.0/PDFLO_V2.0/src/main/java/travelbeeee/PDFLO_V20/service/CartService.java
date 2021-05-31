@@ -8,5 +8,5 @@ import java.util.List;
 public interface CartService {
     void putItemOnCart(Long memberId, Long itemId) throws PDFLOException;
     void deleteItemOnCart(Long memberId, Long cartId) throws PDFLOException;
-    List<Cart> findAllByMember(Long memberId);
+    List<Cart> findAllByMemberWithItem(Long memberId);
 }

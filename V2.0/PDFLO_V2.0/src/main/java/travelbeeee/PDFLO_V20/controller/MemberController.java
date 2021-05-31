@@ -2,11 +2,14 @@ package travelbeeee.PDFLO_V20.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dom4j.rule.Mode;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import travelbeeee.PDFLO_V20.domain.dto.ItemViewDto;
+import travelbeeee.PDFLO_V20.domain.entity.Cart;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
 import travelbeeee.PDFLO_V20.domain.enumType.MemberType;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
@@ -14,6 +17,7 @@ import travelbeeee.PDFLO_V20.domain.form.LoginForm;
 import travelbeeee.PDFLO_V20.domain.form.ProfileForm;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
+import travelbeeee.PDFLO_V20.service.CartService;
 import travelbeeee.PDFLO_V20.service.MemberService;
 import travelbeeee.PDFLO_V20.utility.MailSender;
 import travelbeeee.PDFLO_V20.utility.PermissionChecker;
@@ -24,6 +28,8 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,7 +38,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MailSender mailSender;
-
+    private final CartService cartService;
     /**
      * 회원가입 폼 페이지로 넘겨준다.
      * 로그인 상태로 회원가입을 진행하려고 하면 에러 발생.
@@ -262,5 +268,23 @@ public class MemberController {
         memberService.deleteProfile(memberId);
 
         return "redirect:/member/mypage";
+    }
+
+    /**
+     * 장바구니 목록 가져오기.
+     */
+    @GetMapping("/member/cart")
+    public String memberCartList(HttpSession httpSession, Model model) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+
+        Long memberId = (Long) httpSession.getAttribute("id");
+        List<Cart> carts = cartService.findAllByMemberWithItem(memberId);
+
+        List<ItemViewDto> cartList = carts.stream().map(c -> new ItemViewDto(c))
+                .collect(Collectors.toList());
+
+        model.addAttribute("cartList", cartList);
+
+        return "/member/cart";
     }
 }

@@ -9,6 +9,6 @@ import travelbeeee.PDFLO_V20.domain.entity.Cart;
 import java.util.List;
 
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    @Query("select c from Cart c where c.member.id = :memberId")
-    List<Cart> findAllByMember(@Param("memberId") Long memberId);
+    @Query("select distinct(c) from Cart c join fetch c.item join fetch c.member where c.member.id = :memberId")
+    List<Cart> findAllByMemberWithItemMember(@Param("memberId") Long memberId);
 }
