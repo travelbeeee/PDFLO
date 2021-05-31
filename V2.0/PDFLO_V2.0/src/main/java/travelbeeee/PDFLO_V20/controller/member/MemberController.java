@@ -1,4 +1,4 @@
-package travelbeeee.PDFLO_V20.controller;
+package travelbeeee.PDFLO_V20.controller.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import travelbeeee.PDFLO_V20.domain.dto.CartViewDto;
 import travelbeeee.PDFLO_V20.domain.dto.ItemViewDto;
 import travelbeeee.PDFLO_V20.domain.entity.Cart;
 import travelbeeee.PDFLO_V20.domain.entity.Member;
@@ -268,23 +270,5 @@ public class MemberController {
         memberService.deleteProfile(memberId);
 
         return "redirect:/member/mypage";
-    }
-
-    /**
-     * 장바구니 목록 가져오기.
-     */
-    @GetMapping("/member/cart")
-    public String memberCartList(HttpSession httpSession, Model model) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-
-        Long memberId = (Long) httpSession.getAttribute("id");
-        List<Cart> carts = cartService.findAllByMemberWithItem(memberId);
-
-        List<ItemViewDto> cartList = carts.stream().map(c -> new ItemViewDto(c))
-                .collect(Collectors.toList());
-
-        model.addAttribute("cartList", cartList);
-
-        return "/member/cart";
     }
 }
