@@ -10,7 +10,9 @@ import travelbeeee.PDFLO_V20.domain.entity.Comment;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
 import travelbeeee.PDFLO_V20.repository.CommentRepository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,7 +31,7 @@ public class ItemDetailDto {
     String content;
     String username;
     Integer price;
-    LocalDateTime createdDate;
+    String createdDate;
     String thumbnailLocation;
     String pdfLocation;
     List<CommentDto> comments = new ArrayList<>();
@@ -40,7 +42,8 @@ public class ItemDetailDto {
         this.content = item.getContent();
         this.username = item.getMember().getUsername();
         this.price = item.getPrice();
-        this.createdDate = item.getCreatedDate();
+        this.createdDate = item.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
+
         FileInformation thumbnailFileInfo = item.getThumbnail().getFileInfo();
         FileInformation pdfFileInfo = item.getPdf().getFileInfo();
 

@@ -2,12 +2,11 @@ package travelbeeee.PDFLO_V20.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import travelbeeee.PDFLO_V20.domain.FileInformation;
-import travelbeeee.PDFLO_V20.domain.entity.Cart;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Main 페이지에 뿌리는 ItemDto
@@ -20,16 +19,16 @@ public class ItemViewDto {
     Long itemId;
     String title;
     String username;
-    LocalDateTime createdDate;
+    String createdDate;
     String thumbnailLocation;
 
-    public ItemViewDto(Item item, String rootLocation) {
+    public ItemViewDto(Item item) {
         this.itemId = item.getId();
         this.title = item.getTitle();
         this.username = item.getMember().getUsername();
-        this.createdDate = item.getCreatedDate();
+        this.createdDate = item.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
         FileInformation thumbnailFileInfo = item.getThumbnail().getFileInfo();
-        this.thumbnailLocation = rootLocation + thumbnailFileInfo.getLocation() + "/resized-"
+        this.thumbnailLocation = thumbnailFileInfo.getLocation() + "/resized-"
                 + thumbnailFileInfo.getSaltedFileName() + thumbnailFileInfo.getExtension();
     }
 
