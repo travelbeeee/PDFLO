@@ -20,7 +20,7 @@
     </th:block>
 
     <div class="itemBox" th:each="item : ${items}">
-        <img class="itemThumbnail" th:src="${item.thumbnailLocation}" alt="썸네일이미지">
+        <img class="itemThumbnail" th:src="${rootLocation} + ${item.thumbnailLocation}" alt="썸네일이미지">
         <p th:text="${item.title}">제목</p>
         <p th:text="${item.createdDate}">날짜</p>
         <a th:href="@{/item/{itemId}(itemId=${item.itemId})}">자세히보기</a>

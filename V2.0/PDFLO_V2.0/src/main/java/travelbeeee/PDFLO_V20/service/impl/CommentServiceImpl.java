@@ -21,7 +21,6 @@ public class CommentServiceImpl implements CommentService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final OrderItemRepository orderItemRepository;
-    private final OrderRepository orderRepository;
 
     /**
      * 1) 해당 회원이 존재하는지 확인

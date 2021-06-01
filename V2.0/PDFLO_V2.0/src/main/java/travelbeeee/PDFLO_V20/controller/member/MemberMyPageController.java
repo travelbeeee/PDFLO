@@ -1,35 +1,38 @@
 package travelbeeee.PDFLO_V20.controller.member;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import travelbeeee.PDFLO_V20.domain.dto.ItemOrderDto;
-import travelbeeee.PDFLO_V20.domain.dto.OrderDto;
+import travelbeeee.PDFLO_V20.domain.dto.ItemSellDto;
+import travelbeeee.PDFLO_V20.domain.dto.OrderHistoryDto;
 import travelbeeee.PDFLO_V20.domain.dto.PointHistoryDto;
-import travelbeeee.PDFLO_V20.domain.dto.SellingDto;
+import travelbeeee.PDFLO_V20.domain.dto.SellHistoryDto;
 import travelbeeee.PDFLO_V20.domain.entity.*;
 import travelbeeee.PDFLO_V20.domain.enumType.PointType;
 import travelbeeee.PDFLO_V20.domain.form.ProfileForm;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.service.MemberService;
-import travelbeeee.PDFLO_V20.utility.MailSender;
 import travelbeeee.PDFLO_V20.utility.PermissionChecker;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class MemberMyPage {
+public class MemberMyPageController {
+
+    @Value("${file.absolute_location}")
+    private String rootLocation;
 
     private final MemberService memberService;
 
@@ -172,11 +175,16 @@ public class MemberMyPage {
     public String orderHistory(HttpSession httpSession, Model model) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
         Long memberId = (Long) httpSession.getAttribute("id");
-        List<Order> orders = memberService.findOrder(memberId);
 
-        List<OrderDto> orderList = orders.stream()
-                .map(o -> new OrderDto(o))
-                .collect(Collectors.toList());
+        List<Order> orders = memberService.findOrderWithItemByMember(memberId);
+        List<OrderHistoryDto> orderList = new ArrayList<>();
+
+        for (Order order : orders) {
+            List<OrderItem> orderItems = order.getOrderItems();
+            for (OrderItem orderItem : orderItems) {
+                orderList.add(new OrderHistoryDto(order, orderItem));
+            }
+        }
 
         model.addAttribute("orderList", orderList);
 
@@ -212,11 +220,13 @@ public class MemberMyPage {
         PermissionChecker.checkPermission(httpSession);
         Long memberId = (Long) httpSession.getAttribute("id");
 
-        List<Item> sellingItem = memberService.findSellingItem(memberId);
-        List<ItemOrderDto> itemList = sellingItem.stream()
-                .map(i -> new ItemOrderDto(i))
+        List<Item> sellItems = memberService.findSellItem(memberId);
+
+        List<ItemSellDto> itemList = sellItems.stream()
+                .map(i -> new ItemSellDto(i))
                 .collect(Collectors.toList());
 
+        model.addAttribute("rootLocation", rootLocation);
         model.addAttribute("itemList", itemList);
 
         return "member/myItem";
@@ -231,12 +241,13 @@ public class MemberMyPage {
         PermissionChecker.checkPermission(httpSession);
         Long memberId = (Long) httpSession.getAttribute("id");
 
-        List<OrderItem> sellingHistory = memberService.findSellingHistory(itemId);
-        List<SellingDto> sellingList = sellingHistory.stream()
-                .map(oi -> new SellingDto(oi))
+        List<OrderItem> sellingHistory = memberService.findSellHistory(itemId);
+
+        List<SellHistoryDto> sellList = sellingHistory.stream()
+                .map(oi -> new SellHistoryDto(oi))
                 .collect(Collectors.toList());
 
-        model.addAttribute("sellingList", sellingList);
+        model.addAttribute("sellList", sellList);
 
         return "member/sellHistory";
     }

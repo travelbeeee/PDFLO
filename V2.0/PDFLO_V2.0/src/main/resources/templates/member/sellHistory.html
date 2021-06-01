@@ -9,14 +9,16 @@
     <th:block th:replace="fragments/head.html"></th:block>
 </head>
 <body>
-<th:block th:replace="fragments/header.html"></th:block>
+    <th:block th:replace="fragments/header.html"></th:block>
 
-판매 내역<br>
-<div th:each="selling : ${sellingList}">
-    <p>구매자 : <span th:text="${selling.username}"></span></p>
-    <p>구매날짜 : <span th:text="${selling.createdDate}"></span></p>
-    <p>구매가격 : <span th:text="${selling.orderPrice}"></span></p>
-    <br><br>
-</div>
+    판매 내역<br>
+    <div th:each="sell : ${sellList}">
+        <p>구매자 : <span th:text="${sell.username}"></span></p>
+        <p>구매날짜 : <span th:text="${sell.createdDate}"></span></p>
+        <p>구매가격 : <span th:text="${sell.orderPrice}"></span></p>
+        <p>상품제목 : <span th:text="${sell.title}"></span></p>
+        <p>주문번호 : <span th:text="${sell.orderId}"></span></p>
+        <br><br>
+    </div>
 </body>
 </html>

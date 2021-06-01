@@ -26,12 +26,13 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model){
-        List<Item> items = itemService.findAllWithMemberAndThumbnail();
+        List<Item> items = itemService.findSellItemWithMemberAndThumbnail();
         List<ItemViewDto> itemMainDtos = new ArrayList<>();
         itemMainDtos = items.stream()
-                .map(i -> new ItemViewDto(i, rootLocation))
+                .map(i -> new ItemViewDto(i))
                 .collect(Collectors.toList());
 
+        model.addAttribute("rootLocation", rootLocation);
         model.addAttribute("items", itemMainDtos);
         return "main";
     }

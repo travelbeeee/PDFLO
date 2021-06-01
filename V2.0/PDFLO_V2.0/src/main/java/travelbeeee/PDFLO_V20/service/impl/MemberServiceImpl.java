@@ -130,11 +130,6 @@ public class MemberServiceImpl implements MemberService {
         return pointHistoryRepository.findMemberPointHistory(memberId);
     }
 
-    @Override
-    public List<Item> findMemberItem(Long memberId) {
-        return itemRepository.findByMember(memberId);
-    }
-
     @Transactional
     @Override
     public void uploadProfile(Long memberId, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException {
@@ -185,17 +180,17 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Order> findOrder(Long memberId) {
+    public List<Order> findOrderWithItemByMember(Long memberId) {
         return orderRepository.findAllByMemberWithItem(memberId);
     }
 
     @Override
-    public List<Item> findSellingItem(Long memberId) {
-        return itemRepository.findByMember(memberId);
+    public List<Item> findSellItem(Long memberId) {
+        return itemRepository.findWithThumbnailByMember(memberId);
     }
 
     @Override
-    public List<OrderItem> findSellingHistory(Long itemId) {
-        return orderItemRepository.findAllWithMemberByItem(itemId);
+    public List<OrderItem> findSellHistory(Long itemId) {
+        return orderItemRepository.findAllWithMemberAndItemByItem(itemId);
     }
 }

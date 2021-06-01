@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import travelbeeee.PDFLO_V20.domain.BaseEntity;
+import travelbeeee.PDFLO_V20.domain.enumType.ItemType;
 
+import javax.mail.FetchProfile;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,9 @@ public class Item extends BaseEntity {
     private String content;
     private Integer price;
 
+    @Enumerated(EnumType.STRING)
+    private ItemType type;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thumbnail_id")
     private Thumbnail thumbnail;
@@ -38,6 +43,16 @@ public class Item extends BaseEntity {
     @OneToMany(mappedBy = "item")
     private List<Comment> comments = new ArrayList<>();
 
+    public Item(Member member, String title, String content, Integer price, Thumbnail thumbnail, Pdf pdf, ItemType type) {
+        this.member = member;
+        this.title = title;
+        this.content = content;
+        this.price = price;
+        this.thumbnail = thumbnail;
+        this.pdf = pdf;
+        this.type = type;
+    }
+
     public Item(Member member, String title, String content, Integer price, Thumbnail thumbnail, Pdf pdf) {
         this.member = member;
         this.title = title;
@@ -45,6 +60,7 @@ public class Item extends BaseEntity {
         this.price = price;
         this.thumbnail = thumbnail;
         this.pdf = pdf;
+        this.type = ItemType.SELL;
     }
 
     public void changeItem(String title, String content, Integer price, Thumbnail thumbnail, Pdf pdf){
@@ -53,5 +69,13 @@ public class Item extends BaseEntity {
         this.price = price;
         this.thumbnail = thumbnail;
         this.pdf = pdf;
+    }
+
+    public void stopSell() {
+        this.type = ItemType.STOP;
+    }
+
+    public void reSell(){
+        this.type = ItemType.SELL;
     }
 }

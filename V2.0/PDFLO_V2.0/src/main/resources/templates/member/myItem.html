@@ -13,9 +13,16 @@
 
     판매 중인 아이템!<br>
     <div th:each="item : ${itemList}">
+        <img th:src="${rootLocation} + ${item.thumbnailLocation}" alt="썸네일">
         <p>제목 : <span th:text="${item.title}"></span></p>
-        <p>내용 : <span th:text="${item.content}"></span></p>
         <p>상품 가격 : <span th:text="${item.price}"></span></p>
+        <p>등록 날짜 : <span th:text="${item.createdDate}"></span></p>
+        <p>판매 상태 : <span th:text="${item.type}"></span></p>
+        <span th:if="${item.type} == ${T(travelbeeee.PDFLO_V20.domain.enumType.ItemType).STOP}">
+            <form th:action="@{/item/reSell/{itemId}(itemId = ${item.itemId})}" method="post">
+                <input type="submit" value="재판매하기">
+            </form>
+        </span>
         <a th:href="@{/member/myItem/{itemId}(itemId = ${item.itemId})}">판매내역 자세히 보기</a>
         <br><br>
     </div>

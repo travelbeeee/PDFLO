@@ -1,4 +1,4 @@
-package travelbeeee.PDFLO_V20.controller.member;
+package travelbeeee.PDFLO_V20.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,26 +21,13 @@ import java.util.stream.Collectors;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class MemberCartController {
-    private final MemberService memberService;
+public class CartController {
     private final CartService cartService;
-
-    /**
-     * 장바구니 추가하기
-     */
-    @PostMapping("/member/cart/{itemId}")
-    public String putItemOnCart(HttpSession httpSession, @PathVariable("itemId") Long itemId) throws PDFLOException {
-        PermissionChecker.checkPermission(httpSession);
-
-        Long memberId = (Long) httpSession.getAttribute("id");
-        cartService.putItemOnCart(memberId, itemId);
-        return "redirect:/member/cart";
-    }
 
     /**
      * 장바구니 목록 가져오기.
      */
-    @GetMapping("/member/cart")
+    @GetMapping("/cart")
     public String memberCartList(HttpSession httpSession, Model model) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
 
@@ -56,9 +43,21 @@ public class MemberCartController {
     }
 
     /**
+     * 장바구니 추가하기
+     */
+    @PostMapping("/cart/{itemId}")
+    public String putItemOnCart(HttpSession httpSession, @PathVariable("itemId") Long itemId) throws PDFLOException {
+        PermissionChecker.checkPermission(httpSession);
+
+        Long memberId = (Long) httpSession.getAttribute("id");
+        cartService.putItemOnCart(memberId, itemId);
+        return "redirect:/member/cart";
+    }
+
+    /**
      * 장바구니 삭제하기
      */
-    @PostMapping("/member/cart/delete/{cartId}")
+    @PostMapping("/cart/delete/{cartId}")
     public String deleteCart(HttpSession httpSession, @PathVariable("cartId") Long cartId) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
 

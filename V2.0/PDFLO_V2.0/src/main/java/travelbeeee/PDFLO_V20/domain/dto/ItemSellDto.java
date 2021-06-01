@@ -3,6 +3,7 @@ package travelbeeee.PDFLO_V20.domain.dto;
 import lombok.Data;
 import travelbeeee.PDFLO_V20.domain.FileInformation;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
+import travelbeeee.PDFLO_V20.domain.enumType.ItemType;
 
 import java.time.format.DateTimeFormatter;
 
@@ -13,6 +14,7 @@ public class ItemSellDto {
     private Integer price;
     private String createdDate;
     private Long itemId;
+    private ItemType type;
 
     public ItemSellDto(Item i) {
         this.title = i.getTitle();
@@ -21,5 +23,6 @@ public class ItemSellDto {
         this.price = i.getPrice();
         this.createdDate = i.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
         this.itemId = i.getId();
+        this.type = i.getType();
     }
 }

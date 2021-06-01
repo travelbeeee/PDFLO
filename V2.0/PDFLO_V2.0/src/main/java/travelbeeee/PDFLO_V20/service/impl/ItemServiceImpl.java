@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import travelbeeee.PDFLO_V20.domain.FileInformation;
 import travelbeeee.PDFLO_V20.domain.entity.*;
 import travelbeeee.PDFLO_V20.domain.enumType.FileType;
+import travelbeeee.PDFLO_V20.domain.enumType.ItemType;
 import travelbeeee.PDFLO_V20.domain.form.ItemForm;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
@@ -50,7 +51,7 @@ public class ItemServiceImpl implements ItemService {
 
         Member member = findMember.get();
 
-        Item item = new Item(member, itemForm.getTitle(), itemForm.getContent(), itemForm.getPrice(), thumbnail, pdf);
+        Item item = new Item(member, itemForm.getTitle(), itemForm.getContent(), itemForm.getPrice(), thumbnail, pdf, ItemType.SELL);
 
         pdfRepository.save(pdf);
         thumbnailRepository.save(thumbnail);
@@ -98,6 +99,12 @@ public class ItemServiceImpl implements ItemService {
         item.changeItem(itemDto.getTitle(), item.getContent(), itemDto.getPrice(), newThumbnail, newPdf);
     }
 
+    /**
+     * 1) 상품 확인
+     * 2) 요청한 회원이 등록한 상품인지 확인
+     * 3) PDF / Thumbnail 파일 삭제하기 (물리적)
+     * 4) PDF / Thumbnail / Item 엔티티 삭제하기
+     */
     @Transactional
     @Override
     public void deleteItem(Long memberId, Long itemId) throws PDFLOException {
@@ -105,22 +112,33 @@ public class ItemServiceImpl implements ItemService {
         if(findItem.isEmpty()) throw new PDFLOException(ErrorCode.ITEM_NO_EXIST);
 
         Item item = findItem.get();
+
         if(item.getMember().getId() != memberId) throw new PDFLOException(ErrorCode.MEMBER_NOT_SELLER);
 
-        Pdf pdf = item.getPdf();
-        Thumbnail thumbnail = item.getThumbnail();
+        item.stopSell();
+    }
 
-        fileManager.fileDelete(pdf.getFileInfo().getLocation(), pdf.getFileInfo().getSaltedFileName(), pdf.getFileInfo().getExtension());
-        fileManager.fileDelete(thumbnail.getFileInfo().getLocation(), thumbnail.getFileInfo().getSaltedFileName(), thumbnail.getFileInfo().getExtension());
+    /**
+     * 1) 상품 확인
+     * 2) 요청한 회원이 등록한 상품인지 확인
+     * 3) SELL 로 변경
+     */
+    @Transactional
+    @Override
+    public void reSell(Long memberId, Long itemId) throws PDFLOException {
+        Optional<Item> findItem = itemRepository.findById(itemId);
+        if(findItem.isEmpty()) throw new PDFLOException(ErrorCode.ITEM_NO_EXIST);
 
-        pdfRepository.delete(pdf);
-        thumbnailRepository.delete(thumbnail);
-        itemRepository.delete(item);
+        Item item = findItem.get();
+
+        if(item.getMember().getId() != memberId) throw new PDFLOException(ErrorCode.MEMBER_NOT_SELLER);
+
+        item.reSell();
     }
 
     @Override
-    public List<Item> findAllWithMemberAndThumbnail() {
-        return itemRepository.findAllWithMemberAndThumbnail();
+    public List<Item> findSellItemWithMemberAndThumbnail() {
+        return itemRepository.findSellItemWithMemberAndThumbnail();
     }
 
     @Override
@@ -131,4 +149,6 @@ public class ItemServiceImpl implements ItemService {
         }
         return findItem.get();
     }
+
+
 }

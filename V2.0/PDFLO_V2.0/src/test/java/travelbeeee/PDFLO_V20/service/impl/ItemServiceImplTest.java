@@ -65,10 +65,10 @@ class ItemServiceImplTest {
 
         itemService.uploadItem(member.getId(), itemDto);
 
-        List<Item> items = itemRepository.findByMember(member.getId());
-        Item item = items.get(0);
+//        List<Item> items = itemRepository.findByMember(member.getId());
+//        Item item = items.get(0);
 
-        itemService.deleteItem(member.getId(), item.getId());
+//        itemService.deleteItem(member.getId(), item.getId());
     }
 
     @Test
