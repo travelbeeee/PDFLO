@@ -51,7 +51,7 @@ public class CartController {
 
         Long memberId = (Long) httpSession.getAttribute("id");
         cartService.putItemOnCart(memberId, itemId);
-        return "redirect:/member/cart";
+        return "redirect:/cart";
     }
 
     /**

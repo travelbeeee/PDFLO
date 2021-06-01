@@ -56,26 +56,25 @@
         </form>
     </div>
     -->
-    <!--
-    <form th:action="@{/comment/write/{contentId}(contentId=${contentId})}" method="post">
-        <input type="text" placeholder="후기를 남겨주세요." name="comments">
-        <div class="starRev">
-            <span class="starR1">별1_왼쪽</span>
-            <span class="starR2">별1_오른쪽</span>
-            <span class="starR1">별2_왼쪽</span>
-            <span class="starR2">별2_오른쪽</span>
-            <span class="starR1">별3_왼쪽</span>
-            <span class="starR2">별3_오른쪽</span>
-            <span class="starR1">별4_왼쪽</span>
-            <span class="starR2">별4_오른쪽</span>
-            <span class="starR1">별5_왼쪽</span>
-            <span class="starR2">별5_오른쪽</span>
-        </div>
-        <input class="score" type="hidden" name="score" value="1">
+    <form th:action="@{/comment/write/{itemId}(itemId=${item.itemId})}" th:object="${commentForm}" method="post">
+        <input type="text" placeholder="후기를 남겨주세요." th:field="*{comment}">
+        <input type="number" min="1.0" max="5.0" step="0.5" th:field="*{score}">
+<!--        <div class="starRev">-->
+<!--            <span class="starR1">별1_왼쪽</span>-->
+<!--            <span class="starR2">별1_오른쪽</span>-->
+<!--            <span class="starR1">별2_왼쪽</span>-->
+<!--            <span class="starR2">별2_오른쪽</span>-->
+<!--            <span class="starR1">별3_왼쪽</span>-->
+<!--            <span class="starR2">별3_오른쪽</span>-->
+<!--            <span class="starR1">별4_왼쪽</span>-->
+<!--            <span class="starR2">별4_오른쪽</span>-->
+<!--            <span class="starR1">별5_왼쪽</span>-->
+<!--            <span class="starR2">별5_오른쪽</span>-->
+<!--        </div>-->
+<!--        <input class="score" type="hidden" name="score" value="1">-->
         <input type="submit" value="후기남기기">
     </form>
     <br>
-    -->
 </body>
 <script>
 $('.starRev span').click(function(){

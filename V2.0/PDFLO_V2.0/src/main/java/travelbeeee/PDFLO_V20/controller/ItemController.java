@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import travelbeeee.PDFLO_V20.domain.dto.ItemDetailDto;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
+import travelbeeee.PDFLO_V20.domain.form.CommentForm;
 import travelbeeee.PDFLO_V20.domain.form.ItemForm;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.service.ItemService;
@@ -49,6 +50,7 @@ public class ItemController {
         Item item = itemService.findWithMemberAndPdfAndThumbnailAndCommentById(itemId);
         ItemDetailDto itemDetailDto = new ItemDetailDto(item);
         model.addAttribute("item", itemDetailDto);
+        model.addAttribute("commentForm", new CommentForm());
         return "/item/detail";
     }
 

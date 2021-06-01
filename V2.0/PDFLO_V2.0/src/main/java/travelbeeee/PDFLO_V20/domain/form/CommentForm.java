@@ -2,10 +2,12 @@ package travelbeeee.PDFLO_V20.domain.form;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
 @Data
+@NoArgsConstructor
 public class CommentForm {
     @NotNull
     private String comment;
