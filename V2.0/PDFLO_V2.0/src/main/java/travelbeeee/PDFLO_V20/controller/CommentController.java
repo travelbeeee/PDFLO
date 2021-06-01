@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO_V20.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -12,11 +13,13 @@ import travelbeeee.PDFLO_V20.service.CommentService;
 import travelbeeee.PDFLO_V20.utility.PermissionChecker;
 
 import javax.naming.Binding;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class CommentController {
 
     private final CommentService commentService;
@@ -34,6 +37,16 @@ public class CommentController {
 
         commentService.uploadComment(memberId, itemId, commentForm);
 
-        return "redirect:/item/detail/" + itemId;
+        return "redirect:/item/" + itemId;
+    }
+
+    @PostMapping("/comment/delete/{itemId}/{commentId}")
+    public String deleteComment(HttpSession httpSession, @PathVariable("commentId") Long commentId,
+                                @PathVariable("itemId") Long itemId) throws PDFLOException {
+        Long memberId = (Long) httpSession.getAttribute("id");
+
+        commentService.deleteComment(memberId, commentId);
+
+        return "redirect:/item/" + itemId;
     }
 }
