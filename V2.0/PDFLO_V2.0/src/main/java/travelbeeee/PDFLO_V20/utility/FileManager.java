@@ -28,6 +28,12 @@ public class FileManager {
     @Value("${file.relative_location}")
     private String rootLocation;
 
+    @AllArgsConstructor
+    class Resize{
+        boolean needResize;
+        int width, height;
+    }
+
     private HashMap<FileType,String> locationMap = new HashMap<FileType,String>();
     private HashMap<FileType, Resize> resizeMap = new HashMap<>();
     private final Sha256Encryption sha256Encryption;
@@ -96,9 +102,5 @@ public class FileManager {
         }
     }
 
-    @AllArgsConstructor
-    class Resize{
-        boolean needResize;
-        int width, height;
-    }
+
 }

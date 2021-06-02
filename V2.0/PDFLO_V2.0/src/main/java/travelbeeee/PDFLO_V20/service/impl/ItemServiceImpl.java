@@ -11,10 +11,7 @@ import travelbeeee.PDFLO_V20.domain.enumType.ItemType;
 import travelbeeee.PDFLO_V20.domain.form.ItemForm;
 import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
-import travelbeeee.PDFLO_V20.repository.ItemRepository;
-import travelbeeee.PDFLO_V20.repository.MemberRepository;
-import travelbeeee.PDFLO_V20.repository.PdfRepository;
-import travelbeeee.PDFLO_V20.repository.ThumbnailRepository;
+import travelbeeee.PDFLO_V20.repository.*;
 import travelbeeee.PDFLO_V20.service.ItemService;
 import travelbeeee.PDFLO_V20.utility.FileManager;
 
@@ -32,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final PdfRepository pdfRepository;
     private final ThumbnailRepository thumbnailRepository;
+    private final OrderItemRepository orderItemRepository;
     private final FileManager fileManager;
 
     @Transactional
@@ -96,7 +94,7 @@ public class ItemServiceImpl implements ItemService {
 
         pdfRepository.save(newPdf);
         thumbnailRepository.save(newThumbnail);
-        item.changeItem(itemDto.getTitle(), item.getContent(), itemDto.getPrice(), newThumbnail, newPdf);
+        item.changeItem(itemDto.getTitle(), itemDto.getContent(), itemDto.getPrice(), newThumbnail, newPdf);
     }
 
     /**
@@ -134,6 +132,33 @@ public class ItemServiceImpl implements ItemService {
         if(item.getMember().getId() != memberId) throw new PDFLOException(ErrorCode.MEMBER_NOT_SELLER);
 
         item.reSell();
+    }
+
+    /**
+     * 1) 상품 확인
+     * 2) 회원 확인
+     * 3) 회원이 상품 구매했는지 확인
+     * 4) PDF파일 다운로드
+     * @return
+     */
+    @Override
+    public byte[] downloadItem(Long memberId, Long itemId) throws PDFLOException, IOException {
+        Optional<Member> findMember = memberRepository.findById(memberId);
+        if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
+
+        Optional<Item> findItem = itemRepository.findById(itemId);
+        if(findItem.isEmpty()) throw new PDFLOException(ErrorCode.ITEM_NO_EXIST);
+
+        Member member = findMember.get();
+        Item item = findItem.get();
+
+        Optional<OrderItem> findOrderItem = orderItemRepository.findByMemberAndItem(member, item);
+        if (findOrderItem.isEmpty()) {
+            throw new PDFLOException(ErrorCode.DOWNLOAD_NO_PERMISSION);
+        }
+
+        FileInformation fileInfo = itemRepository.findWithPDFById(itemId).get().getPdf().getFileInfo();
+        return fileManager.fileDownload(fileInfo.getLocation(), fileInfo.getSaltedFileName(), fileInfo.getExtension());
     }
 
     @Override

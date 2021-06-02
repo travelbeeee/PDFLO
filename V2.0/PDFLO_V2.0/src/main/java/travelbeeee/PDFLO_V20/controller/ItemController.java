@@ -15,6 +15,7 @@ import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.service.ItemService;
 import travelbeeee.PDFLO_V20.utility.PermissionChecker;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -69,6 +70,7 @@ public class ItemController {
                                  Model model) throws PDFLOException {
         PermissionChecker.checkPermission(httpSession);
 
+        model.addAttribute("itemForm", new ItemForm());
         model.addAttribute("itemId", itemId);
 
         return "/item/modifyForm";
@@ -97,5 +99,17 @@ public class ItemController {
         Long memberId = (Long) httpSession.getAttribute("id");
         itemService.reSell(memberId, itemId);
         return "redirect:/member/myItem";
+    }
+
+    @PostMapping("/item/download/{itemId}")
+    public void itemDownload(HttpSession httpSession, @PathVariable("itemId") Long itemId, HttpServletResponse response) throws PDFLOException, IOException {
+        PermissionChecker.checkPermission(httpSession);
+        Long memberId = (Long) httpSession.getAttribute("id");
+
+        byte[] pdfFile = itemService.downloadItem(memberId, itemId);
+        response.addHeader("Content-Disposition", "attachment; fileName=content.pdf");
+        response.getOutputStream().write(pdfFile);
+        response.getOutputStream().flush();
+        response.getOutputStream().close();
     }
 }

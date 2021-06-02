@@ -59,8 +59,8 @@ public class MemberController {
      */
     @PostMapping("/member/signUp")
     public String signUp(@Valid SignUpForm signUpForm, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException {
-        if (bindingResult.hasErrors()) {
-            return "/member/signUp";
+        if (bindingResult.hasErrors()){
+            throw new PDFLOException(ErrorCode.SIGNUP_INPUT_INVALID);
         }
         memberService.signUp(signUpForm);
 

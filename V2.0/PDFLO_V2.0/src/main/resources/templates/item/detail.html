@@ -8,7 +8,6 @@
     <title>상세페이지</title>
     <th:block th:replace="fragments/head.html"></th:block>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 </head>
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
@@ -22,8 +21,14 @@
     <form th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
         <input type="submit" value="장바구니에 추가하기">
     </form>
+    <form th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
+        <input type="submit" value="구매하기">
+    </form>
     <form th:action="@{/item/delete/{itemId}(itemId=${item.itemId})}" method="post">
         <input type="submit" value="상품 판매 중단하기">
+    </form>
+    <form th:action="@{/item/download/{itemId}(itemId=${item.itemId})}" method="post">
+        <input type="submit" value="다운로드하기">
     </form>
     <br><br><br>
     작성된 후기!<br>
@@ -44,9 +49,7 @@
             <input type="submit" value="구매하기">
         </form>
     </div>
-    <form th:action="@{/content/download/{contentId}(contentId=${contentId})}" method="post">
-        <input type="submit" value="다운로드하기">
-    </form>
+
     <div th:if="${isSeller} == true">
         <a th:href="@{/content/modify/{contentId}(contentId=${contentId})}">수정하기</a>
         <form th:action="@{/content/delete/{contentId}(contentId=${contentId})}" method="post">
