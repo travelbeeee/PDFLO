@@ -32,7 +32,7 @@
         <p>후기 : <span th:text="${comment.comment}"></span></p>
         <p>별점 : <span th:text="${comment.score}"></span></p>
         <p>작성날짜 : <span th:text="${comment.createdDate}"></span></p>
-        <a th:href="@{/comment/modify/{commentId}(commentId=${comment.commentId})}">후기 수정하기</a>
+        <a th:href="@{/comment/modify/{itemId}/{commentId}(itemId = ${item.itemId}, commentId=${comment.commentId})}">후기 수정하기</a>
         <form th:action="@{/comment/delete/{itemId}/{commentId}(itemId=${item.itemId}, commentId=${comment.commentId})}" method="post">
             <input type="submit" value="후기 삭제하기">
         </form>

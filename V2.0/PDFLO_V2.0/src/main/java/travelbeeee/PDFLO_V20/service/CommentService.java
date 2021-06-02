@@ -11,4 +11,7 @@ public interface CommentService {
     void modifyComment(Long memberId, Long commentId, CommentForm commentForm) throws PDFLOException;
     void deleteComment(Long memberId, Long commentId) throws PDFLOException;
     List<Comment> findAllByItem(Long itemId);
+    Comment findById(Long commentId) throws PDFLOException;
+    Comment findByIdAndMember(Long commentId, Long memberId) throws PDFLOException;
+    List<Comment> findAllWithItemByMember(Long memberId);
 }

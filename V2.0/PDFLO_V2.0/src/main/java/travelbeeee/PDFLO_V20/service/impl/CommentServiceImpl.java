@@ -106,4 +106,26 @@ public class CommentServiceImpl implements CommentService {
         return commentRepository.findAllByItem(itemId);
     }
 
+    @Override
+    public Comment findById(Long commentId) throws PDFLOException {
+        Optional<Comment> findComment = commentRepository.findById(commentId);
+        if (findComment.isEmpty()) {
+            throw new PDFLOException(ErrorCode.COMMENT_NO_EXIST);
+        }
+        return findComment.get();
+    }
+
+    @Override
+    public Comment findByIdAndMember(Long commentId, Long memberId) throws PDFLOException {
+        Optional<Comment> findComment = commentRepository.findWithMemberByCommentAndMember(commentId, memberId);
+        if (findComment.isEmpty()) {
+            throw new PDFLOException(ErrorCode.COMMENT_NO_EXIST);
+        }
+        return findComment.get();
+    }
+
+    @Override
+    public List<Comment> findAllWithItemByMember(Long memberId) {
+        return commentRepository.findAllWithItemByMember(memberId);
+    }
 }
