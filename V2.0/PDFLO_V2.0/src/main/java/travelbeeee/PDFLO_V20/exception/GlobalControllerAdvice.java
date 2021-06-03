@@ -20,7 +20,7 @@ public class GlobalControllerAdvice {
         viewMap.put(ErrorCode.LOGIN_INPUT_INVALID, "/member/login");
         viewMap.put(ErrorCode.SIGNUP_INPUT_INVALID, "/member/signUp");
         viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-//        viewMap.put(ErrorCode.COMMENT_NO_PERMISSION_BUYING, "");
+        viewMap.put(ErrorCode.COMMENT_NO_PERMISSION_BUYING, "");
         viewMap.put(ErrorCode.COMMENT_ALREADY_WRITTEN, "/member/login");
         viewMap.put(ErrorCode.COMMENT_NO_PERMISSION_WRITER, "/member/login");
         viewMap.put(ErrorCode.COMMENT_INPUT_INVALID, "/member/login");
@@ -42,7 +42,8 @@ public class GlobalControllerAdvice {
     @ExceptionHandler({travelbeeee.PDFLO_V20.exception.PDFLOException.class})
     public ModelAndView handleMyException(travelbeeee.PDFLO_V20.exception.PDFLOException e){
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/errors/error");
+        String viewName = viewMap.get(e.getReturnCode());
+        mav.setViewName(viewName);
         mav.addObject("errorCode", e.getReturnCode().getMessage());
         return mav;
     }
