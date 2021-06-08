@@ -54,7 +54,7 @@ public class OrderServiceImpl implements OrderService {
 
         // 3)
         Optional<OrderItem> findOrderItem = orderItemRepository.findByMemberAndItems(member, items);
-        if(!findOrderItem.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_ALREADY_BOUGHT);
+        if(!findOrderItem.isEmpty()) throw new PDFLOException(ErrorCode.ITEM_ALREADY_BOUGHT);
 
         // 4)
         for (Item item : items) {

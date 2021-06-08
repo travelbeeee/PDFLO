@@ -20,30 +20,30 @@ public class GlobalControllerAdvice {
         viewMap.put(ErrorCode.LOGIN_INPUT_INVALID, "/member/login");
         viewMap.put(ErrorCode.SIGNUP_INPUT_INVALID, "/member/signUp");
         viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.COMMENT_NO_PERMISSION_BUYING, "");
-        viewMap.put(ErrorCode.COMMENT_ALREADY_WRITTEN, "/member/login");
-        viewMap.put(ErrorCode.COMMENT_NO_PERMISSION_WRITER, "/member/login");
-        viewMap.put(ErrorCode.COMMENT_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
-        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
+        viewMap.put(ErrorCode.COMMENT_NO_PERMISSION_BUYING, "/");
+        viewMap.put(ErrorCode.COMMENT_ALREADY_WRITTEN, "/");
+        viewMap.put(ErrorCode.COMMENT_NO_PERMISSION_WRITER, "/");
+        viewMap.put(ErrorCode.COMMENT_INPUT_INVALID, "/");
 
+        viewMap.put(ErrorCode.ITEM_ALREADY_BOUGHT, "/member/login");
+        viewMap.put(ErrorCode.MEMBER_INSUFFICIENT_BALANCE, "/member/login");
+        viewMap.put(ErrorCode.MEMBER_NO_PERMISSION, "/member/login");
+        viewMap.put(ErrorCode.MEMBER_IS_SELLER, "/member/login");
+        viewMap.put(ErrorCode.MAIL_AUTHCODE_INCORRECT, "/member/login");
+        viewMap.put(ErrorCode.ITEM_INPUT_ERROR, "/member/login");
+        viewMap.put(ErrorCode.MEMBER_ALREADY_LOGIN, "/member/login");
+        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
+        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
+        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
+        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
+        viewMap.put(ErrorCode.PASSWORD_INPUT_INVALID, "/member/login");
     }
 
     @ExceptionHandler({travelbeeee.PDFLO_V20.exception.PDFLOException.class})
     public ModelAndView handleMyException(travelbeeee.PDFLO_V20.exception.PDFLOException e){
         ModelAndView mav = new ModelAndView();
         String viewName = viewMap.get(e.getReturnCode());
-        mav.setViewName(viewName);
+        mav.setViewName("redirect:?/" + viewName);
         mav.addObject("errorCode", e.getReturnCode().getMessage());
         return mav;
     }

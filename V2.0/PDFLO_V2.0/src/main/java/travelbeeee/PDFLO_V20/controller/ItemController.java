@@ -11,6 +11,7 @@ import travelbeeee.PDFLO_V20.domain.dto.ItemDetailDto;
 import travelbeeee.PDFLO_V20.domain.entity.Item;
 import travelbeeee.PDFLO_V20.domain.form.CommentForm;
 import travelbeeee.PDFLO_V20.domain.form.ItemForm;
+import travelbeeee.PDFLO_V20.exception.ErrorCode;
 import travelbeeee.PDFLO_V20.exception.PDFLOException;
 import travelbeeee.PDFLO_V20.service.ItemService;
 import travelbeeee.PDFLO_V20.utility.PermissionChecker;
@@ -36,7 +37,7 @@ public class ItemController {
     @PostMapping("/item/upload")
     public String itemUpload(HttpSession httpSession, @Valid ItemForm itemForm, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException, IOException {
         if (bindingResult.hasErrors() || itemForm.getThumbnailFile().isEmpty() || itemForm.getPdfFile().isEmpty()) {
-            return "/item/uploadForm";
+            throw new PDFLOException(ErrorCode.ITEM_INPUT_ERROR);
         }
         Long memberId = (Long) httpSession.getAttribute("id");
         itemService.uploadItem(memberId, itemForm);
