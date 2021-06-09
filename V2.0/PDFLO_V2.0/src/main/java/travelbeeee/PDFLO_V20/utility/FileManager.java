@@ -1,6 +1,5 @@
 package travelbeeee.PDFLO_V20.utility;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

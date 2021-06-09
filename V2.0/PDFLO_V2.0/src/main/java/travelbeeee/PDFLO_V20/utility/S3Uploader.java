@@ -1,61 +1,56 @@
-package travelbeeee.PDFLO_V20.utility;
-
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import travelbeeee.PDFLO_V20.domain.dto.S3UploadComponent;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-@RequiredArgsConstructor
-@Service
-@Slf4j
-public class S3Uploader {
-    private final static String TEMP_FILE_PATH = "src/main/resources/";
-
-    private final AmazonS3Client amazonS3Client;
-    private final S3UploadComponent s3UploadComponent;
-
-    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
-        File convertedFile = convert(multipartFile);
-        return upload(convertedFile, dirName);
-    }
-
-    private String upload(File uploadFile, String dirName) {
-        String fileName = dirName + "/" + uploadFile.getName();
-        String uploadImageUrl = putS3(uploadFile, fileName);
-        removeNewFile(uploadFile);
-        return uploadImageUrl;
-    }
-
-    private String putS3(File uploadFile, String fileName) {
-        amazonS3Client.putObject(new PutObjectRequest(s3UploadComponent.getBucket(), fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3Client.getUrl(s3UploadComponent.getBucket(), fileName).toString();
-    }
-
-    private void removeNewFile(File targetFile) {
-        if (targetFile.delete()) {
-            return;
-        }
-        log.info("임시 파일이 삭제 되지 못했습니다. 파일 이름: {}", targetFile.getName());
-    }
-
-    private File convert(MultipartFile file) throws IOException {
-        File convertFile = new File(TEMP_FILE_PATH + file.getOriginalFilename());
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            }
-            return convertFile;
-        }
-        throw new IllegalArgumentException(String.format("파일 변환이 실패했습니다. 파일 이름: %s", file.getName()));
-    }
-
-}
+//package travelbeeee.PDFLO_V20.utility;
+//
+//import com.amazonaws.AmazonClientException;
+//import com.amazonaws.services.s3.AmazonS3;
+//import com.amazonaws.services.s3.AmazonS3Client;
+//import com.amazonaws.services.s3.model.CannedAccessControlList;
+//import com.amazonaws.services.s3.model.PutObjectRequest;
+//import com.amazonaws.services.s3.transfer.TransferManager;
+//import com.amazonaws.services.s3.transfer.Upload;
+//import lombok.RequiredArgsConstructor;
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.boot.context.properties.ConfigurationProperties;
+//import org.springframework.context.annotation.PropertySource;
+//import org.springframework.stereotype.Service;
+//import org.springframework.web.multipart.MultipartFile;
+//
+//import java.io.File;
+//import java.io.FileOutputStream;
+//import java.io.IOException;
+//import java.util.UUID;
+//
+//@RequiredArgsConstructor
+//@Service
+//@Slf4j
+//@PropertySource("classpath:application-aws.yml")
+//public class S3Uploader {
+//    private final AmazonS3 amazonS3Client;
+//
+//    // 버킷 이름 동적 할당
+//    @Value("${cloud.aws.s3.bucket}")
+//    private String bucket;
+//
+//    // 버킷 주소 동적 할당
+//    @Value("${cloud.aws.s3.bucket.url}")
+//    private String defaultUrl;
+//
+//    public String upload(MultipartFile uploadFile) throws IOException {
+//        File file = convertMultiPartFileToFile(uploadFile);
+//        String fileName = uploadFile.getOriginalFilename();
+//        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
+//        file.delete();
+//
+//        return "File Uploaded : " + fileName;
+//    }
+//
+//    private File convertMultiPartFileToFile(MultipartFile file) {
+//        File convertedFile = new File(file.getOriginalFilename());
+//        try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
+//            fos.write(file.getBytes());
+//        } catch (IOException e) {
+//            log.error(e.getMessage());
+//        }
+//        return convertedFile;
+//    }
+//}
