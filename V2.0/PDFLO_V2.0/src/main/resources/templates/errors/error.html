@@ -10,7 +10,17 @@
 </head>
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
-    에러 : <div th:text="${errorCode}"/><br>
     <a href="/">돌아가기</a>
+    <th:block th:if="${errorCode} != null">
+        <div id="errorCode" th:text="${errorCode}" style="display:none"></div>
+    </th:block>
+    <th:block th:replace="fragments/footer.html"></th:block>
 </body>
+<script>
+        var errorMessage = document.getElementById("errorCode").innerHTML;
+        console.log(errorMessage);
+        if(errorMessage != null){
+            alert("에러상황발생!! : " + errorMessage);
+        }
+</script>
 </html>

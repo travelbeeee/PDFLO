@@ -89,7 +89,7 @@ public class MemberController {
     @PostMapping("/member/login")
     public String login(@Valid LoginForm loginForm, BindingResult bindingResult, HttpSession httpSession) throws PDFLOException, NoSuchAlgorithmException, MessagingException {
         if (bindingResult.hasErrors()) {
-            return "/member/login";
+            throw new PDFLOException(ErrorCode.LOGIN_INPUT_INVALID);
         }
 
         Member member = memberService.login(loginForm);

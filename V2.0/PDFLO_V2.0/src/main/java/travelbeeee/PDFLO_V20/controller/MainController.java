@@ -25,7 +25,7 @@ public class MainController {
     private final ItemService itemService;
 
     @GetMapping("/")
-    public String home(Model model){
+    public String home(Model model) {
         List<Item> items = itemService.findSellItemWithMemberAndThumbnail();
         List<ItemViewDto> itemMainDtos = new ArrayList<>();
         itemMainDtos = items.stream()
@@ -34,6 +34,7 @@ public class MainController {
 
         model.addAttribute("rootLocation", rootLocation);
         model.addAttribute("items", itemMainDtos);
-        return "main";
+        return "index";
     }
+
 }
