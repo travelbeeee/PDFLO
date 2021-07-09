@@ -18,39 +18,21 @@
 //import java.io.File;
 //import java.io.FileOutputStream;
 //import java.io.IOException;
-//import java.util.UUID;
 //
 //@RequiredArgsConstructor
 //@Service
 //@Slf4j
 //@PropertySource("classpath:application-aws.yml")
 //public class S3Uploader {
-//    private final AmazonS3 amazonS3Client;
-//
 //    // 버킷 이름 동적 할당
 //    @Value("${cloud.aws.s3.bucket}")
 //    private String bucket;
+//
+//    @Value("${cloud.aws.region.static}")
+//    private String region;
 //
 //    // 버킷 주소 동적 할당
 //    @Value("${cloud.aws.s3.bucket.url}")
 //    private String defaultUrl;
 //
-//    public String upload(MultipartFile uploadFile) throws IOException {
-//        File file = convertMultiPartFileToFile(uploadFile);
-//        String fileName = uploadFile.getOriginalFilename();
-//        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
-//        file.delete();
-//
-//        return "File Uploaded : " + fileName;
-//    }
-//
-//    private File convertMultiPartFileToFile(MultipartFile file) {
-//        File convertedFile = new File(file.getOriginalFilename());
-//        try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
-//            fos.write(file.getBytes());
-//        } catch (IOException e) {
-//            log.error(e.getMessage());
-//        }
-//        return convertedFile;
-//    }
 //}

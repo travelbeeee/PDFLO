@@ -19,8 +19,6 @@ import travelbeeee.PDFLO_V20.service.MemberService;
 import travelbeeee.PDFLO_V20.utility.FileManager;
 import travelbeeee.PDFLO_V20.utility.Sha256Encryption;
 
-import javax.swing.text.html.Option;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member login(LoginForm loginDto) throws PDFLOException, NoSuchAlgorithmException {
         Optional<Member> findMember = memberRepository.findByUsername(loginDto.getUsername());
-        if(findMember.isEmpty()){ // 존재하지않는 회원아이디
+        if (findMember.isEmpty()) {
             throw new PDFLOException(ErrorCode.LOGIN_INPUT_INVALID);
         }
 
