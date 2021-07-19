@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>내장바구니</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+
+    장바구니!<br>
+    <form th:action="@{/order}" method="post">
+        <div th:each="cart : ${cartList}">
+            <p>제목 : <span th:text="${cart.title}"></span></p>
+            <p>작성날짜 : <span th:text="${cart.createdDate}"></span></p>
+            <a th:href="@{/item/{itemId}(itemId=${cart.itemId})}">자세히보기</a>
+            <input type="button" value="장바구니삭제" th:onclick="javascript: deleteCart('${cart.cartId}')"/>
+            <input type="checkbox" name="orderList" th:value="${cart.itemId}"/>
+            <br><br>
+        </div>
+        <input type="submit" value="주문하기">
+    </form>
+</body>
+<script>
+    function deleteCart(cartId){
+        var form = document.createElement('form');
+        form.setAttribute('method', 'post');
+        form.setAttribute('action', '/member/cart/delete/' + cartId);
+        console.log
+        form.submit();
+    }
+</script>
+</html>

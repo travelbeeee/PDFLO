@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>My 후기</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+
+    내가 남긴 후기<br>
+    <div th:each="comment : ${commentList}">
+        <p>제목 : <span th:text="${comment.title}"></span></p>
+        <p>후기 : <span th:text="${comment.comment}"></span></p>
+        <p>점수 : <span th:text="${comment.score}"></span></p>
+        <a th:href="@{/item/{itemId}(itemId = ${comment.itemId})}">자세히 보러가기</a>
+        <a th:href="@{/comment/modify/{itemId}/{commentId}(itemId = ${comment.itemId}, commentId=${comment.commentId})}">후기 수정하기</a>
+        <form th:action="@{/comment/delete/{itemId}/{commentId}(itemId=${comment.itemId}, commentId=${comment.commentId})}" method="post">
+            <input type="submit" value="후기 삭제하기">
+        </form>
+        <br><br>
+    </div>
+</body>
+</html>

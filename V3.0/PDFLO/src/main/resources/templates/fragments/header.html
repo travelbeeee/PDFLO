@@ -1,0 +1,54 @@
+<!--<nav class="nav-container">-->
+<!--    <a th:href="@{/}">-->
+<!--        <img th:src="@{/img/logo.svg}" alt="로고파일">-->
+<!--    </a>-->
+<!--    <form action="">-->
+<!--        <input type="search">-->
+<!--        <input type="image" th:src="@{/img/ic-search.svg}" src="C:\Users\HyunSeok\Desktop\studyWithMe\gitHub\Spring_Practice\PDFLO\PDFLOpjt\src\main\resources\static\img\ic-search.svg">-->
+<!--    </form>-->
+<!--    &lt;!&ndash; 로그인을 했다면 프로필 사진을 아니면 일반 사진&ndash;&gt;-->
+<!--    <img th:if="${session['profile']} != null" th:src="${session['profile']}" alt="프로필사진">-->
+<!--    <img th:if="${session['profile']} == null" th:src="@{/img/profile-non.png}" alt="기본사진">-->
+<!--    <div class="dropdown">-->
+<!--        ^-->
+<!--        <div class="dropdown-content">-->
+<!--            <a th:if="${session['auth']} != null" th:href="@{/member/mypage}">마이페이지</a>-->
+<!--            <a th:if="${session['auth']} != null" th:href="@{/item/upload}">PDF등록하기</a>-->
+<!--            <a th:if="${session['auth']} != null" th:href="@{/member/logout}">로그아웃하기</a>-->
+<!--            <a th:if="${session['auth']} == null" th:href="@{/member/login}">로그인</a>-->
+<!--            <a th:if="${session['auth']} == null" th:href="@{/member/signUp}">회원가입</a>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</nav>-->
+
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">국내 최대 PDF 판매 사이트 PDFLO. 자신의 지식을 공유해보세요.</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <ul class="list-unstyled">
+                        <li><a th:if="${session['auth']} != null" th:href="@{/member/mypage}" class="text-white">마이페이지</a></li>
+                        <li><a th:if="${session['auth']} != null" th:href="@{/item/upload}" class="text-white">PDF등록하기</a></li>
+                        <li><a th:if="${session['auth']} != null" th:href="@{/member/logout}" class="text-white">로그아웃하기</a></li>
+                        <li><a th:if="${session['auth']} == null" th:href="@{/member/login}" class="text-white">로그인</a></li>
+                        <li><a th:if="${session['auth']} == null" th:href="@{/member/signUp}" class="text-white">회원가입</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container">
+            <a th:href="@{/}" class="navbar-brand d-flex align-items-center">
+                <strong>PDFLO</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>

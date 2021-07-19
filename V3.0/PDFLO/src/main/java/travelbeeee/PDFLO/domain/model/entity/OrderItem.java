@@ -1,0 +1,35 @@
+package travelbeeee.PDFLO.domain.model.entity;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import travelbeeee.PDFLO.domain.model.BaseEntity;
+
+import javax.persistence.*;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString(exclude = {"order", "item"})
+public class OrderItem extends BaseEntity {
+    @Id @GeneratedValue
+    @Column(name = "order_item_id")
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    private Integer orderPrice;
+
+    public OrderItem(Order order, Item item, Integer orderPrice) {
+        this.order = order;
+        this.item = item;
+        this.orderPrice = orderPrice;
+    }
+}
