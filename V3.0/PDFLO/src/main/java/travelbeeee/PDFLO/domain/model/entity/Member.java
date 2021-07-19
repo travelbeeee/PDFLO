@@ -22,8 +22,6 @@ public class Member extends BaseEntity {
     private String salt;
     private String email;
 
-    @Enumerated(EnumType.STRING)
-    private MemberType type;
     private Integer point;
 
     public Member(String username, String password, String salt, String email, MemberType type, Integer point) {
@@ -31,12 +29,7 @@ public class Member extends BaseEntity {
         this.password = password;
         this.salt = salt;
         this.email = email;
-        this.type = type;
         this.point = point;
-    }
-
-    public void changeType(MemberType type){
-        this.type = type;
     }
 
     public void changePassword(String password){ this.password = password; }

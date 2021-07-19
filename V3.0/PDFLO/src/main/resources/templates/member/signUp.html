@@ -23,12 +23,14 @@
 <th:block th:replace="fragments/header.html"></th:block>
 <div class="signUpBox">
     <div class="signUpTitle">회원가입하기</div>
-    <form role="form" th:action="" th:object="${signUpForm}" method="post">
+    <form role="form" th:action th:object="${signUpForm}" method="post">
         <input type="text" th:field="*{username}" th:class="${#fields.hasErrors('username')} ? 'fieldError' : ''"
                placeholder="아이디를 입력해주세요.">
         <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Incorrect data</p>
-        <input type="email" th:field="*{email}" placeholder="이메일을 입력해주세요.">
-        <button type="button" id="emailButton" th:value="메일인증하기"></button>
+        <div class="emailBox">
+            <input type="email" th:field="*{email}" placeholder="이메일을 입력해주세요.">
+            <button type="button" id="emailButton" th:value="메일인증하기"></button>
+        </div>
         <input type="password" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
         <input type="submit" value="Sign Up">
     </form>
@@ -36,18 +38,18 @@
 </body>
 <script>
     $('#emailButton').on('click', function (){
-        var email = document.getElementById("email").innerText;
-        console.log("email보낸다");
+        var email = document.getElementById("email").value;
         $.ajax({
-            url: "test2",
+            url: "/member/sendMail",
             type: "POST",
             data: {'email' : email},
-            success: function(){
+            success: function(data){
+                console.log(data);
                 document.getElementById("email").readOnly = true;
-                var emailCodeDiv = document.createElement("div");
-                emailCodeDiv.id = "emailAuth";
-                emailCodeDiv.innerHTML = "<input type='text' th:value='인증코드를 입력해주세요.'>";
-                document.getElementById("testForm").appendChild(emailCodeDiv);
+                // var emailCodeDiv = document.createElement("div");
+                // emailCodeDiv.id = "emailAuth";
+                // emailCodeDiv.innerHTML = "<input type='text' th:value='인증코드를 입력해주세요.'>";
+                // document.getElementById("testForm").appendChild(emailCodeDiv);
             },
             error:function(){
                 alert("실패");

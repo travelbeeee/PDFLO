@@ -26,7 +26,7 @@ public class TestController {
         return "redirect:/";
     }
 
-    @PostMapping("/test2")
+    @PostMapping("/test/test2")
     public ResponseEntity<?> test(@RequestParam String email) throws IOException {
         log.info("email: " + email);
         return ResponseEntity.ok().body("Hello");

@@ -2,6 +2,7 @@ package travelbeeee.PDFLO.web.controller.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +33,7 @@ public class MemberController {
 
     private final MemberService memberService;
     private final MailSender mailSender;
+
     /**
      * 회원가입 폼 페이지로 넘겨준다.
      * 로그인 상태로 회원가입을 진행하려고 하면 에러 발생.
@@ -47,9 +49,10 @@ public class MemberController {
      */
     @PostMapping("/member/sendMail")
     public ResponseEntity<?> sendAuthMail(@RequestParam String email, HttpSession session) throws MessagingException {
+        log.info("email : {}", email);
         int authCode = mailSender.sendingAuthMail(email);
-        session.setAttribute("authCode", authCode);
-        return ResponseEntity.ok().body(authCode);
+        session.setAttribute("authCode", String.valueOf(authCode));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -111,13 +114,6 @@ public class MemberController {
 
         httpSession.setAttribute("id", member.getId());
 
-        if (member.getType().equals(MemberType.UNAUTHORIZATION)) {
-            int authCode = mailSender.sendingAuthMail(member.getEmail());
-            httpSession.setAttribute("authCode", authCode);
-            return "/member/authenticateForm";
-        }
-
-        httpSession.setAttribute("auth", true);
         Optional<Profile> findProfile = memberService.findProfileByMember(member.getId());
 
         if(!findProfile.isEmpty()){
