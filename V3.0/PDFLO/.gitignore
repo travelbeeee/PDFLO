@@ -1,3 +1,7 @@
+# ignore properties file
+/src/main/resources/application.yml
+/src/main/resources/mail.properties
+
 HELP.md
 .gradle
 build/

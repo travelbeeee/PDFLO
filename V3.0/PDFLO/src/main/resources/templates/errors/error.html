@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>에러페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+    <a href="/">돌아가기</a>
+    <th:block th:if="${errorCode} != null">
+        <div id="errorCode" th:text="${errorCode}" style="display:none"></div>
+    </th:block>
+    <th:block th:replace="fragments/footer.html"></th:block>
+</body>
+<script>
+        var errorMessage = document.getElementById("errorCode").innerHTML;
+        console.log(errorMessage);
+        if(errorMessage != null){
+            alert("에러상황발생!! : " + errorMessage);
+        }
+</script>
+</html>

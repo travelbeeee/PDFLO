@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>메인 페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/album/">
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+
+    <!-- 그렇지 않다면 "아직 구매할 수 있는 pdf가 없어요!, 첫번째 판매자가 되보세요" -->
+    <th:block th:if="${#arrays.isEmpty(items)}">
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                    <h3 class="fw-lighter">아직 구매할 수 있는 PDF가 없습니다!</h3>
+                    <a th:href="@{/item/upload}" class="lead text-muted">첫 번째 판매자가 되어보세요!</a>
+            </div>
+        </div>
+    </section>
+    </th:block>
+
+    <th:block th:if="${not #arrays.isEmpty(items)}">
+    <div class="album py-5 bg-light">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col" th:each="item : ${items}">
+                    <div class="card shadow-sm">
+                        <img th:src="${rootLocation} + ${item.thumbnailLocation}" class="bd-placeholder-img card-img-top" width="100%" height="225" xaria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/></img>
+                        <div class="card-body">
+                            <p class="card-text" th:text="${item.title}"></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a th:href="@{/item/{itemId}(itemId=${item.itemId})}"><button type="button" class="btn btn-sm btn-outline-secondary">View</button></a>
+                                </div>
+                                <small class="text-muted" th:text="${item.createdDate}"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </th:block>
+    <th:block th:replace="fragments/footer.html"></th:block>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form th:action="" th:object="${testForm}" method="post">
+        <input type="text" th:field="*{email}">
+        <button id="emailButton" th:value="메일인증하기"></button>
+        <input type="submit" th:value="제출하기">
+    </form>
+</body>
+<script>
+    $('#emailButton').on('click', function (){
+        var email = document.getElementById("email").innerText;
+        $.ajax({
+            url: "test",
+            type: "POST",
+            data: email,
+            success: function(data){
+                alert(data);
+            },
+            error:function(){
+                alert("실패");
+            }
+        });
+    });
+</script>
+</html>
