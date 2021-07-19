@@ -2,6 +2,7 @@ package travelbeeee.PDFLO.web.controller.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,6 +43,31 @@ public class MemberController {
     }
 
     /**
+     * 이메일 input Form에서 가져온 이메일에 인증 코드 보내기.
+     */
+    @PostMapping("/member/sendMail")
+    public ResponseEntity<?> sendAuthMail(@RequestParam String email, HttpSession session) throws MessagingException {
+        int authCode = mailSender.sendingAuthMail(email);
+        session.setAttribute("authCode", authCode);
+        return ResponseEntity.ok().body(authCode);
+    }
+
+    /**
+     * 입력된 코드가 우리가 메일로 보낸 인증 코드와 동일하면 member를 인증회원으로 Update해준다.
+     */
+    @PostMapping("/member/authenticateMail")
+    public String auth(HttpSession httpSession, String inputCode) throws PDFLOException {
+        Long memberId = (Long) httpSession.getAttribute("id");
+        String authCode = (String) httpSession.getAttribute("authCode");
+        if (authCode.equals(inputCode)) {
+            throw new PDFLOException(ErrorCode.MAIL_AUTHCODE_INCORRECT);
+        }
+
+        memberService.authorize(memberId);
+        return "redirect:/";
+    }
+
+    /**
      * 회원가입 진행
      * 아이디, 비밀번호, 이메일 입력 오류시 다시 회원가입 폼 페이지로 보내기.
      */
@@ -54,6 +80,7 @@ public class MemberController {
 
         return "redirect:/";
     }
+
 
     /**
      * 로그인 폼 페이지로 넘겨준다.
@@ -101,21 +128,6 @@ public class MemberController {
         return "redirect:" + redirectURL;
     }
 
-    /**
-     * 입력된 코드가 우리가 메일로 보낸 인증 코드와 동일하면 member를 인증회원으로 Update해준다.
-     */
-    @PostMapping("/member/authenticateMail")
-    public String auth(HttpSession httpSession, int code) throws PDFLOException {
-        Long memberId = (Long) httpSession.getAttribute("id");
-        int authCode = (int) httpSession.getAttribute("authCode");
-
-        if (authCode != code) {
-            throw new PDFLOException(ErrorCode.MAIL_AUTHCODE_INCORRECT);
-        }
-
-        memberService.authorize(memberId);
-        return "redirect:/";
-    }
 
     /**
      * 로그인 상태라면 세션을 날려서 로그인 상태를 초기화해준다.
