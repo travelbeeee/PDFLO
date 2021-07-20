@@ -25,6 +25,7 @@ public interface MemberService {
     void deleteProfile(Long memberId) throws PDFLOException; // 프로필 삭제
     Optional<Profile> findProfileByMember(Long memberId); // 프로필 불러오기
     Member findMember(Long memberId) throws PDFLOException; // 회원 찾기
+    Optional<Member> findMemberByUsername(String username);
     List<Order> findOrderWithItemByMember(Long memberId); // 회원이 주문한 내역 조회
     List<Item> findSellItem(Long memberId); // 회원이 판매 중인 아이템 조회
     List<OrderItem> findSellHistory(Long itemId); // 회원의 판매 내역 조회

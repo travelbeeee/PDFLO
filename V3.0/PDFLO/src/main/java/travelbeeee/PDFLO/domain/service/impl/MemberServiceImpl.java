@@ -81,7 +81,6 @@ public class MemberServiceImpl implements MemberService {
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
 
         Member member = findMember.get();
-        member.changeType(MemberType.AUTHORIZATION);
     }
 
     @Override
@@ -175,6 +174,11 @@ public class MemberServiceImpl implements MemberService {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
         return findMember.get();
+    }
+
+    @Override
+    public Optional<Member> findMemberByUsername(String username) {
+        return memberRepository.findByUsername(username);
     }
 
     @Override

@@ -26,10 +26,13 @@
     <form role="form" th:action th:object="${signUpForm}" method="post">
         <input type="text" th:field="*{username}" th:class="${#fields.hasErrors('username')} ? 'fieldError' : ''"
                placeholder="아이디를 입력해주세요.">
+        <button type="button" id="duplicateCheckBtn">아이디 중복체크</button>
         <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Incorrect data</p>
-        <div class="emailBox">
+        <div class="emailBox" id="emailBox">
             <input type="email" th:field="*{email}" placeholder="이메일을 입력해주세요.">
-            <button type="button" id="emailButton" th:value="메일인증하기"></button>
+            <button type="button" id="sendMailBtn">메일로 인증 코드 보내기</button>
+            <input type="text" id="authCode" placeholder="인증 코드를 입력해주세요." hidden>
+            <button type="button" id="authBtn" hidden>인증하기</button>
         </div>
         <input type="password" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
         <input type="submit" value="Sign Up">
@@ -37,22 +40,61 @@
 </div>
 </body>
 <script>
-    $('#emailButton').on('click', function (){
+    $('#sendMailBtn').on('click', function (){
         var email = document.getElementById("email").value;
+        console.log("email : " + email);
         $.ajax({
             url: "/member/sendMail",
             type: "POST",
             data: {'email' : email},
-            success: function(data){
-                console.log(data);
+            success: function(){
+                alert("메일 인증 코드를 입력해주세요.");
                 document.getElementById("email").readOnly = true;
-                // var emailCodeDiv = document.createElement("div");
-                // emailCodeDiv.id = "emailAuth";
-                // emailCodeDiv.innerHTML = "<input type='text' th:value='인증코드를 입력해주세요.'>";
-                // document.getElementById("testForm").appendChild(emailCodeDiv);
+                document.getElementById("sendMailBtn").hidden = true;
+                document.getElementById("authBtn").hidden = false;
+                document.getElementById("authCode").hidden = false;
             },
             error:function(){
-                alert("실패");
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    });
+
+    $('#authBtn').on('click', function (){
+        var authCode = document.getElementById("authCode").value;
+        $.ajax({
+            url: "/member/auth",
+            type: "POST",
+            data: {'inputCode' : authCode},
+            success: function(data){
+                if(data == true){
+                    alert("메일인증성공");
+                }else{
+                    alert("인증코드가 다릅니다.");
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    });
+
+    $('#duplicateCheckBtn').on('click', function (){
+        var username = document.getElementById("username").value;
+        console.log(username);
+        $.ajax({
+            url: "/member/duplicateCheck",
+            type: "POST",
+            data: {'username' : username},
+            success: function(data){
+                if(data == true){
+                    alert("사용가능한 아이디입니다.");
+                }else{
+                    alert("이미 존재하는 아이디입니다.");
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
             }
         });
     });

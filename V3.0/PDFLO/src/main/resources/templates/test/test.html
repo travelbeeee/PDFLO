@@ -17,8 +17,23 @@
         <input type="submit" th:value="제출하기">
         <button type="button" id="emailButton" th:value="메일인증하기"></button>
     </form>
+
+    <button type="button" id="mainButton"></button>
 </body>
 <script>
+    $('#mainButton').on('click', function (){
+        $.ajax({
+            url: "/",
+            type: "GET",
+            success: function(){
+                alert("성공");
+            },
+            error:function(){
+                alert("실패");
+            }
+        });
+    });
+
     $('#emailButton').on('click', function (){
         var email = document.getElementById("email").innerText;
         console.log("email보낸다");

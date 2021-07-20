@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import travelbeeee.PDFLO.domain.exception.ErrorCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.Member;
@@ -21,6 +22,7 @@ import travelbeeee.PDFLO.web.form.LoginForm;
 import travelbeeee.PDFLO.web.form.SignUpForm;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.security.NoSuchAlgorithmException;
@@ -51,6 +53,7 @@ public class MemberController {
     public ResponseEntity<?> sendAuthMail(@RequestParam String email, HttpSession session) throws MessagingException {
         log.info("email : {}", email);
         int authCode = mailSender.sendingAuthMail(email);
+        log.info("authCode : {}", authCode);
         session.setAttribute("authCode", String.valueOf(authCode));
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -58,16 +61,28 @@ public class MemberController {
     /**
      * 입력된 코드가 우리가 메일로 보낸 인증 코드와 동일하면 member를 인증회원으로 Update해준다.
      */
-    @PostMapping("/member/authenticateMail")
-    public String auth(HttpSession httpSession, String inputCode) throws PDFLOException {
-        Long memberId = (Long) httpSession.getAttribute("id");
+    @ResponseBody
+    @PostMapping("/member/auth")
+    public Boolean auth(HttpSession httpSession, @RequestParam String inputCode) throws PDFLOException {
         String authCode = (String) httpSession.getAttribute("authCode");
         if (authCode.equals(inputCode)) {
-            throw new PDFLOException(ErrorCode.MAIL_AUTHCODE_INCORRECT);
+            httpSession.setAttribute("AUTHORIZATION", true);
         }
+        return authCode.equals(inputCode);
+    }
 
-        memberService.authorize(memberId);
-        return "redirect:/";
+    /**
+     * 아이디 중복 확인
+     */
+    @ResponseBody
+    @PostMapping("/member/duplicateCheck")
+    public Boolean duplicateCheck(@RequestParam String username){
+        log.info("username : {}", username);
+        Optional<Member> findMember = memberService.findMemberByUsername(username);
+        log.info("findMember : {}", findMember);
+        if(findMember.isEmpty())
+            return true;
+        return false;
     }
 
     /**
@@ -75,15 +90,18 @@ public class MemberController {
      * 아이디, 비밀번호, 이메일 입력 오류시 다시 회원가입 폼 페이지로 보내기.
      */
     @PostMapping("/member/signUp")
-    public String signUp(@Valid SignUpForm signUpForm, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException {
+    public String signUp(@Valid SignUpForm signUpForm, BindingResult bindingResult, HttpServletRequest request) throws PDFLOException, NoSuchAlgorithmException {
         if (bindingResult.hasErrors()){
-            throw new PDFLOException(ErrorCode.SIGNUP_INPUT_INVALID);
+            return "/member/signUp";
+        }
+        HttpSession session = request.getSession(false);
+        if(session == null || session.getAttribute("AUTHORIZATION") == null){ // 메일 인증 안했음!
+            return "/member/signUp";
         }
         memberService.signUp(signUpForm);
 
         return "redirect:/";
     }
-
 
     /**
      * 로그인 폼 페이지로 넘겨준다.
@@ -99,9 +117,7 @@ public class MemberController {
      * 로그인 진행
      * 아이디, 비밀번호 입력 오류시 다시 회원가입 폼 페이지로 보내기.
      * 아이디, 비밀번호가 제대로 입력되었다면 세션에 로그인 상태 유지를 위한 Id 값을 추가
-     * 메일 인증을 진행한 회원이라면 메인 페이지로
-     * 메일 인증을 아직 진행하지 않은 회원이라면 메일 인증 페이지로
-     * 프로필 사진이 있는 회원이라면 사진을 추가해서 메인페이지로 넘겨주자.
+     * 프로필 사진이 있는 회원이라면 사진을 추가해서 기존에 요청을 보냈던 페이지로 넘겨주자.
      */
     @PostMapping("/member/login")
     public String login(@Valid LoginForm loginForm, BindingResult bindingResult,
