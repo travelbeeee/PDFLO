@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import travelbeeee.PDFLO.domain.exception.ErrorCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.Member;
@@ -20,6 +17,7 @@ import travelbeeee.PDFLO.domain.service.MemberService;
 import travelbeeee.PDFLO.domain.utility.MailSender;
 import travelbeeee.PDFLO.web.form.LoginForm;
 import travelbeeee.PDFLO.web.form.SignUpForm;
+import travelbeeee.PDFLO.web.form.UsernameForm;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
@@ -76,9 +74,13 @@ public class MemberController {
      */
     @ResponseBody
     @PostMapping("/member/duplicateCheck")
-    public Boolean duplicateCheck(@RequestParam String username){
-        log.info("username : {}", username);
-        Optional<Member> findMember = memberService.findMemberByUsername(username);
+    public Boolean duplicateCheck(@ModelAttribute @Valid UsernameForm form, BindingResult bindingResult){
+        log.info("duplicateCheck 메소드실행");
+        if (bindingResult.hasErrors()) {
+            return false;
+        }
+        log.info("username : {}", form.getUsername());
+        Optional<Member> findMember = memberService.findMemberByUsername(form.getUsername());
         log.info("findMember : {}", findMember);
         if(findMember.isEmpty())
             return true;
