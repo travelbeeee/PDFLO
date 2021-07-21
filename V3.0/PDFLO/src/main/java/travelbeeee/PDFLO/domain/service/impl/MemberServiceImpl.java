@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO.domain.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ import travelbeeee.PDFLO.web.form.LoginForm;
 import travelbeeee.PDFLO.web.form.ProfileForm;
 import travelbeeee.PDFLO.web.form.SignUpForm;
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PointHistoryRepository pointHistoryRepository;
@@ -39,6 +42,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member login(LoginForm loginDto) throws PDFLOException, NoSuchAlgorithmException {
+        log.info("login 메소드 실행");
+        log.info("loginDto : {}", loginDto);
+
         Optional<Member> findMember = memberRepository.findByUsername(loginDto.getUsername());
         if (findMember.isEmpty()) {
             throw new PDFLOException(Code.LOGIN_INPUT_INVALID);
@@ -49,7 +55,6 @@ public class MemberServiceImpl implements MemberService {
         if(!member.getPassword().equals(sha256Encryption.sha256(loginDto.getPassword(), member.getSalt()))){ // 비밀번호가 틀림
             throw new PDFLOException(Code.LOGIN_INPUT_INVALID);
         }
-
         return member;
     }
 
@@ -128,7 +133,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void uploadProfile(Long memberId, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException {
+    public void uploadProfile(Long memberId, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException, IOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
 

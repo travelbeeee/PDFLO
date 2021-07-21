@@ -150,7 +150,7 @@ public class MemberController {
         }
 
         Member member = memberService.login(loginForm);
-
+        log.info("로그인 결과 Member : {}", member);
         httpSession.setAttribute("id", member.getId());
 
         Optional<Profile> findProfile = memberService.findProfileByMember(member.getId());
