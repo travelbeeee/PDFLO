@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,8 +35,14 @@ public class ItemController {
 
     @PostMapping("/item/upload")
     public String itemUpload(HttpSession httpSession, @Valid ItemForm itemForm, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException, IOException {
-        if (bindingResult.hasErrors() || itemForm.getThumbnailFile().isEmpty() || itemForm.getPdfFile().isEmpty()) {
-            throw new PDFLOException(Code.ITEM_INPUT_ERROR);
+        if (bindingResult.hasErrors()) {
+            if (itemForm.getThumbnailFile().isEmpty()) {
+                bindingResult.addError(new FieldError("itemForm", "thumbnailFile", "썸네일은 필수입니다."));
+            }
+            if (itemForm.getPdfFile().isEmpty()) {
+                bindingResult.addError(new FieldError("itemForm", "pdfFile", "PDF 파일은 필수입니다."));
+            }
+            return "/item/uploadForm";
         }
         Long memberId = (Long) httpSession.getAttribute("id");
         itemService.uploadItem(memberId, itemForm);
