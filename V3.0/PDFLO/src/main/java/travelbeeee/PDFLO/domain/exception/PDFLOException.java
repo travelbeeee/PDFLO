@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public class PDFLOException extends Exception{
-    ErrorCode returnCode;
+    Code returnCode;
 
-    public PDFLOException(ErrorCode returnCode){
+    public PDFLOException(Code returnCode){
         this.returnCode = returnCode;
     }
 }

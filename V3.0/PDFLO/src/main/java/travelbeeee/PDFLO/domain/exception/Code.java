@@ -1,6 +1,8 @@
 package travelbeeee.PDFLO.domain.exception;
 
-public enum ErrorCode {
+public enum Code {
+    MEMBER_NAME_INVALID(400, "양식에 맞지 않는 ID입니다."),
+    MEMBER_EMAIL_INVALID(400, "양식에 맞지 않는 이메일입니다."),
     MEMBER_NAME_DUPLICATION(400, "ID가 이미 사용중입니다."),
     LOGIN_INPUT_INVALID(400, "ID, Password가 틀렸습니다."),
     SIGNUP_INPUT_INVALID(400, "ID, Password, Email을 양식에 맞게 작성해주세요."),
@@ -23,12 +25,13 @@ public enum ErrorCode {
     PROFILE_NO_EXIST(400, "프로필 사진을 먼저 등록해주세요."),
     COMMENT_NO_EXIST(400, "존재하지 않는 후기입니다."),
     CART_NO_EXIST(400, "존재하지 않는 장바구니입니다"),
-    CART_ALREADY_EXIST(400, "이미 장바구니에 담은 상품입니다");
+    CART_ALREADY_EXIST(400, "이미 장바구니에 담은 상품입니다"),
+    SUCCESS(200, "성공");
 
     final int status;
     final String message;
 
-    ErrorCode(int status, String message){
+    Code(int status, String message){
         this.status = status;
         this.message = message;
     }

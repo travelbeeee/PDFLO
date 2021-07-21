@@ -41,7 +41,7 @@ public class MailSender {
         messageHelper.setSubject(title); // 메일제목은 생략이 가능하다
         messageHelper.setText(content); // 메일 내용
 
-//        javaMailSender.send(message);
+        javaMailSender.send(message);
 
         return code;
     }

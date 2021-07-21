@@ -7,7 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import travelbeeee.PDFLO.domain.exception.ErrorCode;
+import travelbeeee.PDFLO.domain.exception.Code;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.dto.ItemDetailDto;
 import travelbeeee.PDFLO.domain.model.entity.Item;
@@ -35,7 +35,7 @@ public class ItemController {
     @PostMapping("/item/upload")
     public String itemUpload(HttpSession httpSession, @Valid ItemForm itemForm, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException, IOException {
         if (bindingResult.hasErrors() || itemForm.getThumbnailFile().isEmpty() || itemForm.getPdfFile().isEmpty()) {
-            throw new PDFLOException(ErrorCode.ITEM_INPUT_ERROR);
+            throw new PDFLOException(Code.ITEM_INPUT_ERROR);
         }
         Long memberId = (Long) httpSession.getAttribute("id");
         itemService.uploadItem(memberId, itemForm);

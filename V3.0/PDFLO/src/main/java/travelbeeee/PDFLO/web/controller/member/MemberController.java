@@ -7,14 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import travelbeeee.PDFLO.domain.exception.ErrorCode;
+import travelbeeee.PDFLO.domain.exception.Code;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.Member;
 import travelbeeee.PDFLO.domain.model.entity.Profile;
-import travelbeeee.PDFLO.domain.model.enumType.MemberType;
 import travelbeeee.PDFLO.domain.service.MemberService;
 import travelbeeee.PDFLO.domain.utility.MailSender;
+import travelbeeee.PDFLO.web.form.EmailForm;
 import travelbeeee.PDFLO.web.form.LoginForm;
 import travelbeeee.PDFLO.web.form.SignUpForm;
 import travelbeeee.PDFLO.web.form.UsernameForm;
@@ -47,13 +48,19 @@ public class MemberController {
     /**
      * 이메일 input Form에서 가져온 이메일에 인증 코드 보내기.
      */
+    @ResponseBody
     @PostMapping("/member/sendMail")
-    public ResponseEntity<?> sendAuthMail(@RequestParam String email, HttpSession session) throws MessagingException {
-        log.info("email : {}", email);
+    public Code sendAuthMail(@ModelAttribute @Valid EmailForm form, BindingResult bindingResult, HttpSession session) throws MessagingException {
+        log.info("sendAuthMail 메소드 동작");
+        if (bindingResult.hasErrors()) {
+            return Code.MEMBER_EMAIL_INVALID;
+        }
+        String email = form.getEmail();
         int authCode = mailSender.sendingAuthMail(email);
-        log.info("authCode : {}", authCode);
         session.setAttribute("authCode", String.valueOf(authCode));
-        return new ResponseEntity<>(HttpStatus.OK);
+        log.info("email : {}", email);
+        log.info("authCode : {}", authCode);
+        return Code.SUCCESS;
     }
 
     /**
@@ -61,10 +68,11 @@ public class MemberController {
      */
     @ResponseBody
     @PostMapping("/member/auth")
-    public Boolean auth(HttpSession httpSession, @RequestParam String inputCode) throws PDFLOException {
+    public Boolean auth(HttpSession httpSession, @RequestParam String inputCode, @RequestParam String email) throws PDFLOException {
         String authCode = (String) httpSession.getAttribute("authCode");
         if (authCode.equals(inputCode)) {
             httpSession.setAttribute("AUTHORIZATION", true);
+            httpSession.setAttribute("email", email);
         }
         return authCode.equals(inputCode);
     }
@@ -74,17 +82,15 @@ public class MemberController {
      */
     @ResponseBody
     @PostMapping("/member/duplicateCheck")
-    public Boolean duplicateCheck(@ModelAttribute @Valid UsernameForm form, BindingResult bindingResult){
+    public Code duplicateCheck(@ModelAttribute @Valid UsernameForm form, BindingResult bindingResult){
         log.info("duplicateCheck 메소드실행");
         if (bindingResult.hasErrors()) {
-            return false;
+            return Code.MEMBER_NAME_INVALID;
         }
-        log.info("username : {}", form.getUsername());
         Optional<Member> findMember = memberService.findMemberByUsername(form.getUsername());
-        log.info("findMember : {}", findMember);
         if(findMember.isEmpty())
-            return true;
-        return false;
+            return Code.SUCCESS;
+        return Code.MEMBER_NAME_DUPLICATION;
     }
 
     /**
@@ -92,15 +98,30 @@ public class MemberController {
      * 아이디, 비밀번호, 이메일 입력 오류시 다시 회원가입 폼 페이지로 보내기.
      */
     @PostMapping("/member/signUp")
-    public String signUp(@Valid SignUpForm signUpForm, BindingResult bindingResult, HttpServletRequest request) throws PDFLOException, NoSuchAlgorithmException {
-        if (bindingResult.hasErrors()){
+    public String signUp(@Valid SignUpForm form, BindingResult bindingResult, HttpServletRequest request) throws PDFLOException, NoSuchAlgorithmException {
+        log.info("signUp 메소드 실행");
+        if (bindingResult.hasErrors()) {
+            log.info("입력을 제대로 해주세요.");
             return "/member/signUp";
         }
         HttpSession session = request.getSession(false);
-        if(session == null || session.getAttribute("AUTHORIZATION") == null){ // 메일 인증 안했음!
+        if (session == null || session.getAttribute("AUTHORIZATION") == null) { // 메일 인증 안했음!
+            log.info("메일 인증을 안했습니다.");
+            bindingResult.addError(new FieldError("signUpForm", "email", "메일 인증을 먼저 진행해주세요."));
             return "/member/signUp";
         }
-        memberService.signUp(signUpForm);
+        String authEmail = (String) session.getAttribute("email");
+        if (!authEmail.equals(form.getEmail())) {
+            log.info("다른 메일로 인증했습니다.");
+            bindingResult.addError(new FieldError("signUpForm", "email", "인증한 메일과 입력한 메일이 다릅니다."));
+            return "/member/signUp";
+        }
+        Optional<Member> findMember = memberService.findMemberByUsername(form.getUsername());
+        if (findMember.isPresent()) {
+            bindingResult.addError(new FieldError("signUpForm", "username", "이미 사용중인 아이디입니다."));
+            return "/member/signUp";
+        }
+        memberService.signUp(form);
 
         return "redirect:/";
     }
@@ -125,7 +146,7 @@ public class MemberController {
     public String login(@Valid LoginForm loginForm, BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL, HttpSession httpSession) throws PDFLOException, NoSuchAlgorithmException, MessagingException {
         if (bindingResult.hasErrors()) {
-            throw new PDFLOException(ErrorCode.LOGIN_INPUT_INVALID);
+            throw new PDFLOException(Code.LOGIN_INPUT_INVALID);
         }
 
         Member member = memberService.login(loginForm);

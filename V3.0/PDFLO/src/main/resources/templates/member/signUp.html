@@ -9,8 +9,9 @@
     <th:block th:replace="fragments/head.html"></th:block>
     <link rel="stylesheet" href="/css/member/signUp.css">
     <style>
-        .fieldError{
+        .field-error{
             border-color: #bd2130;
+            color: #dc3545;
         }
     </style>
     <script
@@ -24,17 +25,20 @@
 <div class="signUpBox">
     <div class="signUpTitle">회원가입하기</div>
     <form role="form" th:action th:object="${signUpForm}" method="post">
-        <input type="text" th:field="*{username}" th:class="${#fields.hasErrors('username')} ? 'fieldError' : ''"
-               placeholder="아이디를 입력해주세요.">
+        <input type="text" th:field="*{username}" th:errorclass="field-error" placeholder="아이디를 입력해주세요.">
+        <small>아이디는 영어로 시작하고, 5 ~ 15자의 영어/숫자로 이루어져야합니다.</small>
+        <div class="field-error" th:errors="*{username}"></div>
         <button type="button" id="duplicateCheckBtn">아이디 중복체크</button>
-        <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Incorrect data</p>
         <div class="emailBox" id="emailBox">
-            <input type="email" th:field="*{email}" placeholder="이메일을 입력해주세요.">
+            <input type="email" th:field="*{email}" th:errorclass="field-error" placeholder="이메일을 입력해주세요.">
+            <div class="field-error" th:errors="*{email}"></div>
             <button type="button" id="sendMailBtn">메일로 인증 코드 보내기</button>
             <input type="text" id="authCode" placeholder="인증 코드를 입력해주세요." hidden>
             <button type="button" id="authBtn" hidden>인증하기</button>
         </div>
-        <input type="password" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
+        <input type="password" th:field="*{password}" th:errorclass="field-error" placeholder="비밀번호를 입력해주세요.">
+        <small>비밀번호는 영어로 시작하고, 8 ~ 20자의 영어/숫자/특수문자(!@#$%)로 이루어져야합니다.</small>
+        <div class="field-error" th:errors="*{password}"></div>
         <input type="submit" value="Sign Up">
     </form>
 </div>
@@ -47,12 +51,17 @@
             url: "/member/sendMail",
             type: "POST",
             data: {'email' : email},
-            success: function(){
-                alert("메일 인증 코드를 입력해주세요.");
-                document.getElementById("email").readOnly = true;
-                document.getElementById("sendMailBtn").hidden = true;
-                document.getElementById("authBtn").hidden = false;
-                document.getElementById("authCode").hidden = false;
+            success: function(data){
+                if(data == "MEMBER_EMAIl_INVALID"){
+                    alert("제대로 된 이메일을 입력해주세요");
+                }else{
+                    alert("메일 인증 코드를 입력해주세요.");
+                    document.getElementById("email").readOnly = true;
+                    document.getElementById("sendMailBtn").hidden = true;
+                    document.getElementById("authBtn").hidden = false;
+                    document.getElementById("authCode").hidden = false;
+                }
+
             },
             error:function(){
                 alert("다시 한 번 시도해주세요.");
@@ -61,11 +70,15 @@
     });
 
     $('#authBtn').on('click', function (){
+        var email = document.getElementById("email").value;
         var authCode = document.getElementById("authCode").value;
         $.ajax({
             url: "/member/auth",
             type: "POST",
-            data: {'inputCode' : authCode},
+            data: {
+                'inputCode' : authCode,
+                'email' : email
+                },
             success: function(data){
                 if(data == true){
                     alert("메일인증성공");
@@ -87,10 +100,12 @@
             type: "POST",
             data: {'username' : username},
             success: function(data){
-                if(data == true){
-                    alert("사용가능한 아이디입니다.");
+                if(data == "MEMBER_NAME_INVALID"){
+                    alert("아이디를 입력 양식에 맞게 입력해주세요.");
+                }else if (data == "MEMBER_NAME_DUPLICATION"){
+                    alert("이미 사용중인 아이디입니다.");
                 }else{
-                    alert("사용 불가능한 아이디입니다.");
+                    alert("사용 가능한 아이디입니다.");
                 }
             },
             error:function(){

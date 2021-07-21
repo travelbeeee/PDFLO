@@ -24,7 +24,7 @@ public class Member extends BaseEntity {
 
     private Integer point;
 
-    public Member(String username, String password, String salt, String email, MemberType type, Integer point) {
+    public Member(String username, String password, String salt, String email, Integer point) {
         this.username = username;
         this.password = password;
         this.salt = salt;

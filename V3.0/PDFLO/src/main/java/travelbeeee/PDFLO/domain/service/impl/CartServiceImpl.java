@@ -3,7 +3,7 @@ package travelbeeee.PDFLO.domain.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelbeeee.PDFLO.domain.exception.ErrorCode;
+import travelbeeee.PDFLO.domain.exception.Code;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.Cart;
 import travelbeeee.PDFLO.domain.model.entity.Item;
@@ -36,23 +36,23 @@ public class CartServiceImpl implements CartService {
     public void putItemOnCart(Long memberId, Long itemId) throws PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()){
-            throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
+            throw new PDFLOException(Code.MEMBER_NO_EXIST);
         }
         Optional<Item> findItem = itemRepository.findById(itemId);
         if (findItem.isEmpty()) {
-            throw new PDFLOException(ErrorCode.ITEM_NO_EXIST);
+            throw new PDFLOException(Code.ITEM_NO_EXIST);
         }
 
         Member member = findMember.get();
         Item item = findItem.get();
         if (item.getMember().getId() == member.getId()) {
-            throw new PDFLOException(ErrorCode.MEMBER_IS_SELLER);
+            throw new PDFLOException(Code.MEMBER_IS_SELLER);
 
         }
 
         Optional<Cart> findCart = cartRepository.findByMemberAndItem(memberId, itemId);
         if (!findCart.isEmpty()) {
-            throw new PDFLOException(ErrorCode.CART_ALREADY_EXIST);
+            throw new PDFLOException(Code.CART_ALREADY_EXIST);
         }
 
         Cart cart = new Cart(member, item);
@@ -69,15 +69,15 @@ public class CartServiceImpl implements CartService {
     public void deleteItemOnCart(Long memberId, Long cartId) throws PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()){
-            throw new PDFLOException(ErrorCode.MEMBER_NO_EXIST);
+            throw new PDFLOException(Code.MEMBER_NO_EXIST);
         }
         Optional<Cart> findCart = cartRepository.findById(cartId);
         if (findMember.isEmpty()) {
-            throw new PDFLOException(ErrorCode.CART_NO_EXIST);
+            throw new PDFLOException(Code.CART_NO_EXIST);
         }
         Cart cart = findCart.get();
         if(cart.getMember().getId() != memberId) {
-            throw new PDFLOException(ErrorCode.CART_NO_EXIST);
+            throw new PDFLOException(Code.CART_NO_EXIST);
         }
         cartRepository.delete(cart);
     }
