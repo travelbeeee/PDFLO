@@ -34,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional
     @Override
-    public void uploadItem(Long memberId, ItemForm itemForm) throws NoSuchAlgorithmException, IOException, PDFLOException {
+    public void uploadItem(Long memberId, ItemForm itemForm) throws NoSuchAlgorithmException, PDFLOException, IOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
 

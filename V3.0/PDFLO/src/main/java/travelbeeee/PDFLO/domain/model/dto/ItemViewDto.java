@@ -27,8 +27,7 @@ public class ItemViewDto {
         this.username = item.getMember().getUsername();
         this.createdDate = item.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
         FileInformation thumbnailFileInfo = item.getThumbnail().getFileInfo();
-        this.thumbnailLocation = thumbnailFileInfo.getLocation() + "/resized-"
+        this.thumbnailLocation = thumbnailFileInfo.getLocation() + "resized-"
                 + thumbnailFileInfo.getSaltedFileName() + thumbnailFileInfo.getExtension();
     }
-
 }

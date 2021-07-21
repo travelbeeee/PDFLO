@@ -30,8 +30,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MemberMyPageController {
 
-    @Value("${file.absolute_location}")
-    private String rootLocation;
+    @Value("${file.dir}")
+    private String fileDir;
 
     private final MemberService memberService;
 
@@ -209,7 +209,7 @@ public class MemberMyPageController {
                 .map(i -> new ItemSellDto(i))
                 .collect(Collectors.toList());
 
-        model.addAttribute("rootLocation", rootLocation);
+        model.addAttribute("rootLocation", fileDir);
         model.addAttribute("itemList", itemList);
 
         return "member/myItem";

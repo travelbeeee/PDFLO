@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MainController {
 
-    @Value("${file.absolute_location}")
-    private String rootLocation;
+    @Value("${file.dir}")
+    private String fileDir;
 
     private final ItemService itemService;
 
@@ -32,8 +32,8 @@ public class MainController {
         itemMainDtos = items.stream()
                 .map(i -> new ItemViewDto(i))
                 .collect(Collectors.toList());
-
-        model.addAttribute("rootLocation", rootLocation);
+        log.info("itemMainDtos : {}", itemMainDtos);
+        model.addAttribute("rootLocation", fileDir);
         model.addAttribute("items", itemMainDtos);
         return "index";
     }

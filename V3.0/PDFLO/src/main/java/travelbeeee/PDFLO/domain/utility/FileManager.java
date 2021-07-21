@@ -23,8 +23,8 @@ import java.util.HashMap;
 @Service
 @RequiredArgsConstructor
 public class FileManager {
-    @Value("${file.relative_location}")
-    private String rootLocation;
+    @Value("${file.dir}")
+    private String filePath;
 
     @AllArgsConstructor
     class Resize{
@@ -38,43 +38,42 @@ public class FileManager {
 
     @PostConstruct
     private void postConstruct(){
-        locationMap.put(FileType.PDF, "/PDF");
-        locationMap.put(FileType.PROFILE, "/PROFILE");
-        locationMap.put(FileType.THUMBNAIL, "/THUMBNAIL");
+        locationMap.put(FileType.PDF, "PDF/");
+        locationMap.put(FileType.PROFILE, "PROFILE/");
+        locationMap.put(FileType.THUMBNAIL, "THUMBNAIL/");
 
         resizeMap.put(FileType.PDF, new Resize(false, 0, 0));
         resizeMap.put(FileType.PROFILE, new Resize(true, 40, 40));
         resizeMap.put(FileType.THUMBNAIL, new Resize(true, 400, 400));
     }
 
-    public FileInformation fileUpload(MultipartFile file, FileType fileType) throws NoSuchAlgorithmException {
+    public FileInformation fileUpload(MultipartFile file, FileType fileType) throws NoSuchAlgorithmException, IOException {
         String fileName = sha256Encryption.sha256(file.getOriginalFilename(), sha256Encryption.makeSalt());
         String extension = file.getOriginalFilename().substring(file.getOriginalFilename().indexOf("."));
         String location = locationMap.get(fileType);
-
         Resize resize = resizeMap.get(fileType);
-        try{
-            Files.copy(file.getInputStream(), Paths.get(rootLocation + location + "/" + fileName + extension), StandardCopyOption.REPLACE_EXISTING);
-            if(resize.needResize){
-                resizeImage(rootLocation + location + "/" + fileName + extension, resize.width, resize.height);
-            }
-        }catch(IOException e){
-            return null;
+
+        file.transferTo(new File(getFullPath(fileName, extension, location)));
+        if(resize.needResize){
+            resizeImage(getFullPath(fileName, extension, location), resize.width, resize.height);
         }
         return new FileInformation(fileName, location, extension);
     }
 
-    public boolean fileDelete(String location, String fileName, String extension) {
-        File file = new File(rootLocation + location + "/" + fileName + extension);
-        File resizeFile = new File(rootLocation + location + "/resized-" + fileName + extension);
+    private String getFullPath(String fileName, String extension, String location) {
+        return filePath + location + fileName + extension;
+    }
 
+    public boolean fileDelete(String location, String fileName, String extension) {
+        File file = new File(getFullPath(fileName, extension, location));
+        File resizeFile = new File(getFullPath(fileName, extension, location));
         if(file.exists()) file.delete();
         if(resizeFile.exists()) resizeFile.delete();
         return false;
     }
 
     public byte[] fileDownload(String location, String fileName, String extension) throws IOException {
-        return Files.readAllBytes(Paths.get(rootLocation + location + "/" + fileName + extension));
+        return Files.readAllBytes(Paths.get(filePath + location + "/" + fileName + extension));
     }
 
     public void resizeImage(String oPath, int tWidth, int tHeight){ //원본 경로를 받아와 resize 후 저장한다.
@@ -99,6 +98,4 @@ public class FileManager {
             e.printStackTrace();
         }
     }
-
-
 }
