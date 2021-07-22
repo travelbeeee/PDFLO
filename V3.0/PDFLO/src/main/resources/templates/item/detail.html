@@ -12,7 +12,7 @@
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
 
-    <img th:src="${item.thumbnailLocation}" alt="썸네일페이지">
+    <img th:src="${item.getThumbnail}" alt="썸네일페이지">
     제목 : <th:block th:text="${item.title}"/><br>
     내용 : <th:block th:text="${item.content}"/><br>
     가격 : <th:block th:text="${item.price}"/><br>

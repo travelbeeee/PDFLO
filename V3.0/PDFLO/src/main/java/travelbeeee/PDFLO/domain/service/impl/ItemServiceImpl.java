@@ -41,8 +41,8 @@ public class ItemServiceImpl implements ItemService {
         MultipartFile pdfFile = itemForm.getPdfFile();
         MultipartFile thumbnailFile = itemForm.getThumbnailFile();
 
-        FileInformation pdfFileInformation = fileManager.fileUpload(pdfFile, FileType.PDF);
-        FileInformation thumbnailFileInformation = fileManager.fileUpload(thumbnailFile, FileType.THUMBNAIL);
+        FileInformation pdfFileInformation = fileManager.fileSave(pdfFile, FileType.PDF);
+        FileInformation thumbnailFileInformation = fileManager.fileSave(thumbnailFile, FileType.THUMBNAIL);
 
         Pdf pdf = new Pdf(pdfFileInformation);
         Thumbnail thumbnail = new Thumbnail(thumbnailFileInformation);
@@ -77,8 +77,8 @@ public class ItemServiceImpl implements ItemService {
         Pdf pdf = item.getPdf();
         Thumbnail thumbnail = item.getThumbnail();
 
-        fileManager.fileDelete(pdf.getFileInfo().getLocation(), pdf.getFileInfo().getSaltedFileName(), pdf.getFileInfo().getExtension());
-        fileManager.fileDelete(thumbnail.getFileInfo().getLocation(), thumbnail.getFileInfo().getSaltedFileName(), thumbnail.getFileInfo().getExtension());
+        fileManager.fileDelete(pdf.getFileInfo().getLocation(), pdf.getFileInfo().getSaltedFileName());
+        fileManager.fileDelete(thumbnail.getFileInfo().getLocation(), thumbnail.getFileInfo().getSaltedFileName());
 
         pdfRepository.delete(pdf);
         thumbnailRepository.delete(thumbnail);
@@ -86,8 +86,8 @@ public class ItemServiceImpl implements ItemService {
         MultipartFile pdfFile = itemDto.getPdfFile();
         MultipartFile thumbnailFile = itemDto.getThumbnailFile();
 
-        FileInformation newPdfFileInformation = fileManager.fileUpload(pdfFile, FileType.PDF);
-        FileInformation newThumbnailFileInformation = fileManager.fileUpload(thumbnailFile, FileType.THUMBNAIL);
+        FileInformation newPdfFileInformation = fileManager.fileSave(pdfFile, FileType.PDF);
+        FileInformation newThumbnailFileInformation = fileManager.fileSave(thumbnailFile, FileType.THUMBNAIL);
 
         Pdf newPdf = new Pdf(newPdfFileInformation);
         Thumbnail newThumbnail = new Thumbnail(newThumbnailFileInformation);
@@ -158,7 +158,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         FileInformation fileInfo = itemRepository.findWithPDFById(itemId).get().getPdf().getFileInfo();
-        return fileManager.fileDownload(fileInfo.getLocation(), fileInfo.getSaltedFileName(), fileInfo.getExtension());
+        return fileManager.fileDownload(fileInfo.getLocation(), fileInfo.getSaltedFileName());
     }
 
     @Override

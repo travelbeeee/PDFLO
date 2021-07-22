@@ -6,10 +6,15 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 @Getter @Setter
 public class FileInformation {
+    private String originFileName;
     private String saltedFileName;
     private String location;
-    private String extension;
+
+    public FileInformation(String originFileName, String saltedFileName, String location) {
+        this.originFileName = originFileName;
+        this.saltedFileName = saltedFileName;
+        this.location = location;
+    }
 }

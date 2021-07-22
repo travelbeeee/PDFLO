@@ -19,7 +19,7 @@ public class ItemViewDto {
     String title;
     String username;
     String createdDate;
-    String thumbnailLocation;
+    String thumbnail;
 
     public ItemViewDto(Item item) {
         this.itemId = item.getId();
@@ -27,7 +27,6 @@ public class ItemViewDto {
         this.username = item.getMember().getUsername();
         this.createdDate = item.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
         FileInformation thumbnailFileInfo = item.getThumbnail().getFileInfo();
-        this.thumbnailLocation = thumbnailFileInfo.getLocation() + "resized-"
-                + thumbnailFileInfo.getSaltedFileName() + thumbnailFileInfo.getExtension();
+        this.thumbnail = thumbnailFileInfo.getLocation() + thumbnailFileInfo.getSaltedFileName();
     }
 }
