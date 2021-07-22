@@ -10,7 +10,8 @@ import java.time.format.DateTimeFormatter;
 @Data
 public class ItemSellDto {
     private String title;
-    private String thumbnail;
+    private String thumbnailLocation;
+    private String thumbnailFileName;
     private Integer price;
     private String createdDate;
     private Long itemId;
@@ -19,7 +20,8 @@ public class ItemSellDto {
     public ItemSellDto(Item i) {
         this.title = i.getTitle();
         FileInformation thumbnailInfo = i.getThumbnail().getFileInfo();
-        this.thumbnail = thumbnailInfo.getLocation() + thumbnailInfo.getSaltedFileName();
+        this.thumbnailLocation= thumbnailInfo.getLocation();
+        this.thumbnailFileName =thumbnailInfo.getSaltedFileName();
         this.price = i.getPrice();
         this.createdDate = i.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
         this.itemId = i.getId();

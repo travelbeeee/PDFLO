@@ -27,10 +27,12 @@ public class ItemDetailDto {
     String username;
     Integer price;
     String createdDate;
-    String thumbnail;
-    String pdf;
+    String thumbnailLocation;
+    String thumbnailFileName;
+    String pdfLocation;
+    String pdfFileName;
     List<CommentDto> comments = new ArrayList<>();
-2
+
     public ItemDetailDto(Item item) {
         this.itemId = item.getId();
         this.title = item.getTitle();
@@ -42,8 +44,10 @@ public class ItemDetailDto {
         FileInformation thumbnailFileInfo = item.getThumbnail().getFileInfo();
         FileInformation pdfFileInfo = item.getPdf().getFileInfo();
 
-        this.thumbnail = thumbnailFileInfo.getLocation() + thumbnailFileInfo.getSaltedFileName();
-        this.pdf = pdfFileInfo.getLocation() + pdfFileInfo.getSaltedFileName();
+        this.thumbnailLocation = thumbnailFileInfo.getLocation();
+        this.thumbnailFileName =thumbnailFileInfo.getSaltedFileName();
+        this.pdfLocation = pdfFileInfo.getLocation();
+        this.pdfFileName = pdfFileInfo.getSaltedFileName();
         List<Comment> comments = item.getComments();
         this.comments = comments.stream()
                 .map(c -> new CommentDto(c))

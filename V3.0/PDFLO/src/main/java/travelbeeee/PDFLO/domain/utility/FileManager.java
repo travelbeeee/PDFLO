@@ -28,6 +28,7 @@ import java.util.UUID;
 public class FileManager {
     @Value("${file.dir}")
     private String filePath;
+    private String resizeName = "resized-";
 
     @AllArgsConstructor
     class Resize{
@@ -69,7 +70,7 @@ public class FileManager {
         int index = oPath.lastIndexOf(".");
         String ext = oPath.substring(index + 1); // 파일 확장자
 
-        String tPath = oFile.getParent() + File.separator + "resized-" + oFile.getName(); // 썸네일저장 경로
+        String tPath = oFile.getParent() + File.separator + resizeName + oFile.getName(); // 썸네일저장 경로
         File tFile = new File(tPath);
 
         try {
@@ -90,20 +91,18 @@ public class FileManager {
     }
 
     public String getFullPath(String fileName, String location) {
-        log.info("getFullPath 메소드동작");
-        log.info("결과 : {}", filePath + location + fileName);
         return filePath + location + fileName;
     }
 
     public boolean fileDelete(String location, String fileName) {
         File file = new File(getFullPath(fileName, location));
-        File resizeFile = new File(getFullPath(fileName, location));
+        File resizeFile = new File(getFullPath(fileName, resizeName + location));
         if(file.exists()) file.delete();
         if(resizeFile.exists()) resizeFile.delete();
         return false;
     }
 
     public byte[] fileDownload(String location, String fileName) throws IOException {
-        return Files.readAllBytes(Paths.get(filePath + location + fileName ));
+        return Files.readAllBytes(Paths.get(getFullPath(fileName, location)));
     }
 }

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -49,7 +49,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col" th:each="item : ${items}">
                     <div class="card shadow-sm">
-                        <img th:src="|/images/${item.getThumbnail()}|" alt="상품썸네일">
+                        <img th:src="|/images/${item.thumbnailLocation}${item.thumbnailFileName}|" alt="상품썸네일">
                         <div class="card-body">
                             <p class="card-text" th:text="${item.title}"></p>
                             <div class="d-flex justify-content-between align-items-center">

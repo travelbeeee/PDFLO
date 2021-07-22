@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import travelbeeee.PDFLO.domain.model.dto.ItemViewDto;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.domain.service.ItemService;
-import travelbeeee.PDFLO.domain.utility.FileManager;
 
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,9 +42,10 @@ public class MainController {
     }
 
     @ResponseBody
-    @GetMapping("/images/{file}")
-    public Resource downloadImage(@PathVariable String file) throws MalformedURLException {
-        log.info("downloadImage");
-        return new UrlResource("file:" + filePath + file);
+    @GetMapping("/images/{location}/{fileName}")
+    public Resource downloadImage(@PathVariable String location, @PathVariable String fileName) throws MalformedURLException {
+        log.info("downloadImage file : {}", location);
+        log.info("downloadImage fileName : {}", fileName);
+        return new UrlResource("file:" + filePath + location + "/" +  fileName);
     }
 }
