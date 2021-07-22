@@ -10,7 +10,6 @@ import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.FileInformation;
 import travelbeeee.PDFLO.domain.model.entity.*;
 import travelbeeee.PDFLO.domain.model.enumType.FileType;
-import travelbeeee.PDFLO.domain.model.enumType.MemberType;
 import travelbeeee.PDFLO.domain.model.enumType.PointType;
 import travelbeeee.PDFLO.domain.repository.*;
 import travelbeeee.PDFLO.domain.service.MemberService;
@@ -41,21 +40,18 @@ public class MemberServiceImpl implements MemberService {
     private final Sha256Encryption sha256Encryption;
 
     @Override
-    public Member login(LoginForm loginDto) throws PDFLOException, NoSuchAlgorithmException {
-        log.info("login 메소드 실행");
-        log.info("loginDto : {}", loginDto);
-
+    public Optional<Member> login(LoginForm loginDto) throws PDFLOException, NoSuchAlgorithmException {
         Optional<Member> findMember = memberRepository.findByUsername(loginDto.getUsername());
-        if (findMember.isEmpty()) {
-            throw new PDFLOException(Code.LOGIN_INPUT_INVALID);
+        if (findMember.isEmpty()) { // 아이디가 틀림
+            return Optional.empty();
         }
 
         Member member = findMember.get();
 
         if(!member.getPassword().equals(sha256Encryption.sha256(loginDto.getPassword(), member.getSalt()))){ // 비밀번호가 틀림
-            throw new PDFLOException(Code.LOGIN_INPUT_INVALID);
+            return Optional.empty();
         }
-        return member;
+        return Optional.of(member);
     }
 
     @Transactional
@@ -140,13 +136,12 @@ public class MemberServiceImpl implements MemberService {
         Optional<Profile> findProfile = profileRepository.findProfileByMember(memberId);
         if(!findProfile.isEmpty()){ // 기존 프로필 지우기
             Profile deleteProfile = findProfile.get();
-            fileManager.fileDelete(deleteProfile.getFileInfo().getLocation(),
-                    deleteProfile.getFileInfo().getSaltedFileName(), deleteProfile.getFileInfo().getExtension());
+            fileManager.fileDelete(deleteProfile.getFileInfo().getLocation(), deleteProfile.getFileInfo().getSaltedFileName());
             profileRepository.delete(deleteProfile);
         }
 
         MultipartFile profile = profileForm.getProfile();
-        FileInformation fileInformation = fileManager.fileUpload(profile, FileType.PROFILE);
+        FileInformation fileInformation = fileManager.fileSave(profile, FileType.PROFILE);
         Member member = findMember.get();
 
         Profile newProfile = new Profile(member, fileInformation);
@@ -163,7 +158,7 @@ public class MemberServiceImpl implements MemberService {
         if(findProfile.isEmpty()) throw new PDFLOException(Code.PROFILE_NO_EXIST);
 
         Profile profile = findProfile.get();
-        fileManager.fileDelete(profile.getFileInfo().getLocation(), profile.getFileInfo().getSaltedFileName(), profile.getFileInfo().getExtension());
+        fileManager.fileDelete(profile.getFileInfo().getLocation(), profile.getFileInfo().getSaltedFileName());
 
         profileRepository.delete(profile);
     }

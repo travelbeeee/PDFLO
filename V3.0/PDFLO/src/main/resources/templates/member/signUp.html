@@ -25,21 +25,24 @@
 <div class="signUpBox">
     <div class="signUpTitle">회원가입하기</div>
     <form role="form" th:action th:object="${signUpForm}" method="post">
+        <label th:text="#{label.username}"></label>
         <input type="text" th:field="*{username}" th:errorclass="field-error" placeholder="아이디를 입력해주세요.">
         <small>아이디는 영어로 시작하고, 5 ~ 15자의 영어/숫자로 이루어져야합니다.</small>
         <div class="field-error" th:errors="*{username}"></div>
         <button type="button" id="duplicateCheckBtn">아이디 중복체크</button>
         <div class="emailBox" id="emailBox">
+            <label th:text="#{label.email}"></label>
             <input type="email" th:field="*{email}" th:errorclass="field-error" placeholder="이메일을 입력해주세요.">
             <div class="field-error" th:errors="*{email}"></div>
             <button type="button" id="sendMailBtn">메일로 인증 코드 보내기</button>
             <input type="text" id="authCode" placeholder="인증 코드를 입력해주세요." hidden>
             <button type="button" id="authBtn" hidden>인증하기</button>
         </div>
+        <label th:text="#{label.password}"></label>
         <input type="password" th:field="*{password}" th:errorclass="field-error" placeholder="비밀번호를 입력해주세요.">
         <small>비밀번호는 영어로 시작하고, 8 ~ 20자의 영어/숫자/특수문자(!@#$%)로 이루어져야합니다.</small>
         <div class="field-error" th:errors="*{password}"></div>
-        <input type="submit" value="Sign Up">
+        <button th:text="#{button.signUp}"></button>
     </form>
 </div>
 </body>

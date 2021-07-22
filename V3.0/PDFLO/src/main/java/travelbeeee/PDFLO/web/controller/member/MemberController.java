@@ -101,24 +101,27 @@ public class MemberController {
     public String signUp(@Valid SignUpForm form, BindingResult bindingResult, HttpServletRequest request) throws PDFLOException, NoSuchAlgorithmException {
         log.info("signUp 메소드 실행");
         if (bindingResult.hasErrors()) {
-            log.info("입력을 제대로 해주세요.");
+            log.info("bindingResult : {}", bindingResult);
             return "/member/signUp";
         }
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("AUTHORIZATION") == null) { // 메일 인증 안했음!
             log.info("메일 인증을 안했습니다.");
             bindingResult.addError(new FieldError("signUpForm", "email", "메일 인증을 먼저 진행해주세요."));
+            log.info("bindingResult : {}", bindingResult);
             return "/member/signUp";
         }
         String authEmail = (String) session.getAttribute("email");
         if (!authEmail.equals(form.getEmail())) {
             log.info("다른 메일로 인증했습니다.");
             bindingResult.addError(new FieldError("signUpForm", "email", "인증한 메일과 입력한 메일이 다릅니다."));
+            log.info("bindingResult : {}", bindingResult);
             return "/member/signUp";
         }
         Optional<Member> findMember = memberService.findMemberByUsername(form.getUsername());
         if (findMember.isPresent()) {
             bindingResult.addError(new FieldError("signUpForm", "username", "이미 사용중인 아이디입니다."));
+            log.info("bindingResult : {}", bindingResult);
             return "/member/signUp";
         }
         memberService.signUp(form);
@@ -146,10 +149,16 @@ public class MemberController {
     public String login(@Valid LoginForm loginForm, BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL, HttpSession httpSession) throws PDFLOException, NoSuchAlgorithmException, MessagingException {
         if (bindingResult.hasErrors()) {
-            throw new PDFLOException(Code.LOGIN_INPUT_INVALID);
+            return "/member/login";
         }
 
-        Member member = memberService.login(loginForm);
+        Optional<Member> loginMember = memberService.login(loginForm);
+        if (loginMember.isEmpty()) {
+            bindingResult.reject("loginFail", null, "아이디 또는 비밀번호가 틀렸습니다.(디폴트메시지)");
+            return "/member/login";
+        }
+        Member member = loginMember.get();
+
         log.info("로그인 결과 Member : {}", member);
         httpSession.setAttribute("id", member.getId());
 
@@ -158,7 +167,7 @@ public class MemberController {
         if(!findProfile.isEmpty()){
             Profile profile = findProfile.get();
             httpSession.setAttribute("profile", profile.getFileInfo().getLocation() +
-                    "/resized-" + profile.getFileInfo().getSaltedFileName() + profile.getFileInfo().getExtension());
+                    "/resized-" + profile.getFileInfo().getSaltedFileName());
         }
         return "redirect:" + redirectURL;
     }
