@@ -36,27 +36,29 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void uploadComment(Long memberId, Long itemId, CommentForm commentForm) throws PDFLOException {
+    public Code uploadComment(Long memberId, Long itemId, CommentForm commentForm) throws PDFLOException {
         // 1)
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) return Code.MEMBER_NO_EXIST;
 
         // 2)
         Optional<Item> findItem = itemRepository.findById(itemId);
-        if(findItem.isEmpty()) throw new PDFLOException(Code.ITEM_NO_EXIST);
+        if(findItem.isEmpty()) return Code.ITEM_NO_EXIST;
 
         // 3)
         Member member = findMember.get();
         Item item = findItem.get();
         Optional<OrderItem> findOrderItem = orderItemRepository.findByMemberAndItem(member, item);
-        if(findOrderItem.isEmpty()) throw new PDFLOException(Code.COMMENT_NO_PERMISSION_BUYING);
+        if(findOrderItem.isEmpty()) return Code.COMMENT_NO_PERMISSION_BUYING;
 
         // 4)
         Optional<Comment> findComment = commentRepository.findByMemberIdAndItemId(memberId, itemId);
-        if(!findComment.isEmpty()) throw new PDFLOException(Code.COMMENT_ALREADY_WRITTEN);
+        if(!findComment.isEmpty()) return Code.COMMENT_ALREADY_WRITTEN;
 
         Comment comment = new Comment(member, item, commentForm.getComment(), commentForm.getScore());
         commentRepository.save(comment);
+
+        return Code.SUCCESS;
     }
 
     /**

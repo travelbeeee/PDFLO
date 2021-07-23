@@ -27,6 +27,7 @@ public class CartController {
      */
     @GetMapping("/cart")
     public String memberCartList(HttpSession httpSession, Model model) throws PDFLOException {
+        log.info("memberCartList 메소드 실행 : 장바구니 목록 가져오기");
         Long memberId = (Long) httpSession.getAttribute("id");
         List<Cart> carts = cartService.findAllByMemberWithItem(memberId);
 
@@ -43,6 +44,7 @@ public class CartController {
      */
     @PostMapping("/cart/{itemId}")
     public String putItemOnCart(HttpSession httpSession, @PathVariable("itemId") Long itemId) throws PDFLOException {
+        log.info("putItemOnCart 메소드 실행 : 장바구니에 추가하기");
         Long memberId = (Long) httpSession.getAttribute("id");
         cartService.putItemOnCart(memberId, itemId);
         return "redirect:/cart";

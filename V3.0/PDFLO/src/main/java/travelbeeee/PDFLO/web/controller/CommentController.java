@@ -5,15 +5,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.ObjectError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+import travelbeeee.PDFLO.domain.exception.Code;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.dto.CommentItemDto;
 import travelbeeee.PDFLO.domain.model.dto.CommentModifyDto;
 import travelbeeee.PDFLO.domain.model.entity.Comment;
 import travelbeeee.PDFLO.domain.service.CommentService;
 import travelbeeee.PDFLO.web.form.CommentForm;
+import travelbeeee.PDFLO.web.validator.CommentFormValidator;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -26,19 +29,28 @@ import java.util.stream.Collectors;
 public class CommentController {
 
     private final CommentService commentService;
+    private final CommentFormValidator commentFormValidator;
 
+    @InitBinder
+    public void init(WebDataBinder dataBinder) {
+        dataBinder.addValidators(commentFormValidator);
+    }
+
+    /**
+     * 후기 남기기
+     */
+    @ResponseBody
     @PostMapping("/comment/write/{itemId}")
-    public String uploadComment(HttpSession httpSession, @PathVariable("itemId") Long itemId,
-                                @Valid CommentForm commentForm, BindingResult bindingResult) throws PDFLOException {
+    public Code uploadComment(HttpSession httpSession, @PathVariable("itemId") Long itemId,
+                              @Validated @ModelAttribute CommentForm commentForm, BindingResult bindingResult) throws PDFLOException {
+        log.info("UploadComment 메소드");
         if (bindingResult.hasErrors()) {
-            return "redirect:/item/detail/" + itemId;
+            return Code.COMMENT_INPUT_INVALID;
         }
-
         Long memberId = (Long) httpSession.getAttribute("id");
+        Code resultCode = commentService.uploadComment(memberId, itemId, commentForm);
 
-        commentService.uploadComment(memberId, itemId, commentForm);
-
-        return "redirect:/item/" + itemId;
+        return resultCode;
     }
 
     @PostMapping("/comment/delete/{itemId}/{commentId}")
@@ -67,7 +79,7 @@ public class CommentController {
     }
 
     @PostMapping("/comment/modify/{itemId}/{commentId}")
-    public String modifyComment(HttpSession httpSession, @Valid CommentForm commentForm, BindingResult bindingResult,
+    public String modifyComment(HttpSession httpSession, @Validated CommentForm commentForm, BindingResult bindingResult,
                                 @PathVariable("itemId") Long itemId, @PathVariable("commentId") Long commentId) throws PDFLOException {
         if (bindingResult.hasErrors()) {
             return "redirect:/comment/modify/" + itemId + "/" + commentId;
