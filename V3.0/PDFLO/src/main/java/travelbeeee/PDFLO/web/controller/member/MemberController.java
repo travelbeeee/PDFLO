@@ -2,8 +2,6 @@ package travelbeeee.PDFLO.web.controller.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -98,7 +96,7 @@ public class MemberController {
      * 아이디, 비밀번호, 이메일 입력 오류시 다시 회원가입 폼 페이지로 보내기.
      */
     @PostMapping("/member/signUp")
-    public String signUp(@Valid SignUpForm form, BindingResult bindingResult, HttpServletRequest request) throws PDFLOException, NoSuchAlgorithmException {
+    public String signUp(@Valid @ModelAttribute SignUpForm form, BindingResult bindingResult, HttpServletRequest request) throws PDFLOException, NoSuchAlgorithmException {
         log.info("signUp 메소드 실행");
         if (bindingResult.hasErrors()) {
             log.info("bindingResult : {}", bindingResult);
@@ -154,7 +152,7 @@ public class MemberController {
 
         Optional<Member> loginMember = memberService.login(loginForm);
         if (loginMember.isEmpty()) {
-            bindingResult.reject("loginFail", null, "아이디 또는 비밀번호가 틀렸습니다.(디폴트메시지)");
+            bindingResult.reject("LoginFail", null, "아이디 또는 비밀번호가 틀렸습니다.(디폴트메시지)");
             return "/member/login";
         }
         Member member = loginMember.get();
