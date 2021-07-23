@@ -26,7 +26,7 @@ public class MainController {
 
     @Value("${file.dir}")
     private String filePath;
-
+    private String fileSeperator = "/";
     private final ItemService itemService;
 
     @GetMapping("/")
@@ -42,10 +42,10 @@ public class MainController {
     }
 
     @ResponseBody
-    @GetMapping("/images/{location}/{fileName}")
-    public Resource downloadImage(@PathVariable String location, @PathVariable String fileName) throws MalformedURLException {
-        log.info("downloadImage file : {}", location);
-        log.info("downloadImage fileName : {}", fileName);
-        return new UrlResource("file:" + filePath + location + "/" +  fileName);
+    @GetMapping("/images/{location}/{year}/{month}/{day}/{fileName}")
+    public Resource downloadImage(@PathVariable String location, @PathVariable String year, @PathVariable String month,
+                                  @PathVariable String day, @PathVariable String fileName) throws MalformedURLException {
+        return new UrlResource("file:" + filePath + location + fileSeperator + year +
+                fileSeperator + month + fileSeperator + day + fileSeperator + fileName);
     }
 }

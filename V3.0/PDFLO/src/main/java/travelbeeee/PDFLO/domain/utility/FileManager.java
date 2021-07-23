@@ -17,8 +17,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -27,9 +28,9 @@ import java.util.UUID;
 @Slf4j
 public class FileManager {
     @Value("${file.dir}")
-    private String filePath;
+    private String fileDir;
     private String resizeName = "resized-";
-
+    private String fileSeperator = "/";
     @AllArgsConstructor
     class Resize{
         boolean needResize;
@@ -54,14 +55,32 @@ public class FileManager {
         String originFileName = file.getOriginalFilename();
         String extension = getExt(originFileName);
         String saltedFileName = UUID.randomUUID().toString() + "." + extension;
-        String location = locationMap.get(fileType);
+        String location = makeSavePath(locationMap.get(fileType));
         Resize resize = resizeMap.get(fileType);
-
+        log.info("파일 저장 ! fullPath : {}", getFullPath(saltedFileName, location));
         file.transferTo(new File(getFullPath(saltedFileName, location)));
         if(resize.needResize){
             resizeImage(getFullPath(saltedFileName, location), resize.width, resize.height);
         }
         return new FileInformation(originFileName, saltedFileName, location);
+    }
+
+    private String makeSavePath(String fileTypePath) {
+        Calendar cal = Calendar.getInstance();
+
+        String yearPath = Integer.toString(cal.get(Calendar.YEAR));
+        String monthPath = yearPath + fileSeperator + new DecimalFormat("00").format(cal.get(Calendar.MONTH)+1);
+        String datePath = monthPath + fileSeperator + new DecimalFormat("00").format(cal.get(Calendar.DATE));
+
+        File dirPath = new File(fileDir + fileTypePath + datePath);
+        if(!dirPath.exists()) {
+            dirPath.mkdirs();
+        }
+        return fileTypePath + datePath + fileSeperator;
+    }
+
+    public String getFullPath(String fileName, String location) {
+        return fileDir + location + fileName;
     }
 
     public void resizeImage(String oPath, int tWidth, int tHeight){ //원본 경로를 받아와 resize 후 저장한다.
@@ -90,9 +109,6 @@ public class FileManager {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
-    public String getFullPath(String fileName, String location) {
-        return filePath + location + fileName;
-    }
 
     public boolean fileDelete(String location, String fileName) {
         File file = new File(getFullPath(fileName, location));
