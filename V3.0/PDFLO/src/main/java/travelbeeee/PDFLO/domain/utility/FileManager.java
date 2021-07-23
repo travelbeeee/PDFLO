@@ -112,7 +112,7 @@ public class FileManager {
 
     public boolean fileDelete(String location, String fileName) {
         File file = new File(getFullPath(fileName, location));
-        File resizeFile = new File(getFullPath(fileName, resizeName + location));
+        File resizeFile = new File(getFullPath(resizeName+ fileName, location));
         if(file.exists()) file.delete();
         if(resizeFile.exists()) resizeFile.delete();
         return false;

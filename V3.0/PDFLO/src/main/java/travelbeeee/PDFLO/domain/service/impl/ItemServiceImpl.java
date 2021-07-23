@@ -100,8 +100,7 @@ public class ItemServiceImpl implements ItemService {
     /**
      * 1) 상품 확인
      * 2) 요청한 회원이 등록한 상품인지 확인
-     * 3) PDF / Thumbnail 파일 삭제하기 (물리적)
-     * 4) PDF / Thumbnail / Item 엔티티 삭제하기
+     * 3) 상품의 상태를 STOP 으로 바꾼다. ( 추후에 다시 판매를 진행할 수 있음. )
      */
     @Transactional
     @Override
@@ -110,7 +109,6 @@ public class ItemServiceImpl implements ItemService {
         if(findItem.isEmpty()) throw new PDFLOException(Code.ITEM_NO_EXIST);
 
         Item item = findItem.get();
-
         if(item.getMember().getId() != memberId) throw new PDFLOException(Code.MEMBER_NOT_SELLER);
 
         item.stopSell();

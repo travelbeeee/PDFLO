@@ -12,7 +12,7 @@
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
 
-    <img th:src="${item.getThumbnail}" alt="썸네일페이지">
+    <img th:src="|/images/${item.thumbnailLocation}${item.thumbnailFileName}|" alt="썸네일페이지">
     제목 : <th:block th:text="${item.title}"/><br>
     내용 : <th:block th:text="${item.content}"/><br>
     가격 : <th:block th:text="${item.price}"/><br>
@@ -43,20 +43,7 @@
         </form>
         <br><br>
     </div>
-    <!--
-    <div th:if="${isSeller} == false">
-        <form th:action="@{/content/buy/{contentId}(contentId=${contentId})}" method="post">
-            <input type="submit" value="구매하기">
-        </form>
-    </div>
 
-    <div th:if="${isSeller} == true">
-        <a th:href="@{/content/modify/{contentId}(contentId=${contentId})}">수정하기</a>
-        <form th:action="@{/content/delete/{contentId}(contentId=${contentId})}" method="post">
-            <input type="submit" value="삭제하기">
-        </form>
-    </div>
-    -->
     <form th:action="@{/comment/write/{itemId}(itemId=${item.itemId})}" th:object="${commentForm}" method="post">
         <input type="text" placeholder="후기를 남겨주세요." th:field="*{comment}">
         <input type="number" min="1.0" max="5.0" step="0.5" th:field="*{score}">

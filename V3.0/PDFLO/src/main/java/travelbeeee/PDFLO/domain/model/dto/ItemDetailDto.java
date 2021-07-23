@@ -45,7 +45,7 @@ public class ItemDetailDto {
         FileInformation pdfFileInfo = item.getPdf().getFileInfo();
 
         this.thumbnailLocation = thumbnailFileInfo.getLocation();
-        this.thumbnailFileName =thumbnailFileInfo.getSaltedFileName();
+        this.thumbnailFileName = thumbnailFileInfo.getSaltedFileName();
         this.pdfLocation = pdfFileInfo.getLocation();
         this.pdfFileName = pdfFileInfo.getSaltedFileName();
         List<Comment> comments = item.getComments();
