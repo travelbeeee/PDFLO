@@ -1,6 +1,6 @@
 package travelbeeee.PDFLO.domain.exception;
 
-public enum Code {
+public enum ReturnCode {
     MEMBER_NAME_INVALID(400, "양식에 맞지 않는 ID입니다."),
     MEMBER_EMAIL_INVALID(400, "양식에 맞지 않는 이메일입니다."),
     MEMBER_NAME_DUPLICATION(400, "ID가 이미 사용중입니다."),
@@ -31,7 +31,7 @@ public enum Code {
     final int status;
     final String message;
 
-    Code(int status, String message){
+    ReturnCode(int status, String message){
         this.status = status;
         this.message = message;
     }
