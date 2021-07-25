@@ -3,7 +3,7 @@ package travelbeeee.PDFLO.domain.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelbeeee.PDFLO.domain.exception.Code;
+import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.Comment;
 import travelbeeee.PDFLO.domain.model.entity.Item;
@@ -36,54 +36,29 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public Code uploadComment(Long memberId, Long itemId, CommentForm commentForm) throws PDFLOException {
+    public ReturnCode uploadComment(Long memberId, Long itemId, CommentForm commentForm) throws PDFLOException {
         // 1)
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) return Code.MEMBER_NO_EXIST;
+        if(findMember.isEmpty()) return ReturnCode.MEMBER_NO_EXIST;
 
         // 2)
         Optional<Item> findItem = itemRepository.findById(itemId);
-        if(findItem.isEmpty()) return Code.ITEM_NO_EXIST;
+        if(findItem.isEmpty()) return ReturnCode.ITEM_NO_EXIST;
 
         // 3)
         Member member = findMember.get();
         Item item = findItem.get();
         Optional<OrderItem> findOrderItem = orderItemRepository.findByMemberAndItem(member, item);
-        if(findOrderItem.isEmpty()) return Code.COMMENT_NO_PERMISSION_BUYING;
+        if(findOrderItem.isEmpty()) return ReturnCode.COMMENT_NO_PERMISSION_BUYING;
 
         // 4)
         Optional<Comment> findComment = commentRepository.findByMemberIdAndItemId(memberId, itemId);
-        if(!findComment.isEmpty()) return Code.COMMENT_ALREADY_WRITTEN;
+        if(!findComment.isEmpty()) return ReturnCode.COMMENT_ALREADY_WRITTEN;
 
         Comment comment = new Comment(member, item, commentForm.getComment(), commentForm.getScore());
         commentRepository.save(comment);
 
-        return Code.SUCCESS;
-    }
-
-    /**
-     * 1) 해당 회원이 존재하는지 확인
-     * 2) 해당 후기가 존재하는지 확인
-     * 3) 해당 회원이 해당 후기를 작성했는지 확인
-     * 4) 해당 후기를 꺼내와서 수정
-     */
-    @Transactional
-    @Override
-    public void modifyComment(Long memberId, Long commentId, CommentForm commentForm) throws PDFLOException {
-        // 1)
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
-
-        // 2)
-        Optional<Comment> findComment = commentRepository.findById(commentId);
-        if(findComment.isEmpty()) throw new PDFLOException(Code.COMMENT_NO_EXIST);
-
-        // 3)
-        Comment comment = findComment.get();
-        if(comment.getMember().getId() != memberId) throw new PDFLOException(Code.COMMENT_NO_PERMISSION_WRITER);
-
-        // 4)
-        comment.modifyComment(commentForm);
+        return ReturnCode.SUCCESS;
     }
 
     /**
@@ -96,15 +71,15 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long memberId, Long commentId) throws PDFLOException {
         // 1)
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
 
         // 2)
         Optional<Comment> findComment = commentRepository.findById(commentId);
-        if(findComment.isEmpty()) throw new PDFLOException(Code.COMMENT_NO_EXIST);
+        if(findComment.isEmpty()) throw new PDFLOException(ReturnCode.COMMENT_NO_EXIST);
 
         // 3)
         Comment comment = findComment.get();
-        if(comment.getMember().getId() != memberId) throw new PDFLOException(Code.COMMENT_NO_PERMISSION_WRITER);
+        if(comment.getMember().getId() != memberId) throw new PDFLOException(ReturnCode.COMMENT_NO_PERMISSION_WRITER);
 
         commentRepository.delete(comment);
     }
@@ -118,7 +93,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment findById(Long commentId) throws PDFLOException {
         Optional<Comment> findComment = commentRepository.findById(commentId);
         if (findComment.isEmpty()) {
-            throw new PDFLOException(Code.COMMENT_NO_EXIST);
+            throw new PDFLOException(ReturnCode.COMMENT_NO_EXIST);
         }
         return findComment.get();
     }
@@ -127,7 +102,7 @@ public class CommentServiceImpl implements CommentService {
     public Comment findByIdAndMember(Long commentId, Long memberId) throws PDFLOException {
         Optional<Comment> findComment = commentRepository.findWithMemberByCommentAndMember(commentId, memberId);
         if (findComment.isEmpty()) {
-            throw new PDFLOException(Code.COMMENT_NO_EXIST);
+            throw new PDFLOException(ReturnCode.COMMENT_NO_EXIST);
         }
         return findComment.get();
     }

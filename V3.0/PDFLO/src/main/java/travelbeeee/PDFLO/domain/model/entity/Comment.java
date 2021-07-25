@@ -35,9 +35,4 @@ public class Comment extends BaseEntity {
         this.comment = comment;
         this.score = score;
     }
-
-    public void modifyComment(CommentForm commentForm) {
-        this.comment = commentForm.getComment();
-        this.score = commentForm.getScore();
-    }
 }

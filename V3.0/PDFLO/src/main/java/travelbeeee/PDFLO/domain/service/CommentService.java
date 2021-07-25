@@ -1,6 +1,6 @@
 package travelbeeee.PDFLO.domain.service;
 
-import travelbeeee.PDFLO.domain.exception.Code;
+import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.Comment;
 import travelbeeee.PDFLO.web.form.CommentForm;
@@ -8,8 +8,7 @@ import travelbeeee.PDFLO.web.form.CommentForm;
 import java.util.List;
 
 public interface CommentService {
-    Code uploadComment(Long memberId, Long itemId, CommentForm commentForm) throws PDFLOException;
-    void modifyComment(Long memberId, Long commentId, CommentForm commentForm) throws PDFLOException;
+    ReturnCode uploadComment(Long memberId, Long itemId, CommentForm commentForm) throws PDFLOException;
     void deleteComment(Long memberId, Long commentId) throws PDFLOException;
     List<Comment> findAllByItem(Long itemId);
     Comment findById(Long commentId) throws PDFLOException;
