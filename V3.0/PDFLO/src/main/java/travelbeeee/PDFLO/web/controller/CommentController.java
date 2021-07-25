@@ -52,13 +52,12 @@ public class CommentController {
     }
 
     @PostMapping("/comment/delete/{itemId}/{commentId}")
-    public String deleteComment(HttpSession httpSession, @PathVariable("commentId") Long commentId,
+    @ResponseBody
+    public ReturnCode deleteComment(HttpSession httpSession, @PathVariable("commentId") Long commentId,
                                 @PathVariable("itemId") Long itemId) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
-        commentService.deleteComment(memberId, commentId);
-
-        return "redirect:/item/" + itemId;
+        return commentService.deleteComment(memberId, commentId);
     }
 
     @GetMapping("/comment/member")

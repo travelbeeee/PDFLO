@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CommentService {
     ReturnCode uploadComment(Long memberId, Long itemId, CommentForm commentForm) throws PDFLOException;
-    void deleteComment(Long memberId, Long commentId) throws PDFLOException;
+    ReturnCode deleteComment(Long memberId, Long commentId) throws PDFLOException;
     List<Comment> findAllByItem(Long itemId);
     Comment findById(Long commentId) throws PDFLOException;
     Comment findByIdAndMember(Long commentId, Long memberId) throws PDFLOException;

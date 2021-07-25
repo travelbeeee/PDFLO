@@ -68,20 +68,21 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void deleteComment(Long memberId, Long commentId) throws PDFLOException {
+    public ReturnCode deleteComment(Long memberId, Long commentId) throws PDFLOException {
         // 1)
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) return ReturnCode.MEMBER_NO_EXIST;
 
         // 2)
         Optional<Comment> findComment = commentRepository.findById(commentId);
-        if(findComment.isEmpty()) throw new PDFLOException(ReturnCode.COMMENT_NO_EXIST);
+        if(findComment.isEmpty()) return ReturnCode.COMMENT_NO_EXIST;
 
         // 3)
         Comment comment = findComment.get();
-        if(comment.getMember().getId() != memberId) throw new PDFLOException(ReturnCode.COMMENT_NO_PERMISSION_WRITER);
+        if(comment.getMember().getId() != memberId) return ReturnCode.COMMENT_NO_PERMISSION_WRITER;
 
         commentRepository.delete(comment);
+        return ReturnCode.SUCCESS;
     }
 
     @Override
