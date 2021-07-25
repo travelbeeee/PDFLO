@@ -7,30 +7,32 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>로그인페이지</title>
     <th:block th:replace="fragments/head.html"></th:block>
-    <link rel="stylesheet" href="/css/user/login.css">
+    <link rel="stylesheet" href="/css/member/signUp.css">
     <style>
         .field-error{
             border-color: #bd2130;
             color: #dc3545;
         }
+        body{
+            display:block;
+            padding-top : 0px;
+        }
     </style>
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
-<div class="loginBox">
-    <div class="loginTitle">로그인하기</div>
-    <form th:action th:object="${loginForm}" method="post">
+<main class="form-signin">
+    <h1 class="h3 mb-3 fw-normal text-center" th:text="#{login}"></h1>
+    <form role="form" th:action th:object="${loginForm}" method="post">
         <label th:text="#{label.username}"></label>
-        <input type="text" th:field="*{username}" placeholder="아이디를 입력해주세요.">
+        <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error" placeholder="아이디를 입력해주세요.">
         <div class="field-error" th:errors="*{username}"></div>
-        <label th:text="#{label.password}"></label>
-        <input type="password" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
+        <label class="text-start"  th:text="#{label.password}"></label>
+        <input type="password" class="form-control" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
         <div class="field-error" th:errors="*{password}"></div>
-        <button th:text="#{button.login}"></button>
-        <div th:if="${#fields.hasGlobalErrors()}">
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
-        </div>
+        <button class="w-100 btn btn-lg btn-primary" th:text="#{button.login}"></button>
+        <p class="mt-5 mb-3 text-muted text-center">&copy; 2021</p>
     </form>
-</div>
+</main>
 </body>
 </html>

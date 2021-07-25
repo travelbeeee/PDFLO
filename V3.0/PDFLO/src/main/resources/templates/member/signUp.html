@@ -8,6 +8,25 @@
     <title>회원가입페이지</title>
     <th:block th:replace="fragments/head.html"></th:block>
     <link rel="stylesheet" href="/css/member/signUp.css">
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+        body{
+            display:block;
+            padding-top : 0px;
+        }
+    </style>
     <script
             src="https://code.jquery.com/jquery-3.6.0.js"
             integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
@@ -16,29 +35,30 @@
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
-<div class="signUpBox">
-    <div class="signUpTitle">회원가입하기</div>
+<main class="form-signin">
+    <h1 class="h3 mb-3 fw-normal text-center">Please sign in</h1>
     <form role="form" th:action th:object="${signUpForm}" method="post">
-        <label th:text="#{label.username}"></label>
-        <input type="text" th:field="*{username}" th:errorclass="field-error" placeholder="아이디를 입력해주세요.">
+        <label class="text-start" th:text="#{label.username}"></label>
+        <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error" placeholder="아이디를 입력해주세요.">
         <small>아이디는 영어로 시작하고, 5 ~ 15자의 영어/숫자로 이루어져야합니다.</small>
         <div class="field-error" th:errors="*{username}"></div>
-        <button type="button" id="duplicateCheckBtn">아이디 중복체크</button>
+        <button type="button" class="w-100 btn btn-sm btn-secondary"  id="duplicateCheckBtn">아이디 중복체크</button>
+        <label class="text-start" th:text="#{label.email}"></label>
         <div class="emailBox" id="emailBox">
-            <label th:text="#{label.email}"></label>
-            <input type="email" th:field="*{email}" th:errorclass="field-error" placeholder="이메일을 입력해주세요.">
+            <input type="email" class="form-control" th:field="*{email}" th:errorclass="field-error" placeholder="이메일을 입력해주세요.">
             <div class="field-error" th:errors="*{email}"></div>
-            <button type="button" id="sendMailBtn">메일로 인증 코드 보내기</button>
-            <input type="text" id="authCode" placeholder="인증 코드를 입력해주세요." hidden>
-            <button type="button" id="authBtn" hidden>인증하기</button>
+            <button type="button" class="w-100 btn btn-sm btn-secondary"  id="sendMailBtn">메일로 인증 코드 보내기</button>
+            <input type="text" class="form-control" id="authCode" placeholder="인증 코드를 입력해주세요." hidden>
+            <button type="button" class="w-100 btn btn-sm btn-secondary"  id="authBtn" hidden>인증하기</button>
         </div>
-        <label th:text="#{label.password}"></label>
-        <input type="password" th:field="*{password}" th:errorclass="field-error" placeholder="비밀번호를 입력해주세요.">
+        <label class="text-start"  th:text="#{label.password}"></label>
+        <input type="password" class="form-control" th:field="*{password}" th:errorclass="field-error" placeholder="비밀번호를 입력해주세요.">
         <small>비밀번호는 영어로 시작하고, 8 ~ 20자의 영어/숫자/특수문자(!@#$%)로 이루어져야합니다.</small>
         <div class="field-error" th:errors="*{password}"></div>
-        <button th:text="#{button.signUp}"></button>
+        <button class="w-100 btn btn-lg btn-primary" th:text="#{button.signUp}"></button>
+        <p class="mt-5 mb-3 text-muted text-center">&copy; 2021</p>
     </form>
-</div>
+</main>
 </body>
 <script>
     $('#sendMailBtn').on('click', function (){

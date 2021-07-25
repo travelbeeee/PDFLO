@@ -33,14 +33,12 @@
     <br><br><br>
     작성된 후기!<br>
     <div th:each="comment : ${item.comments}">
+        <div id="commentId" th:text="${comment.commentId}" hidden></div>
         <p>작성자 : <span th:text="${comment.username}"></span></p>
         <p>후기 : <span th:text="${comment.comment}"></span></p>
         <p>별점 : <span th:text="${comment.score}"></span></p>
         <p>작성날짜 : <span th:text="${comment.createdDate}"></span></p>
-        <button></button>
-        <a th:href="@{/comment/modify/{itemId}/{commentId}(itemId = ${item.itemId}, commentId=${comment.commentId})}">후기 수정하기</a>
-        <button id="commentDeleteBtn" th:value="#{button.commentDelete}"></button>
-        <br><br>
+        <button id="commentDeleteBtn" th:text="#{button.commentDelete}"></button>
     </div>
 
     <form th:object="${commentForm}" method="post">
@@ -78,6 +76,35 @@
                     alert("후기는 한 번만 남길 수 있습니다.");
                 }else if(data == "SUCCESS"){
                     alert("후기를 남겼습니다.");
+                    window.location.href = "/item/" + itemId;
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    });
+
+    $('#commentDeleteBtn').on('click', function (){
+        var itemId = document.getElementById("itemId").innerText;
+        var commentId = document.getElementById("commentId").innerText;
+
+        $.ajax({
+            url: "/comment/delete/" + itemId + "/" + commentId,
+            type: "POST",
+
+            success: function(data){
+                if(data == 'MEMBER_NO_EXIST'){
+                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
+                    window.location.href = "/member/login";
+                }
+                else if (data == 'COMMENT_NO_EXIST'){
+                    alert("이미 삭제된 후기입니다.");
+                    window.location.href = "/item/" + itemId;
+                }else if(data == "COMMENT_NO_PERMISSION_WRITER"){
+                    alert("자신의 후기만 삭제할 수 있습니다.");
+                }else if(data == "SUCCESS"){
+                    alert("후기를 삭제했습니다.");
                     window.location.href = "/item/" + itemId;
                 }
             },

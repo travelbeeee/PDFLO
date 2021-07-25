@@ -11,7 +11,6 @@
 
     <!-- Bootstrap core CSS -->
     <link href="/css/bootstrap/bootstrap.min.css" rel="stylesheet">
-    <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/album/">
     <style>
       .bd-placeholder-img {
         font-size: 1.125rem;
@@ -30,7 +29,6 @@
 </head>
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
-
     <!-- 그렇지 않다면 "아직 구매할 수 있는 pdf가 없어요!, 첫번째 판매자가 되보세요" -->
     <th:block th:if="${#arrays.isEmpty(items)}">
     <section class="py-5 text-center container">
@@ -42,7 +40,6 @@
         </div>
     </section>
     </th:block>
-
     <th:block th:if="${not #arrays.isEmpty(items)}">
     <div class="album py-5 bg-light">
         <div class="container">

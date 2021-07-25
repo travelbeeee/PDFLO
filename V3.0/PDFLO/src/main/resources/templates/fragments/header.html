@@ -1,25 +1,36 @@
-<!--<nav class="nav-container">-->
-<!--    <a th:href="@{/}">-->
-<!--        <img th:src="@{/img/logo.svg}" alt="로고파일">-->
-<!--    </a>-->
-<!--    <form action="">-->
-<!--        <input type="search">-->
-<!--        <input type="image" th:src="@{/img/ic-search.svg}" src="C:\Users\HyunSeok\Desktop\studyWithMe\gitHub\Spring_Practice\PDFLO\PDFLOpjt\src\main\resources\static\img\ic-search.svg">-->
-<!--    </form>-->
-<!--    &lt;!&ndash; 로그인을 했다면 프로필 사진을 아니면 일반 사진&ndash;&gt;-->
-<!--    <img th:if="${session['profile']} != null" th:src="${session['profile']}" alt="프로필사진">-->
-<!--    <img th:if="${session['profile']} == null" th:src="@{/img/profile-non.png}" alt="기본사진">-->
-<!--    <div class="dropdown">-->
-<!--        ^-->
-<!--        <div class="dropdown-content">-->
-<!--            <a th:if="${session['auth']} != null" th:href="@{/member/mypage}">마이페이지</a>-->
-<!--            <a th:if="${session['auth']} != null" th:href="@{/item/upload}">PDF등록하기</a>-->
-<!--            <a th:if="${session['auth']} != null" th:href="@{/member/logout}">로그아웃하기</a>-->
-<!--            <a th:if="${session['auth']} == null" th:href="@{/member/login}">로그인</a>-->
-<!--            <a th:if="${session['auth']} == null" th:href="@{/member/signUp}">회원가입</a>-->
+<!--<header>-->
+<!--    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">-->
+<!--        <div class="container-fluid">-->
+<!--            <a class="navbar-brand" th:href="@{/}">PDFLO</a>-->
+<!--            <div class="collapse navbar-collapse" id="navbarCollapse">-->
+<!--                <ul class="navbar-nav me-auto mb-2 mb-md-0">-->
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link active" aria-current="page" th:href="@{/}">Home</a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item" th:if="${session['id']} != null">-->
+<!--                        <a class="nav-link" th:href="@{/member/mypage}" th:text="#{a.mypage}"></a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item" th:if="${session['id']} != null">-->
+<!--                        <a class="nav-link disabled"th:href="@{/item/upload}" th:text="#{a.upload}" tabindex="-1" aria-disabled="true"></a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item" th:if="${session['id']} != null">-->
+<!--                        <a class="nav-link disabled"th:href="@{/member/logout}" th:text="#{a.logout}" tabindex="-1" aria-disabled="true"></a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item" th:if="${session['id']} == null">-->
+<!--                        <a class="nav-link disabled"th:href="@{/member/login}" th:text="#{a.login}" tabindex="-1" aria-disabled="true"></a>-->
+<!--                    </li>-->
+<!--                    <li class="nav-item" th:if="${session['id']} == null">-->
+<!--                        <a class="nav-link disabled"th:href="@{/member/signUp}" th:text="#{a.signUp}" tabindex="-1" aria-disabled="true"></a>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--                <form class="d-flex">-->
+<!--                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
+<!--                    <button class="btn btn-outline-success" type="submit">Search</button>-->
+<!--                </form>-->
+<!--            </div>-->
 <!--        </div>-->
-<!--    </div>-->
-<!--</nav>-->
+<!--    </nav>-->
+<!--</header>-->
 
 <header>
     <div class="collapse bg-dark" id="navbarHeader">
@@ -31,11 +42,11 @@
                 </div>
                 <div class="col-sm-4 offset-md-1 py-4">
                     <ul class="list-unstyled">
-                        <li><a th:if="${session['id']} != null" th:href="@{/member/mypage}" class="text-white" th:text="#{a.mypage}"></a></li>
-                        <li><a th:if="${session['id']} != null" th:href="@{/item/upload}" class="text-white" th:text="#{a.upload}"></a></li>
-                        <li><a th:if="${session['id']} != null" th:href="@{/member/logout}" class="text-white" th:text="#{a.logout}"></a></li>
-                        <li><a th:if="${session['id']} == null" th:href="@{/member/login}" class="text-white" th:text="#{a.login}"></a></li>
-                        <li><a th:if="${session['id']} == null" th:href="@{/member/signUp}" class="text-white" th:text="#{a.signUp}"></a></li>
+                        <li><a th:if="${session['id']} != null" th:href="@{/member/mypage}" class="text-white" th:text="#{mypage}"></a></li>
+                        <li><a th:if="${session['id']} != null" th:href="@{/item/upload}" class="text-white" th:text="#{upload}"></a></li>
+                        <li><a th:if="${session['id']} != null" th:href="@{/member/logout}" class="text-white" th:text="#{logout}"></a></li>
+                        <li><a th:if="${session['id']} == null" th:href="@{/member/login}" class="text-white" th:text="#{login}"></a></li>
+                        <li><a th:if="${session['id']} == null" th:href="@{/member/signUp}" class="text-white" th:text="#{signUp}"></a></li>
                     </ul>
                 </div>
             </div>
