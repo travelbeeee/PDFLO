@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import travelbeeee.PDFLO.domain.exception.Code;
+import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.FileInformation;
 import travelbeeee.PDFLO.domain.model.entity.*;
@@ -59,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
     public void signUp(SignUpForm form) throws PDFLOException, NoSuchAlgorithmException {
         Optional<Member> findMember = memberRepository.findByUsername(form.getUsername());
         if(!findMember.isEmpty()){ // 이미 존재하는 회원아이디
-            throw new PDFLOException(Code.MEMBER_NAME_DUPLICATION);
+            throw new PDFLOException(ReturnCode.MEMBER_NAME_DUPLICATION);
         }
 
         String salt = sha256Encryption.makeSalt();
@@ -78,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void authorize(Long memberId) throws PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
 
         Member member = findMember.get();
     }
@@ -86,11 +86,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void checkPassword(Long memberId, String password) throws PDFLOException, NoSuchAlgorithmException {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
 
         Member member = findMember.get();
         if (!member.getPassword().equals(sha256Encryption.sha256(password, member.getSalt()))) {
-            throw new PDFLOException(Code.PASSWORD_INPUT_INVALID);
+            throw new PDFLOException(ReturnCode.PASSWORD_INPUT_INVALID);
         }
     }
 
@@ -98,7 +98,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void updatePassword(Long memberId, String newPassword) throws NoSuchAlgorithmException, PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
 
         Member member = findMember.get();
         member.changePassword(sha256Encryption.sha256(newPassword, member.getSalt()));
@@ -108,11 +108,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void usePoint(Long memberId, Integer amount, PointType pointType) throws PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST); // 존재하지않는회원
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST); // 존재하지않는회원
 
         Member member = findMember.get();
         if(pointType == PointType.USE && member.getPoint() < amount){
-            throw new PDFLOException(Code.MEMBER_INSUFFICIENT_BALANCE); // 잔액부족
+            throw new PDFLOException(ReturnCode.MEMBER_INSUFFICIENT_BALANCE); // 잔액부족
         }
 
         if(pointType == PointType.USE) member.losePoint(amount);
@@ -131,7 +131,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void uploadProfile(Long memberId, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException, IOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
 
         Optional<Profile> findProfile = profileRepository.findProfileByMember(memberId);
         if(!findProfile.isEmpty()){ // 기존 프로필 지우기
@@ -152,10 +152,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void deleteProfile(Long memberId) throws PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
 
         Optional<Profile> findProfile = profileRepository.findProfileByMember(memberId);
-        if(findProfile.isEmpty()) throw new PDFLOException(Code.PROFILE_NO_EXIST);
+        if(findProfile.isEmpty()) throw new PDFLOException(ReturnCode.PROFILE_NO_EXIST);
 
         Profile profile = findProfile.get();
         fileManager.fileDelete(profile.getFileInfo().getLocation(), profile.getFileInfo().getSaltedFileName());
@@ -171,7 +171,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member findMember(Long memberId) throws PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
         return findMember.get();
     }
 

@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import travelbeeee.PDFLO.domain.exception.Code;
+import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.Member;
 import travelbeeee.PDFLO.domain.model.entity.Profile;
@@ -48,17 +48,17 @@ public class MemberController {
      */
     @ResponseBody
     @PostMapping("/member/sendMail")
-    public Code sendAuthMail(@ModelAttribute @Valid EmailForm form, BindingResult bindingResult, HttpSession session) throws MessagingException {
+    public ReturnCode sendAuthMail(@ModelAttribute @Valid EmailForm form, BindingResult bindingResult, HttpSession session) throws MessagingException {
         log.info("sendAuthMail 메소드 동작");
         if (bindingResult.hasErrors()) {
-            return Code.MEMBER_EMAIL_INVALID;
+            return ReturnCode.MEMBER_EMAIL_INVALID;
         }
         String email = form.getEmail();
         int authCode = mailSender.sendingAuthMail(email);
         session.setAttribute("authCode", String.valueOf(authCode));
         log.info("email : {}", email);
         log.info("authCode : {}", authCode);
-        return Code.SUCCESS;
+        return ReturnCode.SUCCESS;
     }
 
     /**
@@ -80,15 +80,15 @@ public class MemberController {
      */
     @ResponseBody
     @PostMapping("/member/duplicateCheck")
-    public Code duplicateCheck(@ModelAttribute @Valid UsernameForm form, BindingResult bindingResult){
+    public ReturnCode duplicateCheck(@ModelAttribute @Valid UsernameForm form, BindingResult bindingResult){
         log.info("duplicateCheck 메소드실행");
         if (bindingResult.hasErrors()) {
-            return Code.MEMBER_NAME_INVALID;
+            return ReturnCode.MEMBER_NAME_INVALID;
         }
         Optional<Member> findMember = memberService.findMemberByUsername(form.getUsername());
         if(findMember.isEmpty())
-            return Code.SUCCESS;
-        return Code.MEMBER_NAME_DUPLICATION;
+            return ReturnCode.SUCCESS;
+        return ReturnCode.MEMBER_NAME_DUPLICATION;
     }
 
     /**

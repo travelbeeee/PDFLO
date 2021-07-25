@@ -3,7 +3,7 @@ package travelbeeee.PDFLO.domain.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import travelbeeee.PDFLO.domain.exception.Code;
+import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.*;
 import travelbeeee.PDFLO.domain.model.enumType.PointType;
@@ -42,20 +42,20 @@ public class OrderServiceImpl implements OrderService {
     public void putOrder(Long memberId, List<Long> itemIds) throws PDFLOException {
         // 1)
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(Code.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
         Member member = findMember.get();
 
         // 2)
         List<Item> items = itemRepository.findSelectedItemWithMember(itemIds);
-        if(items.size() != itemIds.size()) throw new PDFLOException(Code.ITEM_NO_EXIST);
+        if(items.size() != itemIds.size()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
 
         // 3)
         Optional<OrderItem> findOrderItem = orderItemRepository.findByMemberAndItems(member, items);
-        if(!findOrderItem.isEmpty()) throw new PDFLOException(Code.ITEM_ALREADY_BOUGHT);
+        if(!findOrderItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_ALREADY_BOUGHT);
 
         // 4)
         for (Item item : items) {
-            if(item.getMember().getId() == memberId) throw new PDFLOException(Code.MEMBER_IS_SELLER);
+            if(item.getMember().getId() == memberId) throw new PDFLOException(ReturnCode.MEMBER_IS_SELLER);
         }
 
         // 5)
@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
         for (Item item : items) {
             totalPrice += item.getPrice();
         }
-        if(member.getPoint() < totalPrice) throw new PDFLOException(Code.MEMBER_INSUFFICIENT_BALANCE);
+        if(member.getPoint() < totalPrice) throw new PDFLOException(ReturnCode.MEMBER_INSUFFICIENT_BALANCE);
 
         // 6)
         Order order = new Order(member);
