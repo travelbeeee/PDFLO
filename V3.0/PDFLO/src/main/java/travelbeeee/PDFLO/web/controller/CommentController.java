@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.dto.CommentItemDto;
-import travelbeeee.PDFLO.domain.model.dto.CommentModifyDto;
 import travelbeeee.PDFLO.domain.model.entity.Comment;
 import travelbeeee.PDFLO.domain.service.CommentService;
 import travelbeeee.PDFLO.web.form.CommentForm;
