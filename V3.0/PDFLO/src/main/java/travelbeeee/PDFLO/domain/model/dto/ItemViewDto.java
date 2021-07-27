@@ -1,11 +1,13 @@
 package travelbeeee.PDFLO.domain.model.dto;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import travelbeeee.PDFLO.domain.model.FileInformation;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.domain.model.entity.Thumbnail;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -22,12 +24,23 @@ import java.util.Date;
  */
 @Getter @Setter
 @ToString
+@Slf4j
 public class ItemViewDto {
     Long itemId;
     String title;
-    Timestamp createdDate;
-    Double avgScore;
+    String createdDate;
+    String avgScore;
     Integer commentCnt;
     String thumbnailLocation;
     String thumbnailFileName;
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
+    }
+
+    public void setAvgScore(Double avgScore) {
+        DecimalFormat df = new DecimalFormat("0.00");
+        this.avgScore = df.format(avgScore);
+
+    }
 }
