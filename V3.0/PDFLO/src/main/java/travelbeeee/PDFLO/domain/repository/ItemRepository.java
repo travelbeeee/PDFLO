@@ -27,8 +27,4 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("select i from Item i join fetch i.pdf where i.id = :itemId")
     Optional<Item> findWithPDFById(@Param("itemId") Long itemId);
-
-    @Query("select avg(c.score) as avgScore, count(c) as commentCnt, c.id, i.thumbnail, i.title, i.createdDate " +
-            "from Comment c left join fetch Item i on c.id = i.id group by (i.id)")
-    List<ItemViewDto> findItemWithCommentStat();
 }

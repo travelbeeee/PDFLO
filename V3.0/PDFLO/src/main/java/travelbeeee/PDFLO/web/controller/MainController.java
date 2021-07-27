@@ -29,17 +29,14 @@ public class MainController {
     private String fileSeperator = "/";
     private final ItemService itemService;
 
-//    @GetMapping("/")
-//    public String home(Model model) {
-//        log.info("home");
-//        List<Item> items = itemService.findSellItemWithMemberAndThumbnail();
-//        List<ItemViewDto> itemViewDtos = items.stream()
-//                .map(i -> new ItemViewDto(i))
-//                .collect(Collectors.toList());
-//        log.info("itemViewDtos : {}", itemViewDtos);
-//        model.addAttribute("items", itemViewDtos);
-//        return "index";
-//    }
+    @GetMapping("/")
+    public String home(Model model) {
+        log.info("home");
+        List<ItemViewDto> itemViewDtos = itemService.findAllWithCommentStatAndThumbnail();
+        log.info("itemViewDtos : {}", itemViewDtos);
+        model.addAttribute("items", itemViewDtos);
+        return "index";
+    }
 
     @ResponseBody
     @GetMapping("/images/{location}/{year}/{month}/{day}/{fileName}")

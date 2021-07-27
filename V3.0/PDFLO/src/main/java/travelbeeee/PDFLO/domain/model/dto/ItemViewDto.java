@@ -1,13 +1,14 @@
 package travelbeeee.PDFLO.domain.model.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import travelbeeee.PDFLO.domain.model.FileInformation;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.domain.model.entity.Thumbnail;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * Main 페이지에 뿌리는 ItemDto
@@ -19,15 +20,14 @@ import java.time.format.DateTimeFormatter;
  * on (comment.item_id= item.item_id)
  * group by (item.item_id);
  */
-@Data
-@AllArgsConstructor
-@ToString(exclude = { "thumbnail" })
+@Getter @Setter
+@ToString
 public class ItemViewDto {
     Long itemId;
     String title;
-    String username;
-    String createdDate;
-    Thumbnail thumbnail;
+    Timestamp createdDate;
     Double avgScore;
     Integer commentCnt;
+    String thumbnailLocation;
+    String thumbnailFileName;
 }

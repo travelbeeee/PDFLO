@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO.domain.service;
 
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
+import travelbeeee.PDFLO.domain.model.dto.ItemViewDto;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.web.form.ItemForm;
 
@@ -14,6 +15,7 @@ public interface ItemService{
     void deleteItem(Long memberId, Long itemId) throws PDFLOException; // 상품 판매중지
     void reSell(Long memberId, Long itemId) throws PDFLOException; // 상품 재판매
     byte[] downloadItem(Long memberId, Long itemId) throws PDFLOException, IOException;
-    List<Item> findSellItemWithMemberAndThumbnail(); // 등록된 상품 전체 조회 fetch join Member, Thumbnial
+    List<Item> findSellItemWithMemberAndThumbnail(); // 등록된 상품 전체 조회 fetch join Member, Thumbnail
     Item findWithMemberAndPdfAndThumbnailAndCommentById(Long itemId) throws PDFLOException;
+    List<ItemViewDto> findAllWithCommentStatAndThumbnail();
 }

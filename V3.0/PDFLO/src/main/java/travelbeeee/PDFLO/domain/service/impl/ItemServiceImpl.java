@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.FileInformation;
+import travelbeeee.PDFLO.domain.model.dto.ItemViewDto;
 import travelbeeee.PDFLO.domain.model.entity.*;
 import travelbeeee.PDFLO.domain.model.enumType.FileType;
 import travelbeeee.PDFLO.domain.model.enumType.ItemType;
@@ -27,6 +28,7 @@ public class ItemServiceImpl implements ItemService {
 
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
+    private final ItemJDBCRepository itemJDBCRepository;
     private final PdfRepository pdfRepository;
     private final ThumbnailRepository thumbnailRepository;
     private final OrderItemRepository orderItemRepository;
@@ -173,5 +175,8 @@ public class ItemServiceImpl implements ItemService {
         return findItem.get();
     }
 
-
+    @Override
+    public List<ItemViewDto> findAllWithCommentStatAndThumbnail() {
+        return itemJDBCRepository.findItemViewDto();
+    }
 }
