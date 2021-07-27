@@ -31,8 +31,7 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model) {
-        log.info("home");
-        List<ItemViewDto> itemViewDtos = itemService.findAllWithCommentStatAndThumbnail();
+        List<ItemViewDto> itemViewDtos = itemService.findAllOrderByPopular();
         log.info("itemViewDtos : {}", itemViewDtos);
         model.addAttribute("items", itemViewDtos);
         return "index";

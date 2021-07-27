@@ -7,8 +7,6 @@ import travelbeeee.PDFLO.domain.model.dto.ItemViewDto;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class ItemJDBCRepositoryTest {
     @Autowired
@@ -16,7 +14,7 @@ class ItemJDBCRepositoryTest {
 
     @Test
     void test(){
-        List<ItemViewDto> itemViewDto = itemJDBCRepository.findItemViewDto();
+        List<ItemViewDto> itemViewDto = itemJDBCRepository.findAllItemViewDtoOrderByPopular();
         for (ItemViewDto viewDto : itemViewDto) {
             System.out.println(viewDto);
         }

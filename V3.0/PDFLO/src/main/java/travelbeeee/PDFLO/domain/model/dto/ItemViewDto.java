@@ -29,8 +29,9 @@ public class ItemViewDto {
     Long itemId;
     String title;
     String createdDate;
-    String avgScore;
+    String commentAvg;
     Integer commentCnt;
+    Integer orderCnt;
     String thumbnailLocation;
     String thumbnailFileName;
 
@@ -40,7 +41,6 @@ public class ItemViewDto {
 
     public void setAvgScore(Double avgScore) {
         DecimalFormat df = new DecimalFormat("0.00");
-        this.avgScore = df.format(avgScore);
-
+        this.commentAvg = df.format(avgScore);
     }
 }

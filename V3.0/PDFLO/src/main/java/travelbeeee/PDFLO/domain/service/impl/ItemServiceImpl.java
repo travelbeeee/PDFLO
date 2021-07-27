@@ -29,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final ItemJDBCRepository itemJDBCRepository;
+    private final PopularItemRepository popularItemRepository;
     private final PdfRepository pdfRepository;
     private final ThumbnailRepository thumbnailRepository;
     private final OrderItemRepository orderItemRepository;
@@ -52,10 +53,12 @@ public class ItemServiceImpl implements ItemService {
         Member member = findMember.get();
 
         Item item = new Item(member, itemForm.getTitle(), itemForm.getContent(), itemForm.getPrice(), thumbnail, pdf, ItemType.SELL);
+        PopularItem popularItem = new PopularItem(item, 0.0, 0.0, 0, 0);
 
         pdfRepository.save(pdf);
         thumbnailRepository.save(thumbnail);
         itemRepository.save(item);
+        popularItemRepository.save(popularItem);
     }
 
     /**
@@ -176,7 +179,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemViewDto> findAllWithCommentStatAndThumbnail() {
-        return itemJDBCRepository.findItemViewDto();
+    public List<ItemViewDto> findAllOrderByPopular() {
+        return itemJDBCRepository.findAllItemViewDtoOrderByPopular();
     }
 }

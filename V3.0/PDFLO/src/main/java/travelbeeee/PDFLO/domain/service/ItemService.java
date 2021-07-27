@@ -17,5 +17,5 @@ public interface ItemService{
     byte[] downloadItem(Long memberId, Long itemId) throws PDFLOException, IOException;
     List<Item> findSellItemWithMemberAndThumbnail(); // 등록된 상품 전체 조회 fetch join Member, Thumbnail
     Item findWithMemberAndPdfAndThumbnailAndCommentById(Long itemId) throws PDFLOException;
-    List<ItemViewDto> findAllWithCommentStatAndThumbnail();
+    List<ItemViewDto> findAllOrderByPopular();
 }
