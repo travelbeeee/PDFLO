@@ -41,8 +41,9 @@ public class PopularItemServiceImpl implements PopularItemService {
     @Scheduled(fixedDelay = 100000) // 매일 0시에 실행
     @Override
     public void updatePopularScore() {
-        log.info("updatePopularScore 실행");
         LocalDateTime curTime = LocalDateTime.now();
+        log.info("updatePopularScore 실행");
+        log.info("현재 시간 : {}", curTime);
         List<Item> items = itemRepository.findAll();
         for (Item item : items) {
             Double orderScore = 0.0;
