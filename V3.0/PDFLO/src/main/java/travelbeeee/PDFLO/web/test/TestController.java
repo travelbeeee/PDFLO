@@ -31,4 +31,15 @@ public class TestController {
         log.info("email: " + email);
         return ResponseEntity.ok().body("Hello");
     }
+
+    @GetMapping("/test/summernote")
+    public String summerNoteForm(){
+        return "/test/summerNote";
+    }
+
+    @PostMapping("/test/summernote")
+    public String summerNote(@RequestParam("summernote") String summernote) {
+        log.info("summerNote input : {}", summernote);
+        return "/test/summerNote";
+    }
 }
