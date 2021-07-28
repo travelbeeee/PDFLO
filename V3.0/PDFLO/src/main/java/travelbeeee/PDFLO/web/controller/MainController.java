@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import travelbeeee.PDFLO.domain.model.dto.ItemViewDto;
-import travelbeeee.PDFLO.domain.model.entity.Item;
+import travelbeeee.PDFLO.domain.model.entity.PopularItem;
 import travelbeeee.PDFLO.domain.service.ItemService;
 
 import java.net.MalformedURLException;
@@ -31,9 +31,12 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model) {
-        List<ItemViewDto> itemViewDtos = itemService.findAllOrderByPopular();
+        List<PopularItem> popularItems = itemService.findWithItemAndThumbnailOrderByPopular();
+        List<ItemViewDto> itemViewDtos = popularItems.stream().map(pi -> new ItemViewDto(pi))
+                .collect(Collectors.toList());
         log.info("itemViewDtos : {}", itemViewDtos);
         model.addAttribute("items", itemViewDtos);
+
         return "index";
     }
 

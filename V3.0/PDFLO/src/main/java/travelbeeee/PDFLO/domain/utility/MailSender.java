@@ -42,7 +42,7 @@ public class MailSender {
         messageHelper.setText(content); // 메일 내용
 
         javaMailSender.send(message);
-
+        log.info("메일 발송 성공");
         return code;
     }
 }

@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import travelbeeee.PDFLO.domain.model.FileInformation;
 import travelbeeee.PDFLO.domain.model.entity.Item;
+import travelbeeee.PDFLO.domain.model.entity.PopularItem;
 import travelbeeee.PDFLO.domain.model.entity.Thumbnail;
 
 import java.sql.Timestamp;
@@ -35,12 +36,20 @@ public class ItemViewDto {
     String thumbnailLocation;
     String thumbnailFileName;
 
+    public ItemViewDto(PopularItem pi) {
+        this.itemId = pi.getItem().getId();
+        this.title = pi.getItem().getTitle();
+        this.createdDate = pi.getItem().getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
+        DecimalFormat df = new DecimalFormat("0.00");
+        this.commentAvg = df.format(pi.getCommentAvg());
+        this.commentCnt = pi.getCommentCnt();
+        this.orderCnt = pi.getOrderCnt();
+        this.thumbnailLocation = pi.getItem().getThumbnail().getFileInfo().getLocation();
+        this.thumbnailFileName = pi.getItem().getThumbnail().getFileInfo().getSaltedFileName();
+    }
+
     public void setCreatedDate(Timestamp createdDate) {
         this.createdDate = createdDate.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
     }
 
-    public void setAvgScore(Double avgScore) {
-        DecimalFormat df = new DecimalFormat("0.00");
-        this.commentAvg = df.format(avgScore);
-    }
 }

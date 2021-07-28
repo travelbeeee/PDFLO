@@ -28,7 +28,6 @@ public class ItemServiceImpl implements ItemService {
 
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
-    private final ItemJDBCRepository itemJDBCRepository;
     private final PopularItemRepository popularItemRepository;
     private final PdfRepository pdfRepository;
     private final ThumbnailRepository thumbnailRepository;
@@ -179,7 +178,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemViewDto> findAllOrderByPopular() {
-        return itemJDBCRepository.findAllItemViewDtoOrderByPopular();
+    public List<PopularItem> findWithItemAndThumbnailOrderByPopular() {
+        return popularItemRepository.findPopularItemWithItemAndThumbnailOrderByScore();
     }
 }

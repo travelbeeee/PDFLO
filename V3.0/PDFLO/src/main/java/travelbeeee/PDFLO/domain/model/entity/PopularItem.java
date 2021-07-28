@@ -3,12 +3,13 @@ package travelbeeee.PDFLO.domain.model.entity;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 
 /**
  *  create table popular_item(
- *   id bigint not null auto_increment,
+ *   popular_item_id bigint not null auto_increment,
  *   item_id bigint not null,
  *   score double,
  *   comment_avg double,
@@ -20,6 +21,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class PopularItem {
     @Id @GeneratedValue
     @Column(name = "popular_item_id")
