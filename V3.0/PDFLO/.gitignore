@@ -1,4 +1,4 @@
-# ignore properties file
+### ignore properties file ###
 /src/main/resources/application.yml
 /src/main/resources/mail.properties
 /src/main/resources/errors.properties
