@@ -18,9 +18,7 @@
     가격 : <th:block th:text="${item.price}"/><br>
     작성자 : <th:block th:text="${item.username}"/><br>
     <br><br><br>
-    <form th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
-        <input type="submit" value="장바구니에 추가하기">
-    </form>
+    <button id="putCartBtn" type="button" th:text="#{button.cart}"></button>
     <form th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
         <input type="submit" value="구매하기">
     </form>
@@ -106,6 +104,34 @@
                 }else if(data == "SUCCESS"){
                     alert("후기를 삭제했습니다.");
                     window.location.href = "/item/" + itemId;
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    });
+
+    $('#putCartBtn').on('click', function (){
+        var itemId = document.getElementById("itemId").innerText;
+        console.log("put cart Btn 동작");
+        console.log("url : " + "/cart/" + itemId)
+        $.ajax({
+            url: "/cart/" + itemId,
+            type: "POST",
+            success: function(data){
+                console.log("data : " + data);
+                if(data == 'MEMBER_NO_EXIST'){
+                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
+                    window.location.href = "/member/login";
+                }
+                else if (data == 'ITEM_NO_EXIST'){
+                    alert("판매가 중단된 상품입니다.");
+                    window.location.href = "/";
+                }else if(data == 'MEMBER_IS_SELLER'){
+                    alert("자기 자신이 판매 중인 상품은 장바구니에 추가가 불가능합니다.");
+                }else if(data == 'SUCCESS'){
+                    alert("장바구니에 담았습니다.");
                 }
             },
             error:function(){

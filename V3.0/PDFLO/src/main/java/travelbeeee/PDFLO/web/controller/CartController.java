@@ -7,7 +7,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
+import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.model.dto.CartViewDto;
 import travelbeeee.PDFLO.domain.model.entity.Cart;
 import travelbeeee.PDFLO.domain.service.CartService;
@@ -41,13 +43,14 @@ public class CartController {
 
     /**
      * 장바구니 추가하기
+     * Ajax 통신
      */
+    @ResponseBody
     @PostMapping("/cart/{itemId}")
-    public String putItemOnCart(HttpSession httpSession, @PathVariable("itemId") Long itemId) throws PDFLOException {
+    public ReturnCode putItemOnCart(HttpSession httpSession, @PathVariable("itemId") Long itemId) throws PDFLOException {
         log.info("putItemOnCart 메소드 실행 : 장바구니에 추가하기");
         Long memberId = (Long) httpSession.getAttribute("id");
-        cartService.putItemOnCart(memberId, itemId);
-        return "redirect:/cart";
+        return cartService.putItemOnCart(memberId, itemId);
     }
 
     /**

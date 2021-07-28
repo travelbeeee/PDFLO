@@ -35,34 +35,35 @@ public class CartServiceImpl implements CartService {
      */
     @Transactional
     @Override
-    public void putItemOnCart(Long memberId, Long itemId) throws PDFLOException {
+    public ReturnCode putItemOnCart(Long memberId, Long itemId) throws PDFLOException {
+        log.info("장바구니 추가하기 CartService - putItemOnCart()");
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()){
             log.info("존재하지 않는 회원입니다. putItemOnCart()");
-            throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
+            return ReturnCode.MEMBER_NO_EXIST;
         }
 
         Optional<Item> findItem = itemRepository.findById(itemId);
         if (findItem.isEmpty()) {
             log.info("없는 상품을 구매하려고합니다. putItemOnCart()");
-            throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
+            return ReturnCode.ITEM_NO_EXIST;
         }
 
         Member member = findMember.get();
         Item item = findItem.get();
         if (item.getMember().getId() == member.getId()) {
             log.info("자신의 상품을 구매하려고합니다. 에러발생");
-            throw new PDFLOException(ReturnCode.MEMBER_IS_SELLER);
+            return ReturnCode.MEMBER_IS_SELLER;
         }
 
         Optional<Cart> findCart = cartRepository.findByMemberAndItem(memberId, itemId);
         if (!findCart.isEmpty()) {
-            log.info("이미 장바구니에 담은 상품입니다.");
-            throw new PDFLOException(ReturnCode.CART_ALREADY_EXIST);
+            return ReturnCode.SUCCESS;
         }
 
         Cart cart = new Cart(member, item);
         cartRepository.save(cart);
+        return ReturnCode.SUCCESS;
     }
 
     /**
