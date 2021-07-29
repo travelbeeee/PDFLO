@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.model.dto.CartViewDto;
@@ -43,7 +40,7 @@ public class CartController {
 
     /**
      * 장바구니 추가하기
-     * Ajax 통신
+     * API 통신
      */
     @ResponseBody
     @PostMapping("/cart/{itemId}")
@@ -55,11 +52,14 @@ public class CartController {
 
     /**
      * 장바구니 삭제하기
+     * API 통신
      */
-    @PostMapping("/cart/delete/{cartId}")
-    public String deleteCart(HttpSession httpSession, @PathVariable("cartId") Long cartId) throws PDFLOException {
+    @ResponseBody
+    @DeleteMapping("/cart/{cartId}")
+    public ReturnCode deleteCart(HttpSession httpSession, @PathVariable("cartId") Long cartId) throws PDFLOException {
+        log.info("CartController - deleteCart");
         Long memberId = (Long) httpSession.getAttribute("id");
-        cartService.deleteItemOnCart(memberId, cartId);
-        return "redirect:/member/cart";
+        log.info("memberId : {}, cartId : {}", memberId, cartId);
+        return cartService.deleteItemOnCart(memberId, cartId);
     }
 }

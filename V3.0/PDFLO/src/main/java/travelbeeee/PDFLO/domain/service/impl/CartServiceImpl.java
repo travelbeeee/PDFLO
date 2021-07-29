@@ -82,20 +82,21 @@ public class CartServiceImpl implements CartService {
      */
     @Transactional
     @Override
-    public void deleteItemOnCart(Long memberId, Long cartId) throws PDFLOException {
+    public ReturnCode deleteItemOnCart(Long memberId, Long cartId) throws PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
         if(findMember.isEmpty()){
-            throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
+            return ReturnCode.MEMBER_NO_EXIST;
         }
         Optional<Cart> findCart = cartRepository.findById(cartId);
-        if (findMember.isEmpty()) {
-            throw new PDFLOException(ReturnCode.CART_NO_EXIST);
+        if (findCart.isEmpty()) {
+            return ReturnCode.CART_NO_EXIST;
         }
         Cart cart = findCart.get();
         if(cart.getMember().getId() != memberId) {
-            throw new PDFLOException(ReturnCode.CART_NO_EXIST);
+            return ReturnCode.CART_NO_EXIST;
         }
         cartRepository.delete(cart);
+        return ReturnCode.SUCCESS;
     }
 
     @Override

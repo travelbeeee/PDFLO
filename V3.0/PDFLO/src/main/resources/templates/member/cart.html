@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>내장바구니</title>
     <th:block th:replace="fragments/head.html"></th:block>
+    <th:block th:replace="fragments/headJQ.html"></th:block>
+
 </head>
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
@@ -14,10 +16,11 @@
     장바구니!<br>
     <form th:action="@{/order}" method="post">
         <div th:each="cart : ${cartList}">
+            <div id="itemId" th:text="${cart.cartId}" hidden></div>
             <p>제목 : <span th:text="${cart.title}"></span></p>
             <p>작성날짜 : <span th:text="${cart.createdDate}"></span></p>
             <a th:href="@{/item/{itemId}(itemId=${cart.itemId})}">자세히보기</a>
-            <input type="button" value="장바구니삭제" th:onclick="javascript: deleteCart('${cart.cartId}')"/>
+            <button id="deleteCartBtn" type="button" th:text="#{button.cartDelete}"></button>
             <input type="checkbox" name="orderList" th:value="${cart.itemId}"/>
             <br><br>
         </div>
@@ -25,12 +28,28 @@
     </form>
 </body>
 <script>
-    function deleteCart(cartId){
-        var form = document.createElement('form');
-        form.setAttribute('method', 'post');
-        form.setAttribute('action', '/member/cart/delete/' + cartId);
-        console.log
-        form.submit();
-    }
+    $('#deleteCartBtn').on('click', function (){
+        var cartId = document.getElementById("itemId").innerText;
+        console.log("deleteCart버튼");
+        $.ajax({
+            url: "/cart/" + cartId,
+            type: "DELETE",
+            success: function(data) {
+                if (data == 'MEMBER_NO_EXIST') {
+                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
+                    window.location.href = "/member/login";
+                } else if (data == 'CART_NO_EXIST') {
+                    alert("장바구니에 없는 상품입니다.");
+                    window.location.href = "/";
+                } else if (data == 'SUCCESS') {
+                    alert("장바구니 삭제");
+                    window.location.href = "/cart";
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    });
 </script>
 </html>

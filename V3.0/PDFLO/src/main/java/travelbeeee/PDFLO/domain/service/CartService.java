@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CartService {
     ReturnCode putItemOnCart(Long memberId, Long itemId) throws PDFLOException;
-    void deleteItemOnCart(Long memberId, Long cartId) throws PDFLOException;
+    ReturnCode deleteItemOnCart(Long memberId, Long cartId) throws PDFLOException;
     List<Cart> findAllByMemberWithItem(Long memberId);
 }
