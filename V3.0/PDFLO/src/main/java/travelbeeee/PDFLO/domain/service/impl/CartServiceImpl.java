@@ -9,9 +9,11 @@ import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.entity.Cart;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.domain.model.entity.Member;
+import travelbeeee.PDFLO.domain.model.entity.Order;
 import travelbeeee.PDFLO.domain.repository.CartRepository;
 import travelbeeee.PDFLO.domain.repository.ItemRepository;
 import travelbeeee.PDFLO.domain.repository.MemberRepository;
+import travelbeeee.PDFLO.domain.repository.OrderRepository;
 import travelbeeee.PDFLO.domain.service.CartService;
 
 import java.util.List;
@@ -25,12 +27,13 @@ public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
+    private final OrderRepository orderRepository;
 
     /**
      * 1) 회원 존재 확인
      * 2) 아이템 존재 확인
      * 3) 판매자가 자신의 아이템을 장바구니에 등록하는지 확인
-     * 4) 장바구니에 이미 담은 상품인지 확인
+     * 4) 이미 구매한 상품인지 확인
      * 5) Cart 엔티티 추가
      */
     @Transactional
@@ -54,6 +57,12 @@ public class CartServiceImpl implements CartService {
         if (item.getMember().getId() == member.getId()) {
             log.info("자신의 상품을 구매하려고합니다. 에러발생");
             return ReturnCode.MEMBER_IS_SELLER;
+        }
+
+        Optional<Order> findOrder = orderRepository.findOrderWithMemberOrderItemAndItem(memberId, itemId);
+        if (findOrder.isPresent()) {
+            log.info("이미 구매한 상품을 구매하려고 합니다. 에러 발생");
+            return ReturnCode.ITEM_ALREADY_BOUGHT;
         }
 
         Optional<Cart> findCart = cartRepository.findByMemberAndItem(memberId, itemId);

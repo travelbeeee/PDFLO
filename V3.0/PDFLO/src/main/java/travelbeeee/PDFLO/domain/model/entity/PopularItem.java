@@ -27,7 +27,7 @@ public class PopularItem {
     @Column(name = "popular_item_id")
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
