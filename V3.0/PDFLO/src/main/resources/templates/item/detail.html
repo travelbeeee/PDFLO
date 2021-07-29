@@ -36,7 +36,7 @@
         <p>후기 : <span th:text="${comment.comment}"></span></p>
         <p>별점 : <span th:text="${comment.score}"></span></p>
         <p>작성날짜 : <span th:text="${comment.createdDate}"></span></p>
-        <button id="commentDeleteBtn" th:text="#{button.commentDelete}"></button>
+        <button th:if="${comment.memberId} == ${session['id']}" id="commentDeleteBtn" th:text="#{button.commentDelete}"></button>
     </div>
 
     <form th:object="${commentForm}" method="post">

@@ -7,11 +7,12 @@ import java.time.format.DateTimeFormatter;
 
 @Data
 public class CommentDto {
+    Long memberId;
+    Long commentId;
     String username;
     String comment;
     Double score;
     String createdDate;
-    Long commentId;
 
     public CommentDto(Comment comment) {
         this.username = comment.getMember().getUsername();
@@ -19,5 +20,6 @@ public class CommentDto {
         this.score = comment.getScore();
         this.createdDate = comment.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
         this.commentId = comment.getId();
+        this.memberId = comment.getMember().getId();
     }
 }
