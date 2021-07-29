@@ -6,14 +6,19 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import travelbeeee.PDFLO.domain.model.entity.Comment;
 import travelbeeee.PDFLO.domain.model.entity.Item;
+import travelbeeee.PDFLO.domain.model.entity.Order;
 import travelbeeee.PDFLO.domain.model.entity.OrderItem;
 import travelbeeee.PDFLO.domain.repository.*;
 import travelbeeee.PDFLO.domain.service.PopularItemService;
 
 import javax.transaction.Transactional;
+import java.sql.Array;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -44,30 +49,59 @@ public class PopularItemServiceImpl implements PopularItemService {
         LocalDateTime curTime = LocalDateTime.now();
         log.info("updatePopularScore 실행");
         log.info("현재 시간 : {}", curTime);
-        List<Item> items = itemRepository.findAll();
+
+        List<Item> items = itemRepository.findAllWithComments();
+        List<OrderItem> orders = orderItemRepository.findAllWithItem();
+        Map<Long, ArrayList<OrderItem>> itemOrderMap = makeItemOrderMap(orders);
+        // 나는 아이템별로 구매내역이 필요함! --> Map , ArrayList 2개를 이용하자
         for (Item item : items) {
-            Double orderScore = 0.0;
+//            log.info("Item : {}", item.getId());
+            // 상품후기들을 순회하며 점수계산
             Double commentScore = 0.0;
             Double commentAvg = 0.0;
-            List<Comment> comments = commentRepository.findAllByItem(item.getId());
-            for (Comment c : comments) {
-                commentAvg += c.getScore();
-                long betweenDays = ChronoUnit.DAYS.between(curTime, c.getCreatedDate());
+            List<Comment> comments = item.getComments();
+            for (Comment comment : comments) {
+//                log.info("Item의 Comment : {}", comment.getId());
+                long betweenDays = ChronoUnit.DAYS.between(curTime, comment.getCreatedDate());
                 commentScore += calculateExtraPoints(betweenDays);
+                commentAvg += comment.getScore();
             }
-            if (!comments.isEmpty()) {
-                commentAvg /= comments.size();
-                commentScore *= (commentAvg / MAX_COMMENT_SCORE);
+//            log.info("pure CommentScore : {}", commentScore);
+            if(!comments.isEmpty())
+                commentAvg /= (comments.size());
+            commentScore *= (commentAvg / (5.0));
+
+            // 상품구매내역을 순회하며 점수 계산
+            Integer orderCnt = 0;
+            Double orderScore = 0.0;
+            if (itemOrderMap.containsKey(item.getId())) {
+                ArrayList<OrderItem> orderItems = itemOrderMap.get(item.getId());
+                for (OrderItem orderItem : orderItems) {
+//                    log.info("Item의 구매내역 : {}",orderItem.getId());
+                    long betweenDays = ChronoUnit.DAYS.between(curTime, orderItem.getCreatedDate());
+                    orderScore += calculateExtraPoints(betweenDays);
+                    orderCnt++;
+                }
             }
-            List<OrderItem> orders = orderItemRepository.findAllByItem(item.getId());
-            for (OrderItem o : orders) {
-                long betweenDays = ChronoUnit.DAYS.between(curTime, o.getCreatedDate());
-                orderScore += calculateExtraPoints(betweenDays);
-            }
-            log.info("itemId : {}", item.getId());
-            log.info("commentAvg : {}, commentScore : {}, orderScore : {}", commentAvg, commentScore, orderScore);
-            popularItemRepository.updatePopular(item.getId(), orderScore + commentScore, commentAvg, comments.size(), orders.size());
+//            log.info("commentScore : {}, orderScore : {}", commentScore, orderScore);
+            popularItemRepository.updatePopular(item.getId(), orderScore + commentScore, commentAvg, comments.size(), orderCnt);
         }
+    }
+
+    private Map<Long, ArrayList<OrderItem>> makeItemOrderMap(List<OrderItem> orders) {
+        Map<Long, ArrayList<OrderItem>> res = new HashMap<>();
+        for (OrderItem order : orders) {
+            Long itemId = order.getItem().getId();
+            if(res.containsKey(itemId)){
+                ArrayList<OrderItem> values = res.get(itemId);
+                values.add(order);
+            }else{
+                ArrayList<OrderItem> value = new ArrayList<>();
+                value.add(order);
+                res.put(itemId, value);
+            }
+        }
+        return res;
     }
 
     private Double calculateExtraPoints(long betweenDays) {
