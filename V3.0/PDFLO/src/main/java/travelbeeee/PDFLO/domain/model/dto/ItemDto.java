@@ -26,7 +26,7 @@ import java.util.Date;
 @Getter @Setter
 @ToString
 @Slf4j
-public class ItemViewDto {
+public class ItemDto {
     Long itemId;
     String title;
     String createdDate;
@@ -36,7 +36,7 @@ public class ItemViewDto {
     String thumbnailLocation;
     String thumbnailFileName;
 
-    public ItemViewDto(PopularItem pi) {
+    public ItemDto(PopularItem pi) {
         this.itemId = pi.getItem().getId();
         this.title = pi.getItem().getTitle();
         this.createdDate = pi.getItem().getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
