@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
-import travelbeeee.PDFLO.domain.model.dto.ItemViewDto;
+import travelbeeee.PDFLO.domain.model.dto.ItemDto;
 import travelbeeee.PDFLO.domain.model.entity.PopularItem;
 import travelbeeee.PDFLO.domain.service.ItemService;
 
@@ -32,11 +32,15 @@ public class MainController {
     @GetMapping("/")
     public String home(Model model) {
         List<PopularItem> popularItems = itemService.findWithItemAndThumbnailOrderByPopular();
-        List<ItemViewDto> itemViewDtos = popularItems.stream().map(pi -> new ItemViewDto(pi))
-                .collect(Collectors.toList());
-        log.info("itemViewDtos : {}", itemViewDtos);
-        model.addAttribute("items", itemViewDtos);
+        List<PopularItem> recentItems = itemService.findWithItemAndThumbnailOrderByDate();
 
+        List<ItemDto> popularItemDto = popularItems.stream().map(pi -> new ItemDto(pi))
+                .collect(Collectors.toList());
+        List<ItemDto> recentItemDto = recentItems.stream().map(pi -> new ItemDto(pi))
+                .collect(Collectors.toList());
+
+        model.addAttribute("popularItems", popularItemDto);
+        model.addAttribute("recentItems", recentItemDto);
         return "index";
     }
 

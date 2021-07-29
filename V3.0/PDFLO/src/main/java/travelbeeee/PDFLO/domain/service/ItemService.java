@@ -1,7 +1,6 @@
 package travelbeeee.PDFLO.domain.service;
 
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
-import travelbeeee.PDFLO.domain.model.dto.ItemViewDto;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.domain.model.entity.PopularItem;
 import travelbeeee.PDFLO.web.form.ItemForm;
@@ -19,4 +18,5 @@ public interface ItemService{
     List<Item> findSellItemWithMemberAndThumbnail(); // 등록된 상품 전체 조회 fetch join Member, Thumbnail
     Item findWithMemberAndPdfAndThumbnailAndCommentById(Long itemId) throws PDFLOException;
     List<PopularItem> findWithItemAndThumbnailOrderByPopular();
+    List<PopularItem> findWithItemAndThumbnailOrderByDate();
 }

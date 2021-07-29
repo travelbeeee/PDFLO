@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.FileInformation;
-import travelbeeee.PDFLO.domain.model.dto.ItemViewDto;
 import travelbeeee.PDFLO.domain.model.entity.*;
 import travelbeeee.PDFLO.domain.model.enumType.FileType;
 import travelbeeee.PDFLO.domain.model.enumType.ItemType;
@@ -180,5 +179,10 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<PopularItem> findWithItemAndThumbnailOrderByPopular() {
         return popularItemRepository.findPopularItemWithItemAndThumbnailOrderByScore();
+    }
+
+    @Override
+    public List<PopularItem> findWithItemAndThumbnailOrderByDate() {
+        return popularItemRepository.findPopularItemWithItemAndThumbnailOrderByDate();
     }
 }

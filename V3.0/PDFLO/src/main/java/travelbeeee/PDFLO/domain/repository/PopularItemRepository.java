@@ -14,6 +14,9 @@ public interface PopularItemRepository extends JpaRepository<PopularItem, Long> 
     @Query("select pi from PopularItem pi join fetch pi.item i join fetch i.thumbnail order by pi.score desc")
     List<PopularItem> findPopularItemWithItemAndThumbnailOrderByScore();
 
+    @Query("select pi from PopularItem pi join fetch pi.item i join fetch i.thumbnail order by i.createdDate desc")
+    List<PopularItem> findPopularItemWithItemAndThumbnailOrderByDate();
+
     @Modifying(clearAutomatically = true)
     @Query("update PopularItem pi SET pi.score = :totalScore, pi.commentAvg = :commentAvg, pi.commentCnt = :commentCnt, pi.orderCnt = :orderCnt where pi.item.id = :itemId")
     void updatePopular(Long itemId, Double totalScore, Double commentAvg, Integer commentCnt, Integer orderCnt);
