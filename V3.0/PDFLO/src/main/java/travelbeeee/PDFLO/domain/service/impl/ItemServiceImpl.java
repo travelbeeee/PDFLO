@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO.domain.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class ItemServiceImpl implements ItemService {
 
     private final MemberRepository memberRepository;
@@ -31,6 +33,7 @@ public class ItemServiceImpl implements ItemService {
     private final PdfRepository pdfRepository;
     private final ThumbnailRepository thumbnailRepository;
     private final OrderItemRepository orderItemRepository;
+    private final OrderRepository orderRepository;
     private final FileManager fileManager;
 
     @Transactional
@@ -169,7 +172,14 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item findWithMemberAndPdfAndThumbnailAndCommentById(Long itemId) throws PDFLOException {
-        Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailById(itemId);
+        Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailAndCommentById(itemId);
+        if(findItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
+        return findItem.get();
+    }
+
+    @Override
+    public Item findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(Long itemId) throws PDFLOException {
+        Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(itemId);
         if(findItem.isEmpty()) {
             throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
         }
@@ -184,5 +194,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<PopularItem> findWithItemAndThumbnailOrderByDate() {
         return popularItemRepository.findPopularItemWithItemAndThumbnailOrderByDate();
+    }
+
+    @Override
+    public boolean checkBuyer(Long memberId, Long itemId) {
+        Optional<Order> findOrder = orderRepository.findOrderWithMemberOrderItemAndItem(memberId, itemId);
+        return findOrder.isPresent();
     }
 }

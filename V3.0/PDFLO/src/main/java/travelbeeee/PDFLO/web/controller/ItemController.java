@@ -10,16 +10,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.dto.ItemDetailDto;
+import travelbeeee.PDFLO.domain.model.entity.Comment;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.domain.service.ItemService;
 import travelbeeee.PDFLO.web.form.CommentForm;
 import travelbeeee.PDFLO.web.form.ItemForm;
+import travelbeeee.PDFLO.web.form.RecommentForm;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -51,10 +54,21 @@ public class ItemController {
 
     @GetMapping("/item/{itemId}")
     public String itemDetail(HttpSession httpSession, @PathVariable("itemId") Long itemId, Model model) throws PDFLOException {
-        Item item = itemService.findWithMemberAndPdfAndThumbnailAndCommentById(itemId);
+        Item item = itemService.findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(itemId);
+        Long memberId = (Long) httpSession.getAttribute("id");
+        if (item.getMember().getId() == memberId) {
+            model.addAttribute("SELLER", true);
+        }else{
+            model.addAttribute("CLIENT", true);
+            if (itemService.checkBuyer(memberId, itemId)) {
+                model.addAttribute("BUYER", true);
+            }
+        }
+
         ItemDetailDto itemDetailDto = new ItemDetailDto(item);
         model.addAttribute("item", itemDetailDto);
         model.addAttribute("commentForm", new CommentForm());
+        model.addAttribute("recommentForm", new RecommentForm());
         return "/item/detail";
     }
 

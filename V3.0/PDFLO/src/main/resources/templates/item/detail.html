@@ -18,15 +18,15 @@
     가격 : <th:block th:text="${item.price}"/><br>
     작성자 : <th:block th:text="${item.username}"/><br>
     <br><br><br>
-    <button id="putCartBtn" type="button" th:text="#{button.cart}"></button>
-    <form th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
+    <button th:if="${CLIENT} == true and ${BUYER} == null" id="putCartBtn" type="button" th:text="#{button.cart}"></button>
+    <form th:if="${CLIENT} == true and ${BUYER} == null" th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
         <input type="submit" value="구매하기">
     </form>
-    <form th:action="@{/item/delete/{itemId}(itemId=${item.itemId})}" method="post">
-        <input type="submit" value="상품 판매 중단하기">
-    </form>
-    <form th:action="@{/item/download/{itemId}(itemId=${item.itemId})}" method="post">
+    <form th:if="${BUYER} == true" th:action="@{/item/download/{itemId}(itemId=${item.itemId})}" method="post">
         <input type="submit" value="다운로드하기">
+    </form>
+    <form th:if="${SELLER} == true" th:action="@{/item/delete/{itemId}(itemId=${item.itemId})}" method="post">
+        <input type="submit" value="상품 판매 중단하기">
     </form>
     <br><br><br>
     작성된 후기!<br>
@@ -36,10 +36,20 @@
         <p>후기 : <span th:text="${comment.comment}"></span></p>
         <p>별점 : <span th:text="${comment.score}"></span></p>
         <p>작성날짜 : <span th:text="${comment.createdDate}"></span></p>
-        <button th:if="${comment.memberId} == ${session['id']}" id="commentDeleteBtn" th:text="#{button.commentDelete}"></button>
+        <button th:if="${comment.memberId} == ${session['id']}" type="button" th:id="commentDeleteBtn" th:onclick="deleteComment([[${comment.commentId}]]);" th:text="#{button.commentDelete}"></button>
+        <div th:if="${comment.recommentId} != null">
+            <p>판매자의 답글</p>
+            <p th:text="${comment.recomment}"></p>
+            <p th:text="${comment.recommentCreatedDate}"></p>
+            <button type="button" th:id="recommentDeleteBtn" th:onclick="deleteRecomment([[${comment.recommentId}]]);" th:text="#{button.recommentDelete}"></button>
+        </div>
+        <div th:if="${comment.recommentId} == null">
+            <button th:if="${SELLER} == true" th:id="recommentFormBtn + ${comment.commentId}" type="button" th:onclick="uploadFormRecomment([[${comment.commentId}]]);" th:text="#{button.recommentUpload}"></button>
+            <input th:type="text" th:id="recommentForm + ${comment.commentId}" hidden>
+            <button th:id="recommentUploadBtn + ${comment.commentId}" type="button" th:onclick="uploadRecomment([[${comment.commentId}]]);" th:text="#{button.recommentUpload}" hidden></button>
+        </div>
     </div>
-
-    <form th:object="${commentForm}" method="post">
+    <form th:if="${BUYER} == true" th:object="${commentForm}" method="post">
         <input type="text" placeholder="후기를 남겨주세요." th:field="*{comment}">
         <small th:text="#{form.comment.comment}"></small>
         <div class="field-error" th:errors="*{comment}"></div>
@@ -49,69 +59,6 @@
     </form>
 </body>
 <script>
-    $('#commentUploadBtn').on('click', function (){
-        var comment = document.getElementById("comment").value;
-        var score = document.getElementById("score").value;
-        var itemId = document.getElementById("itemId").innerText;
-        $.ajax({
-            url: "/comment/write/" + itemId,
-            type: "POST",
-            data: {'comment' : comment,
-                    'score' : score
-                },
-            success: function(data){
-                if(data == 'COMMENT_INPUT_INVALID') {
-                    alert("후기 및 평점을 제대로 입력해주세요.");
-                }else if (data == 'MEMBER_NO_EXIST'){
-                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
-                    window.location.href = "/member/login";
-                }else if(data == "ITEM_NO_EXIST"){
-                    alert("판매자가 판매를 중단한 상품입니다.");
-                    window.location.href = "/";
-                }else if(data == "COMMENT_NO_PERMISSION_BUYING"){
-                    alert("구매 후 후기를 남길 수 있습니다.");
-                }else if (data == "COMMENT_ALREADY_WRITTEN"){
-                    alert("후기는 한 번만 남길 수 있습니다.");
-                }else if(data == "SUCCESS"){
-                    alert("후기를 남겼습니다.");
-                    window.location.href = "/item/" + itemId;
-                }
-            },
-            error:function(){
-                alert("다시 한 번 시도해주세요.");
-            }
-        });
-    });
-
-    $('#commentDeleteBtn').on('click', function (){
-        var itemId = document.getElementById("itemId").innerText;
-        var commentId = document.getElementById("commentId").innerText;
-
-        $.ajax({
-            url: "/comment/delete/" + itemId + "/" + commentId,
-            type: "POST",
-
-            success: function(data){
-                if(data == 'MEMBER_NO_EXIST'){
-                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
-                    window.location.href = "/member/login";
-                }
-                else if (data == 'COMMENT_NO_EXIST'){
-                    alert("이미 삭제된 후기입니다.");
-                    window.location.href = "/item/" + itemId;
-                }else if(data == "COMMENT_NO_PERMISSION_WRITER"){
-                    alert("자신의 후기만 삭제할 수 있습니다.");
-                }else if(data == "SUCCESS"){
-                    alert("후기를 삭제했습니다.");
-                    window.location.href = "/item/" + itemId;
-                }
-            },
-            error:function(){
-                alert("다시 한 번 시도해주세요.");
-            }
-        });
-    });
-
     $('#putCartBtn').on('click', function (){
         var itemId = document.getElementById("itemId").innerText;
         console.log("put cart Btn 동작");
@@ -140,5 +87,132 @@
             }
         });
     });
+
+    $('#commentUploadBtn').on('click', function (){
+        var comment = document.getElementById("comment").value;
+        var score = document.getElementById("score").value;
+        var itemId = document.getElementById("itemId").innerText;
+        $.ajax({
+            url: "/comment/" + itemId,
+            type: "POST",
+            data: {
+                'comment' : comment,
+                    'score' : score
+                },
+            success: function(data){
+                if(data == 'COMMENT_INPUT_INVALID') {
+                    alert("후기 및 평점을 제대로 입력해주세요.");
+                }else if (data == 'MEMBER_NO_EXIST'){
+                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
+                    window.location.href = "/member/login";
+                }else if(data == "ITEM_NO_EXIST"){
+                    alert("판매자가 판매를 중단한 상품입니다.");
+                    window.location.href = "/";
+                }else if(data == "COMMENT_NO_PERMISSION_BUYING"){
+                    alert("구매 후 후기를 남길 수 있습니다.");
+                }else if (data == "COMMENT_ALREADY_WRITTEN"){
+                    alert("후기는 한 번만 남길 수 있습니다.");
+                }else if(data == "SUCCESS"){
+                    alert("후기를 남겼습니다.");
+                    window.location.href = "/item/" + itemId;
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    });
+    function deleteComment(commentId){
+        var itemId = document.getElementById("itemId").innerText;
+        console.log("deleteComment 동작");
+        $.ajax({
+            url: "/comment/" + itemId + "/" + commentId,
+            type: "DELETE",
+            success: function(data){
+                if(data == 'MEMBER_NO_EXIST'){
+                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
+                    window.location.href = "/member/login";
+                }
+                else if (data == 'COMMENT_NO_EXIST'){
+                    alert("이미 삭제된 후기입니다.");
+                    window.location.href = "/item/" + itemId;
+                }else if(data == "COMMENT_NO_PERMISSION_WRITER"){
+                    alert("자신의 후기만 삭제할 수 있습니다.");
+                }else if(data == "SUCCESS"){
+                    alert("후기를 삭제했습니다.");
+                    window.location.href = "/item/" + itemId;
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    }
+
+    function uploadFormRecomment(commentId){
+        document.getElementById("recommentFormBtn" + commentId).hidden = true;
+        document.getElementById("recommentForm" + commentId).hidden = false;
+        document.getElementById("recommentUploadBtn" + commentId).hidden = false;
+    }
+
+    function uploadRecomment(commentId){
+        var itemId = document.getElementById("itemId").innerText;
+        var comment = document.getElementById("recommentForm" + commentId).value;
+        $.ajax({
+            url: "/recomment/" + commentId,
+            type: "POST",
+            data: {
+                "comment" : comment
+            },
+            success: function(data) {
+                console.log("data : " + data);
+                if (data == 'MEMBER_NO_EXIST') {
+                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
+                    window.location.href = "/member/login";
+                } else if (data == 'COMMENT_NO_EXIST') {
+                    alert("존재하지 않는 후기입니다.");
+                    window.location.href = "/item/" + itemId;
+                } else if (data == 'MEMBER_NOT_SELLER') {
+                    alert("판매 중인 상품에만 답글을 남길 수 있습니다.");
+                }else if (data == 'RECOMMENT_ALREADY_WRITTEN'){
+                    alert("기존에 답글을 이미 남기셨습니다.");
+                }else if(data == "RECOMMENT_INPUT_INVALID") {
+                    alert("답글을 제대로 입력해주세요.");
+                }else if(data == 'SUCCESS'){
+                    alert("답글 남기기 성공");
+                    window.location.href = "/item/" + itemId;
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    }
+
+    function deleteRecomment(recommentId){
+        $.ajax({
+            url: "/recomment/" + recommentId,
+            type: "DELETE",
+            success: function(data) {
+                console.log("data : " + data);
+                if (data == 'MEMBER_NO_EXIST') {
+                    alert("회원가입 및 로그인을 먼저 진행해주세요.");
+                    window.location.href = "/member/login";
+                } else if (data == 'RECOMMENT_NO_EXIST') {
+                    alert("존재하지 않는 답글입니다.");
+                    window.location.href = "/item/" + itemId;
+                } else if (data == 'RECOMMENT_NO_PERMISSION') {
+                    alert("판매 중인 상품에만 답글을 남길 수 있습니다.");
+                }else if(data == 'SUCCESS'){
+                    alert("답글 삭제 성공");
+                    window.location.href = "/item/" + itemId;
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    }
+
 </script>
 </html>

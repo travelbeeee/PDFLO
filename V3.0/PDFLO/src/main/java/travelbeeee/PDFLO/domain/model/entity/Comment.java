@@ -26,6 +26,10 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recomment_id")
+    private Recomment recomment;
+
     private String comment;
     private Double score;
 
@@ -34,5 +38,9 @@ public class Comment extends BaseEntity {
         this.item = item;
         this.comment = comment;
         this.score = score;
+    }
+
+    public void updateRecomment(Recomment recomment) {
+        this.recomment = recomment;
     }
 }

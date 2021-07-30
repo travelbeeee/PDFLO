@@ -37,7 +37,7 @@ public class CommentController {
      * 후기 남기기
      */
     @ResponseBody
-    @PostMapping("/comment/write/{itemId}")
+    @PostMapping("/comment/{itemId}")
     public ReturnCode uploadComment(HttpSession httpSession, @PathVariable("itemId") Long itemId,
                                     @Validated @ModelAttribute CommentForm commentForm, BindingResult bindingResult) throws PDFLOException {
         log.info("UploadComment 메소드");
@@ -50,7 +50,7 @@ public class CommentController {
         return resultReturnCode;
     }
 
-    @PostMapping("/comment/delete/{itemId}/{commentId}")
+    @DeleteMapping("/comment/{itemId}/{commentId}")
     @ResponseBody
     public ReturnCode deleteComment(HttpSession httpSession, @PathVariable("commentId") Long commentId,
                                 @PathVariable("itemId") Long itemId) throws PDFLOException {
