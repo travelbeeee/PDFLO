@@ -1,5 +1,7 @@
 package travelbeeee.PDFLO.domain.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +13,9 @@ public interface PopularItemRepository extends JpaRepository<PopularItem, Long> 
     @Query("select pi from PopularItem pi join fetch pi.item i join fetch i.thumbnail")
     List<PopularItem> findPopularItemWithItemAndThumbnail();
 
-    @Query("select pi from PopularItem pi join fetch pi.item i join fetch i.thumbnail order by pi.score desc")
-    List<PopularItem> findPopularItemWithItemAndThumbnailOrderByScore();
-
-    @Query("select pi from PopularItem pi join fetch pi.item i join fetch i.thumbnail order by i.createdDate desc")
-    List<PopularItem> findPopularItemWithItemAndThumbnailOrderByDate();
+    @Query(value ="select pi from PopularItem pi join fetch pi.item i join fetch i.thumbnail",
+        countQuery = "select count(pi) from PopularItem pi")
+    Page<PopularItem> findPopularItemWithItemAndThumbnailPaging(Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Query("update PopularItem pi SET pi.score = :totalScore, pi.commentAvg = :commentAvg, pi.commentCnt = :commentCnt, pi.orderCnt = :orderCnt where pi.item.id = :itemId")

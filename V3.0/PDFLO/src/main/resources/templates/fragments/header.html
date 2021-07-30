@@ -10,6 +10,7 @@
                     <ul class="list-unstyled">
                         <li><a th:if="${session['id']} != null" th:href="@{/member/mypage}" class="text-white" th:text="#{mypage}"></a></li>
                         <li><a th:if="${session['id']} != null" th:href="@{/item/upload}" class="text-white" th:text="#{upload}"></a></li>
+                        <li><a th:if="${session['id']} != null" th:href="@{/cart}" class="text-white" th:text="#{cart}"></a></li>
                         <li><a th:if="${session['id']} != null" th:href="@{/member/logout}" class="text-white" th:text="#{logout}"></a></li>
                         <li><a th:if="${session['id']} == null" th:href="@{/member/login}" class="text-white" th:text="#{login}"></a></li>
                         <li><a th:if="${session['id']} == null" th:href="@{/member/signUp}" class="text-white" th:text="#{signUp}"></a></li>

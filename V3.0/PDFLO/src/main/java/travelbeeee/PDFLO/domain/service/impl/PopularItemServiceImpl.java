@@ -43,7 +43,7 @@ public class PopularItemServiceImpl implements PopularItemService {
      */
     @Transactional
 //    @Scheduled(cron = "0 0 00 * * ?") // 매일 0시에 실행
-//    @Scheduled(fixedDelay = 100000) // 매일 0시에 실행
+    @Scheduled(fixedDelay = 100000) // 매일 0시에 실행
     @Override
     public void updatePopularScore() {
         LocalDateTime curTime = LocalDateTime.now();

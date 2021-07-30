@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import travelbeeee.PDFLO.domain.model.BaseEntity;
 
 import javax.persistence.*;
 
@@ -22,7 +23,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class PopularItem {
+public class PopularItem extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "popular_item_id")
     private Long id;

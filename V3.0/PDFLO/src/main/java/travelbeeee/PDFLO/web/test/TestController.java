@@ -16,6 +16,7 @@ public class TestController {
     @GetMapping("/test")
     public String testForm(Model model) {
         model.addAttribute("testForm", new TestForm());
+        model.addAttribute("sequenceNum", 5);
         log.info("GET test");
         return "/test/test";
     }

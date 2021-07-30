@@ -49,10 +49,10 @@ public class ItemDetailDto {
         this.pdfLocation = pdfFileInfo.getLocation();
         this.pdfFileName = pdfFileInfo.getSaltedFileName();
         List<Comment> comments = item.getComments();
-        this.comments = comments.stream()
-                .map(c -> new CommentDto(c))
-                .collect(Collectors.toList());
+        if(!comments.isEmpty()){
+            this.comments = comments.stream()
+                    .map(c -> new CommentDto(c))
+                    .collect(Collectors.toList());
+        }
     }
-
-
 }

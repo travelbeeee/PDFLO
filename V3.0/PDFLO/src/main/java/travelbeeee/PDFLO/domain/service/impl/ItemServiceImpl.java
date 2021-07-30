@@ -2,6 +2,8 @@ package travelbeeee.PDFLO.domain.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -187,13 +189,8 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<PopularItem> findWithItemAndThumbnailOrderByPopular() {
-        return popularItemRepository.findPopularItemWithItemAndThumbnailOrderByScore();
-    }
-
-    @Override
-    public List<PopularItem> findWithItemAndThumbnailOrderByDate() {
-        return popularItemRepository.findPopularItemWithItemAndThumbnailOrderByDate();
+    public Page<PopularItem> findWithItemAndThumbnailByPaging(Pageable pageable) {
+        return popularItemRepository.findPopularItemWithItemAndThumbnailPaging(pageable);
     }
 
     @Override

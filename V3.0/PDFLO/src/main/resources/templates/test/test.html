@@ -19,6 +19,12 @@
     </form>
 
     <button type="button" id="mainButton"></button>
+
+    numbers.sequence테스트
+    <div th:text="${sequenceNum}"></div>
+    <div th:each="num : ${#numbers.sequence(1, sequenceNum)}">
+        <a th:href="@{/popular/{pageNum}(pageNum = num)}" th:text="${num}"></a>
+    </div>
 </body>
 <script>
     $('#mainButton').on('click', function (){

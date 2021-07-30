@@ -38,7 +38,6 @@
         </div>
     </section>
 </th:block>
-
 <!-- HOT 게시물 -->
 <th:block th:if="${not #arrays.isEmpty(popularItems)}">
     <div class="album py-5 bg-light">
@@ -67,9 +66,12 @@
                     </div>
                 </div>
             </div>
+            <a th:if="${popularHasNext} == true" th:href="@{/popular/1}" th:text="#{a.hot}"></a>
         </div>
     </div>
-
+</th:block>
+<!-- RECENT 게시물 -->
+<th:block th:if="${not #arrays.isEmpty(recentItems)}">
     <div class="album py-5 bg-light">
         <p class="text-lg-center" th:text="#{new}"></p>
         <div class="container">
@@ -96,6 +98,7 @@
                     </div>
                 </div>
             </div>
+            <a th:if="${recentHasNext} == true" th:href="@{/recent/1}" th:text="#{a.new}"></a>
         </div>
     </div>
 </th:block>
