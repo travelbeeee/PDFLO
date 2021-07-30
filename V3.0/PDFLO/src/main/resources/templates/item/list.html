@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>메인 페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <!-- Bootstrap core CSS -->
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<th:block th:replace="fragments/header.html"></th:block>
+<!-- HOT 게시물 -->
+<th:block th:if="${not #arrays.isEmpty(items)}">
+    <div class="album py-5 bg-light">
+        <p th:if="${popular} == true" class="text-lg-center" th:text="#{hot}"></p>
+        <p th:if="${recent} == true" class="text-lg-center" th:text="#{new}"></p>
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col" th:each="item : ${items}">
+                    <div class="card shadow-sm">
+                        <img th:src="|/images/${item.thumbnailLocation}${item.thumbnailFileName}|" alt="상품썸네일">
+                        <div class="card-body">
+                            <p class="card-text" th:text="${item.title}"></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <div th:if="${item.commentCnt} != 0">
+                                        평점 : <div th:text="${item.commentAvg}"></div>
+                                        후기 수 : <div th:text="${item.commentCnt}"></div>
+                                    </div>
+                                    <div th:if="${item.orderCnt} != 0">
+                                        구매 수 : <div th:text="${item.orderCnt}"></div>
+                                    </div>
+                                    <a th:href="@{/item/{itemId}(itemId=${item.itemId})}"><button type="button" class="btn btn-sm btn-outline-secondary">View</button></a>
+                                </div>
+                                <small class="text-muted" th:text="${item.createdDate}"></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <th:block th:if="${totalPageNum} != null" th:each="num : ${#numbers.sequence(1,totalPageNum)}">
+                <a th:if="${recent} == true" th:href="@{/recent/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
+                <a th:if="${popular} == true" th:href="@{/popular/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
+            </th:block>
+        </div>
+    </div>
+</th:block>
+<th:block th:replace="fragments/footer.html"></th:block>
+</body>
+</html>
