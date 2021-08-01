@@ -37,7 +37,7 @@ public class MainController {
 
     @GetMapping("/")
     public String home(Model model) {
-        PageRequest popularRequest = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "score"));
+        PageRequest popularRequest = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "score").and(Sort.by(Sort.Direction.DESC, "createdDate")));
         PageRequest recentRequest = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         Page<PopularItem> pagePopularItems = itemService.findWithItemAndThumbnailByPaging(popularRequest);
@@ -64,7 +64,7 @@ public class MainController {
 
     @GetMapping("/popular/{pageNum}")
     public String popularItems(@PathVariable("pageNum") Integer pageNum, Model model) {
-        PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "score"));
+        PageRequest pageRequest = PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "score").and(Sort.by(Sort.Direction.DESC, "createdDate")));
         Page<PopularItem> pagePopularItems = itemService.findWithItemAndThumbnailByPaging(pageRequest);
         List<PopularItem> popularItems = pagePopularItems.getContent();
         List<ItemDto> itemDtos = popularItems.stream().map(pi -> new ItemDto(pi))

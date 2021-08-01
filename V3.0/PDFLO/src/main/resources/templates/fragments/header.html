@@ -8,6 +8,7 @@
                 </div>
                 <div class="col-sm-4 offset-md-1 py-4">
                     <ul class="list-unstyled">
+                        <li><img th:if="${session['id']} != null and ${session['profile']} != null" th:src="|/images/${session['profile']}|" alt="썸네일페이지"></li>
                         <li><a th:if="${session['id']} != null" th:href="@{/member/mypage}" class="text-white" th:text="#{mypage}"></a></li>
                         <li><a th:if="${session['id']} != null" th:href="@{/item/upload}" class="text-white" th:text="#{upload}"></a></li>
                         <li><a th:if="${session['id']} != null" th:href="@{/cart}" class="text-white" th:text="#{cart}"></a></li>

@@ -165,7 +165,7 @@ public class MemberController {
         if(!findProfile.isEmpty()){
             Profile profile = findProfile.get();
             httpSession.setAttribute("profile", profile.getFileInfo().getLocation() +
-                    "/resized-" + profile.getFileInfo().getSaltedFileName());
+                    "resized-" + profile.getFileInfo().getSaltedFileName());
         }
         return "redirect:" + redirectURL;
     }
