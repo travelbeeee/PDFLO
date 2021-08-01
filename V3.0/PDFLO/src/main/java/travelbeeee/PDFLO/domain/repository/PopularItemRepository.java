@@ -10,9 +10,6 @@ import travelbeeee.PDFLO.domain.model.entity.PopularItem;
 import java.util.List;
 
 public interface PopularItemRepository extends JpaRepository<PopularItem, Long> {
-    @Query("select pi from PopularItem pi join fetch pi.item i join fetch i.thumbnail")
-    List<PopularItem> findPopularItemWithItemAndThumbnail();
-
     @Query(value ="select pi from PopularItem pi join fetch pi.item i join fetch i.thumbnail",
         countQuery = "select count(pi) from PopularItem pi")
     Page<PopularItem> findPopularItemWithItemAndThumbnailPaging(Pageable pageable);

@@ -10,8 +10,8 @@ import travelbeeee.PDFLO.domain.model.entity.Order;
 import travelbeeee.PDFLO.domain.model.entity.OrderItem;
 import travelbeeee.PDFLO.domain.repository.*;
 import travelbeeee.PDFLO.domain.service.PopularItemService;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.sql.Array;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -23,6 +23,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PopularItemServiceImpl implements PopularItemService {
 
     private static final Double MAX_COMMENT_SCORE = 5.0;
@@ -39,37 +40,37 @@ public class PopularItemServiceImpl implements PopularItemService {
      * 31 ~ 60일 이내 3점
      * 61 ~ 90일 이내 2점
      * 91일 ~ 1점
-     * --> Sum(기간 별 가산점 * 구매) + Sum(기간 별 가산점 * 후기 * (평점 / 5.0))
+     * --> Sum(기간 별 가산점 * 구매 수) + Sum(기간 별 가산점 * 후기 수 * 상대평점)
      */
-    @Transactional
 //    @Scheduled(cron = "0 0 00 * * ?") // 매일 0시에 실행
-    @Scheduled(fixedDelay = 100000) // 매일 0시에 실행
+    @Scheduled(fixedDelay = 10000)
     @Override
     public void updatePopularScore() {
         LocalDateTime curTime = LocalDateTime.now();
         log.info("updatePopularScore 실행");
         log.info("현재 시간 : {}", curTime);
 
-        List<Item> items = itemRepository.findAllWithComments();
+        List<Item> items = itemRepository.findAll();
         List<OrderItem> orders = orderItemRepository.findAllWithItem();
         Map<Long, ArrayList<OrderItem>> itemOrderMap = makeItemOrderMap(orders);
         // 나는 아이템별로 구매내역이 필요함! --> Map , ArrayList 2개를 이용하자
         for (Item item : items) {
-//            log.info("Item : {}", item.getId());
+            log.info("Item : {}", item.getId());
             // 상품후기들을 순회하며 점수계산
             Double commentScore = 0.0;
             Double commentAvg = 0.0;
-            List<Comment> comments = item.getComments();
-            for (Comment comment : comments) {
-//                log.info("Item의 Comment : {}", comment.getId());
-                long betweenDays = ChronoUnit.DAYS.between(curTime, comment.getCreatedDate());
-                commentScore += calculateExtraPoints(betweenDays);
-                commentAvg += comment.getScore();
-            }
-//            log.info("pure CommentScore : {}", commentScore);
-            if(!comments.isEmpty())
+//            List<Comment> comments = item.getComments(); // 여기서 후기가 없으면 에러가 발생한다.... 흡... LAZY로 가져와주는거아닌가
+            List<Comment> comments = commentRepository.findAllByItem(item.getId());
+            if(!comments.isEmpty()) {
+                for (Comment comment : comments) {
+                    log.info("Item의 Comment : {}", comment.getId());
+                    long betweenDays = ChronoUnit.DAYS.between(curTime, comment.getCreatedDate());
+                    commentScore += calculateExtraPoints(betweenDays);
+                    commentAvg += comment.getScore();
+                }
                 commentAvg /= (comments.size());
-            commentScore *= (commentAvg / (5.0));
+            }
+            commentScore *= (commentAvg / 5.0);
 
             // 상품구매내역을 순회하며 점수 계산
             Integer orderCnt = 0;
@@ -83,7 +84,7 @@ public class PopularItemServiceImpl implements PopularItemService {
                     orderCnt++;
                 }
             }
-//            log.info("commentScore : {}, orderScore : {}", commentScore, orderScore);
+            log.info("commentScore : {}, orderScore : {}", commentScore, orderScore);
             popularItemRepository.updatePopular(item.getId(), orderScore + commentScore, commentAvg, comments.size(), orderCnt);
         }
     }
