@@ -42,8 +42,9 @@ public class PopularItemServiceImpl implements PopularItemService {
      * 91일 ~ 1점
      * --> Sum(기간 별 가산점 * 구매 수) + Sum(기간 별 가산점 * 후기 수 * 상대평점)
      */
+    //TODO : 인기도 계산 Batch하기
 //    @Scheduled(cron = "0 0 00 * * ?") // 매일 0시에 실행
-    @Scheduled(fixedDelay = 10000)
+//    @Scheduled(fixedDelay = 10000)
     @Override
     public void updatePopularScore() {
         LocalDateTime curTime = LocalDateTime.now();
@@ -59,7 +60,6 @@ public class PopularItemServiceImpl implements PopularItemService {
             // 상품후기들을 순회하며 점수계산
             Double commentScore = 0.0;
             Double commentAvg = 0.0;
-//            List<Comment> comments = item.getComments(); // 여기서 후기가 없으면 에러가 발생한다.... 흡... LAZY로 가져와주는거아닌가
             List<Comment> comments = commentRepository.findAllByItem(item.getId());
             if(!comments.isEmpty()) {
                 for (Comment comment : comments) {

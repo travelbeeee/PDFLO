@@ -190,6 +190,7 @@
     }
 
     function deleteRecomment(recommentId){
+        var itemId = document.getElementById("itemId").innerText;
         $.ajax({
             url: "/recomment/" + recommentId,
             type: "DELETE",

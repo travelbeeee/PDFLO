@@ -73,13 +73,17 @@ public class ItemServiceImpl implements ItemService {
      * 6) 새롭게 입력된 PDF / Thumbnail 엔티티를 저장한ㄷ.
      * 7) Item 의 값들을 변경한다.
      */
+    //TODO : 삭제, 삽입 --> 수정
     @Transactional
     @Override
     public void modifyItem(Long memberId, Long itemId, ItemForm itemDto) throws PDFLOException, NoSuchAlgorithmException, IOException {
-        Optional<Item> findItem = itemRepository.findById(itemId);
-        if(findItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
+//        Optional<Item> findItem = itemRepository.findById(itemId);
+//        if(findItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
 
-        Item item = findItem.get();
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.ITEM_NO_EXIST));
+
+//        Item item = findItem.get();
         if(item.getMember().getId() != memberId) throw new PDFLOException(ReturnCode.MEMBER_NOT_SELLER);
 
         Pdf pdf = item.getPdf();

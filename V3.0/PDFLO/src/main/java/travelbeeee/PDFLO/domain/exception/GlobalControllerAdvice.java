@@ -49,4 +49,4 @@ public class GlobalControllerAdvice {
         mav.addObject("errorCode", e.getReturnCode().getMessage());
         return mav;
     }
-    }
+}

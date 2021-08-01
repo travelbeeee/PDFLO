@@ -5,7 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
@@ -39,7 +43,7 @@ public class MemberMyPageController {
      * 회원을 삭제하기 전에 비밀번호를 한 번 더 확인하는 페이지로 보낸다.
      */
     @GetMapping("/member/delete")
-    public String checkPasswordBeforeDelete(HttpSession httpSession) throws PDFLOException {
+    public String checkPasswordBeforeDelete() throws PDFLOException {
         return "/member/delete";
     }
 
@@ -48,7 +52,6 @@ public class MemberMyPageController {
      */
     @PostMapping("/member/delete")
     public String memberDelete(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
-
         Long memberId = (Long) httpSession.getAttribute("id");
         memberService.checkPassword(memberId, password);
         memberService.delete(memberId);
@@ -60,7 +63,7 @@ public class MemberMyPageController {
      * 비밀번호를 수정하기 전에 비밀번호를 한 번 더 확인하는 페이지로 보낸다.
      */
     @GetMapping("/member/modify")
-    public String checkPasswordBeforeModify(HttpSession httpSession) throws PDFLOException {
+    public String checkPasswordBeforeModify() throws PDFLOException {
         return "/member/modify";
     }
 
@@ -103,8 +106,7 @@ public class MemberMyPageController {
      * 포인트충전 페이지로 이동하기
      */
     @GetMapping("/member/charge")
-    public String pointChargeForm(HttpSession httpSession) throws PDFLOException {
-
+    public String pointChargeForm() throws PDFLOException {
         return "/member/chargePoint";
     }
 
@@ -124,7 +126,7 @@ public class MemberMyPageController {
      * 프로필 등록 페이지로 넘어가기
      */
     @GetMapping("/member/profile")
-    public String profileForm(HttpSession httpSession, Model model) throws PDFLOException {
+    public String profileForm(Model model) throws PDFLOException {
         model.addAttribute("profileForm", new ProfileForm());
         return "/member/profile";
     }
@@ -133,8 +135,10 @@ public class MemberMyPageController {
      * 파일을 제대로 입력했다면, 프로필을 등록하기.
      */
     @PostMapping("/member/profile")
-    public String profileUpload(HttpSession httpSession, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException, IOException {
+    public String profileUpload(HttpSession httpSession,
+                                @Validated @ModelAttribute ProfileForm profileForm, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException, IOException {
         if (profileForm.getProfile().isEmpty()) {
+            bindingResult.addError(new FieldError("profileForm", "profile", "프로필 사진을 등록해주세요."));
             return "/member/profile";
         }
 
