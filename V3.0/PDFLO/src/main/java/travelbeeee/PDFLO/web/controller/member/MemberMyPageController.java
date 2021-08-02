@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
+import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.model.dto.ItemSellDto;
 import travelbeeee.PDFLO.domain.model.dto.OrderHistoryDto;
 import travelbeeee.PDFLO.domain.model.dto.PointHistoryDto;
@@ -149,6 +150,9 @@ public class MemberMyPageController {
 
         Long memberId = (Long) httpSession.getAttribute("id");
         memberService.uploadProfile(memberId, profileForm);
+        Profile profile = memberService.findProfileByMember(memberId).orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_PROFILE_NO_EXIST));
+        httpSession.setAttribute("profile",profile.getFileInfo().getLocation() +
+                "resized-" + profile.getFileInfo().getSaltedFileName());
         return "redirect:/member/mypage";
     }
 
@@ -159,7 +163,7 @@ public class MemberMyPageController {
     public String deleteProfile(HttpSession httpSession) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
         memberService.deleteProfile(memberId);
-
+        httpSession.removeAttribute("profile");
         return "redirect:/member/mypage";
     }
 

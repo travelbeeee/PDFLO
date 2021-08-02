@@ -19,6 +19,7 @@ public enum ReturnCode {
     MEMBER_INSUFFICIENT_BALANCE(400, "잔액이 부족합니다."),
     MEMBER_NO_PERMISSION(400, "로그인 후 이용 가능합니다."),
     MEMBER_IS_SELLER(400, "자신의 상품은 구입할 수 없습니다."),
+    MEMBER_PROFILE_NO_EXIST(400, "프로필이 없습니다."),
     MAIL_AUTHCODE_INCORRECT(400, "인증코드가 틀렸습니다. 다시 진행해주세요."),
     ITEM_INPUT_ERROR(400, "양식에 맞게 다시 파일을 등록해주세요."),
     MEMBER_ALREADY_LOGIN(400, "이미 로그인 하셨습니다."),
