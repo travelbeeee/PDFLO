@@ -6,11 +6,16 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>포인트충전페이지</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+    <th:block th:replace="fragments/headJQ.html"></th:block>
 </head>
 <body>
-    <form action="/member/charge" method="post">
-        <input type="text" name="point" placeholder="충전할 금액을 입력해주세요">
+<th:block th:replace="fragments/header.html"></th:block>
+    <form th:action th:object="${pointForm}" method="post">
+        <input type="number" th:field="*{point}" th:errorclass="field-error"  placeholder="충전할 금액을 입력해주세요(최소 천원, 최대 백만원 충전 가능)" min="1000" max="1000000" required>
+        <div class="field-error" th:errors="*{point}"></div>
         <input type="submit" value="충전하기">
     </form>
+<th:block th:replace="fragments/footer.html"></th:block>
 </body>
 </html>

@@ -20,6 +20,7 @@ import travelbeeee.PDFLO.domain.model.dto.SellHistoryDto;
 import travelbeeee.PDFLO.domain.model.entity.*;
 import travelbeeee.PDFLO.domain.model.enumType.PointType;
 import travelbeeee.PDFLO.domain.service.MemberService;
+import travelbeeee.PDFLO.web.form.PointForm;
 import travelbeeee.PDFLO.web.form.ProfileForm;
 
 import javax.servlet.http.HttpSession;
@@ -106,7 +107,8 @@ public class MemberMyPageController {
      * 포인트충전 페이지로 이동하기
      */
     @GetMapping("/member/charge")
-    public String pointChargeForm() throws PDFLOException {
+    public String pointChargeForm(Model model) throws PDFLOException {
+        model.addAttribute("pointForm", new PointForm());
         return "/member/chargePoint";
     }
 
@@ -114,10 +116,13 @@ public class MemberMyPageController {
      * 포인트충전하기 --> mypage 로 redirect
      */
     @PostMapping("/member/charge")
-    public String pointCharge(HttpSession httpSession, Integer point) throws PDFLOException {
+    public String pointCharge(HttpSession httpSession, @ModelAttribute @Validated PointForm form, BindingResult bindingResult) throws PDFLOException {
+        if (bindingResult.hasErrors()) {
+            return "/member/charge";
+        }
         Long memberId = (Long) httpSession.getAttribute("id");
 
-        memberService.usePoint(memberId, point, PointType.CHARGE);
+        memberService.usePoint(memberId, form.getPoint(), PointType.CHARGE);
 
         return "redirect:/member/mypage";
     }
