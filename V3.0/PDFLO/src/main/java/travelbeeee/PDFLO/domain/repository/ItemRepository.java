@@ -1,5 +1,6 @@
 package travelbeeee.PDFLO.domain.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,4 +33,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     @Query("select i from Item i join fetch i.member join fetch i.pdf join fetch i.thumbnail left join i.comments c left join c.recomment where i.id = :itemId")
     Optional<Item> findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(Long itemId);
+
+    @Query(value = "select i.id from Item i",
+            countQuery = "select count(i) from Item i")
+    List<Long> findAllId(Pageable pageable);
 }

@@ -17,6 +17,9 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query("select oi from OrderItem oi where oi.order.member = :member and oi.item in :items")
     Optional<OrderItem> findByMemberAndItems(@Param("member") Member member, @Param("items") List<Item> items);
 
+    @Query("select oi from OrderItem oi where oi.item.id in :itemIds")
+    List<OrderItem> findAllByItems(@Param("itemIds") List<Long> itemIds);
+
     @Query("select oi from OrderItem oi join fetch oi.order o join fetch o.member join fetch oi.item i where oi.item.id = :itemId")
     List<OrderItem> findAllWithMemberAndItemByItem(@Param("itemId") Long itemId);
 
