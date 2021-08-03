@@ -61,12 +61,10 @@ public class Item extends BaseEntity {
         this.type = ItemType.SELL;
     }
 
-    public void changeItem(String title, String content, Integer price, Thumbnail thumbnail, Pdf pdf){
+    public void changeItem(String title, String content, Integer price){
         this.title = title;
         this.content = content;
         this.price = price;
-        this.thumbnail = thumbnail;
-        this.pdf = pdf;
     }
 
     public void stopSell() {
