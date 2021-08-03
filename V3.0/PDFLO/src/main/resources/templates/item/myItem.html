@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>판매중인 아이템</title>
+    <th:block th:replace="fragments/head.html"></th:block>
+</head>
+<body>
+    <th:block th:replace="fragments/header.html"></th:block>
+
+    <th:block th:if="${#arrays.isEmpty(items)}">
+        <section class="py-5 text-center container">
+            <div class="row py-lg-5">
+                <div class="col-lg-6 col-md-8 mx-auto">
+                    <h3 class="fw-lighter">판매 중인 상품이 없습니다</h3>
+                    <a th:href="@{/item/upload}" class="lead text-muted">자신 만의 노하우를 공유해주세요~</a>
+                </div>
+            </div>
+        </section>
+    </th:block>
+    <th:block th:if="${not #arrays.isEmpty(items)}">
+        <div class="album py-5 bg-light">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    <div class="col" th:each="item : ${items}">
+                        <div class="card shadow-sm">
+                            <img th:src="|/images/${item.thumbnailLocation}${item.thumbnailFileName}|" alt="상품썸네일">
+                            <div class="card-body">
+                                <p class="card-text" th:text="${item.title}"></p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <div th:if="${item.commentCnt} != 0">
+                                            평점 : <div th:text="${item.commentAvg}"></div>
+                                            달린 후기 수 : <div th:text="${item.commentCnt}"></div>
+                                        </div>
+                                        <div th:if="${item.orderCnt} != 0">
+                                            판매 수 : <div th:text="${item.orderCnt}"></div>
+                                        </div>
+                                        <div th:text="${item.itemType}"></div>
+                                        <a th:href="@{/member/item/{itemId}/1(itemId=${item.itemId})}"><button type="button" class="btn btn-sm btn-outline-secondary">판매 내역 자세히 보러가기</button></a>
+                                    </div>
+                                    <small class="text-muted" th:text="${item.createdDate}"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a th:if="${prevPageNum} != null" th:href="@{/member/item/{prevPageNum}(prevPageNum = ${prevPageNum})}">...</a>
+                <th:block th:each="num : ${#numbers.sequence(startPageNum,endPageNum)}">
+                    <a th:href="@{/member/item/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
+                </th:block>
+                <a th:if="${nextPageNum} != null" th:href="@{/member/item/{nextPageNum}(nextPageNum = ${nextPageNum})}">...</a>
+
+            </div>
+        </div>
+    </th:block>
+</body>
+</html>
