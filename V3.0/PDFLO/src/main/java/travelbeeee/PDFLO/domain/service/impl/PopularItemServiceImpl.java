@@ -15,6 +15,9 @@ import travelbeeee.PDFLO.domain.repository.*;
 import travelbeeee.PDFLO.domain.service.PopularItemService;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.FlushModeType;
+import javax.persistence.PersistenceContext;
 import java.sql.Array;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -33,6 +36,9 @@ public class PopularItemServiceImpl implements PopularItemService {
     private final CommentRepository commentRepository;
     private final OrderItemRepository orderItemRepository;
     private final PopularItemRepository popularItemRepository;
+
+    @PersistenceContext
+    EntityManager em;
 
     /**
      * 인기 게시물 갱신 메소드
@@ -53,6 +59,7 @@ public class PopularItemServiceImpl implements PopularItemService {
     @Override
     public void updatePopularScore() {
         LocalDateTime curTime = LocalDateTime.now();
+
         log.info("updatePopularScore 실행");
         log.info("현재 시간 : {}", curTime);
 
@@ -92,7 +99,9 @@ public class PopularItemServiceImpl implements PopularItemService {
                     }
                     orderCnt = orderItems.size();
                 }
+                log.info("@@@@@@@@@@@@@@@UPDATE-BEGIN@@@@@@@@@@@@@@@@@@@@@2");
                 popularItemRepository.updatePopular(itemId, orderScore + commentScore, commentAvg, commentCnt, orderCnt);
+                log.info("@@@@@@@@@@@@@@@UPDATE-END@@@@@@@@@@@@@@@@@@@@@2");
             }
             if(pageNum == 0 && itemIds.size() == 0){ // 초기 아무것도 없는 상태
                 break;
