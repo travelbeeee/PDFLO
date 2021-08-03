@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -8,9 +9,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.model.dto.ItemDetailDto;
-import travelbeeee.PDFLO.domain.model.entity.Comment;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.domain.service.ItemService;
 import travelbeeee.PDFLO.web.form.CommentForm;
@@ -26,16 +27,18 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/item")
 public class ItemController {
+
     private final ItemService itemService;
 
-    @GetMapping("/item/upload")
+    @GetMapping("/upload")
     public String itemUploadForm(HttpSession httpSession, Model model) throws PDFLOException {
         model.addAttribute("itemForm", new ItemForm());
         return "/item/uploadForm";
     }
 
-    @PostMapping("/item/upload")
+    @PostMapping("/upload")
     public String itemUpload(HttpSession httpSession, @Valid ItemForm itemForm, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException, IOException {
         if (bindingResult.hasErrors()) {
             if (itemForm.getThumbnailFile().isEmpty()) {
@@ -52,7 +55,7 @@ public class ItemController {
         return "redirect:/";
     }
 
-    @GetMapping("/item/{itemId}")
+    @GetMapping("/{itemId}")
     public String itemDetail(HttpSession httpSession, @PathVariable("itemId") Long itemId, Model model) throws PDFLOException {
         Item item = itemService.findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(itemId);
         Long memberId = (Long) httpSession.getAttribute("id");
@@ -72,7 +75,7 @@ public class ItemController {
         return "/item/detail";
     }
 
-    @PostMapping("/item/delete/{itemId}")
+    @PostMapping("/delete/{itemId}")
     public String itemDelete(HttpSession httpSession, @PathVariable("itemId") Long itemId) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
         itemService.deleteItem(memberId, itemId);
@@ -80,7 +83,7 @@ public class ItemController {
         return "redirect:/";
     }
 
-    @GetMapping("/item/modify/{itemId}")
+    @GetMapping("/modify/{itemId}")
     public String itemModifyForm(HttpSession httpSession, @PathVariable("itemId") Long itemId,
                                  Model model) throws PDFLOException {
         model.addAttribute("itemForm", new ItemForm());
@@ -89,7 +92,7 @@ public class ItemController {
         return "/item/modifyForm";
     }
 
-    @PostMapping("/item/modify/{itemId}")
+    @PostMapping("/modify/{itemId}")
     public String itemModify(HttpSession httpSession,  @Valid ItemForm itemForm, Model model,
                              @PathVariable("itemId") Long itemId, BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException, IOException {
         if (bindingResult.hasErrors() || itemForm.getThumbnailFile().isEmpty() || itemForm.getPdfFile().isEmpty()) {
@@ -103,14 +106,14 @@ public class ItemController {
         return "redirect:/";
     }
 
-    @PostMapping("/item/reSell/{itemId}")
+    @PostMapping("/reSell/{itemId}")
     public String itemReSell(HttpSession httpSession, @PathVariable("itemId") Long itemId) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
         itemService.reSell(memberId, itemId);
         return "redirect:/member/myItem";
     }
 
-    @PostMapping("/item/download/{itemId}")
+    @PostMapping("/download/{itemId}")
     public void itemDownload(HttpSession httpSession, @PathVariable("itemId") Long itemId, HttpServletResponse response) throws PDFLOException, IOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
@@ -120,4 +123,5 @@ public class ItemController {
         response.getOutputStream().flush();
         response.getOutputStream().close();
     }
+
 }
