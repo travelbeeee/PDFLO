@@ -17,9 +17,8 @@ public interface ItemService{
     void deleteItem(Long memberId, Long itemId) throws PDFLOException; // 상품 판매중지
     void reSell(Long memberId, Long itemId) throws PDFLOException; // 상품 재판매
     byte[] downloadItem(Long memberId, Long itemId) throws PDFLOException, IOException;
-    List<Item> findSellItemWithMemberAndThumbnail(); // 등록된 상품 전체 조회 fetch join Member, Thumbnail
-    Item findWithMemberAndPdfAndThumbnailAndCommentById(Long itemId) throws PDFLOException;
     Item findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(Long itemId) throws PDFLOException;
-    Page<PopularItem> findWithItemAndThumbnailByPaging(Pageable pageable);
+    Page<PopularItem> findSellItemsWithItemAndThumbnailByPaging(Pageable pageable);
+    Page<PopularItem> findWithItemAndThumbnailByPagingAndMember(Pageable pageable, Long memberId);
     boolean checkBuyer(Long memberId, Long itemId);
 }

@@ -22,4 +22,8 @@ public class Thumbnail extends BaseEntity {
     public Thumbnail(FileInformation fileInfo) {
         this.fileInfo = fileInfo;
     }
+
+    public void changeThumbnail(FileInformation fileInfo) {
+        this.fileInfo = fileInfo;
+    }
 }

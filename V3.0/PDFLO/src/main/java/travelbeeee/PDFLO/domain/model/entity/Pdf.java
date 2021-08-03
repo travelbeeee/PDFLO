@@ -24,4 +24,8 @@ public class Pdf extends BaseEntity {
     public Pdf(FileInformation fileInfo) {
         this.fileInfo = fileInfo;
     }
+
+    public void changePdf(FileInformation fileInfo) {
+        this.fileInfo = fileInfo;
+    }
 }

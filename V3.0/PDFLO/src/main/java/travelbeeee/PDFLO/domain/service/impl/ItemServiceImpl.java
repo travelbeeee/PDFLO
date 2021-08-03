@@ -20,7 +20,6 @@ import travelbeeee.PDFLO.web.form.ItemForm;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -76,15 +75,13 @@ public class ItemServiceImpl implements ItemService {
     //TODO : 삭제, 삽입 --> 수정
     @Transactional
     @Override
-    public void modifyItem(Long memberId, Long itemId, ItemForm itemDto) throws PDFLOException, NoSuchAlgorithmException, IOException {
-//        Optional<Item> findItem = itemRepository.findById(itemId);
-//        if(findItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
-
+    public void modifyItem(Long memberId, Long itemId, ItemForm form) throws PDFLOException, NoSuchAlgorithmException, IOException {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new PDFLOException(ReturnCode.ITEM_NO_EXIST));
 
-//        Item item = findItem.get();
-        if(item.getMember().getId() != memberId) throw new PDFLOException(ReturnCode.MEMBER_NOT_SELLER);
+        if(item.getMember().getId() != memberId) {
+            throw new PDFLOException(ReturnCode.MEMBER_NOT_SELLER);
+        }
 
         Pdf pdf = item.getPdf();
         Thumbnail thumbnail = item.getThumbnail();
@@ -92,21 +89,15 @@ public class ItemServiceImpl implements ItemService {
         fileManager.fileDelete(pdf.getFileInfo().getLocation(), pdf.getFileInfo().getSaltedFileName());
         fileManager.fileDelete(thumbnail.getFileInfo().getLocation(), thumbnail.getFileInfo().getSaltedFileName());
 
-        pdfRepository.delete(pdf);
-        thumbnailRepository.delete(thumbnail);
-
-        MultipartFile pdfFile = itemDto.getPdfFile();
-        MultipartFile thumbnailFile = itemDto.getThumbnailFile();
+        MultipartFile pdfFile = form.getPdfFile();
+        MultipartFile thumbnailFile = form.getThumbnailFile();
 
         FileInformation newPdfFileInformation = fileManager.fileSave(pdfFile, FileType.PDF);
         FileInformation newThumbnailFileInformation = fileManager.fileSave(thumbnailFile, FileType.THUMBNAIL);
 
-        Pdf newPdf = new Pdf(newPdfFileInformation);
-        Thumbnail newThumbnail = new Thumbnail(newThumbnailFileInformation);
-
-        pdfRepository.save(newPdf);
-        thumbnailRepository.save(newThumbnail);
-        item.changeItem(itemDto.getTitle(), itemDto.getContent(), itemDto.getPrice(), newThumbnail, newPdf);
+        pdf.changePdf(newPdfFileInformation);
+        thumbnail.changeThumbnail(newThumbnailFileInformation);
+        item.changeItem(form.getTitle(), form.getContent(), form.getPrice());
     }
 
     /**
@@ -172,18 +163,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findSellItemWithMemberAndThumbnail() {
-        return itemRepository.findSellItemWithMemberAndThumbnail();
-    }
-
-    @Override
-    public Item findWithMemberAndPdfAndThumbnailAndCommentById(Long itemId) throws PDFLOException {
-        Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailAndCommentById(itemId);
-        if(findItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
-        return findItem.get();
-    }
-
-    @Override
     public Item findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(Long itemId) throws PDFLOException {
         Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(itemId);
         if(findItem.isEmpty()) {
@@ -193,8 +172,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Page<PopularItem> findWithItemAndThumbnailByPaging(Pageable pageable) {
-        return popularItemRepository.findPopularItemWithItemAndThumbnailPaging(pageable);
+    public Page<PopularItem> findSellItemsWithItemAndThumbnailByPaging(Pageable pageable) {
+        return popularItemRepository.findSellPopularItemWithItemAndThumbnailPaging(pageable);
+    }
+
+    @Override
+    public Page<PopularItem> findWithItemAndThumbnailByPagingAndMember(Pageable pageable, Long memberId) {
+        return popularItemRepository.findPopularItemWithItemAndThumbnailPagingByMember(pageable, memberId);
     }
 
     @Override
@@ -202,4 +186,5 @@ public class ItemServiceImpl implements ItemService {
         Optional<Order> findOrder = orderRepository.findOrderWithMemberOrderItemAndItem(memberId, itemId);
         return findOrder.isPresent();
     }
+
 }
