@@ -56,10 +56,14 @@
                     </div>
                 </div>
             </div>
-            <th:block th:if="${totalPageNum} != null" th:each="num : ${#numbers.sequence(1,totalPageNum)}">
+            <a th:if="${prevPageNum} != null and ${recent} == true" th:href="@{/recent/{prevPageNum}(prevPageNum = ${prevPageNum})}">...</a>
+            <a th:if="${prevPageNum} != null and ${popular} == true" th:href="@{/recent/{prevPageNum}(prevPageNum = ${prevPageNum})}">...</a>
+            <th:block th:each="num : ${#numbers.sequence(startPageNum,endPageNum)}">
                 <a th:if="${recent} == true" th:href="@{/recent/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
                 <a th:if="${popular} == true" th:href="@{/popular/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
             </th:block>
+            <a th:if="${nextPageNum} != null and ${recent} == true" th:href="@{/recent/{nextPageNum}(nextPageNum = ${nextPageNum})}">...</a>
+            <a th:if="${nextPageNum} != null and ${popular} == true" th:href="@{/recent/{nextPageNum}(nextPageNum = ${nextPageNum})}">...</a>
         </div>
     </div>
 </th:block>
