@@ -6,6 +6,7 @@ import travelbeeee.PDFLO.domain.model.FileInformation;
 import travelbeeee.PDFLO.domain.model.entity.Item;
 import travelbeeee.PDFLO.domain.model.entity.PopularItem;
 import travelbeeee.PDFLO.domain.model.entity.Thumbnail;
+import travelbeeee.PDFLO.domain.model.enumType.ItemType;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -35,6 +36,7 @@ public class ItemDto {
     Integer orderCnt;
     String thumbnailLocation;
     String thumbnailFileName;
+    ItemType itemType;
 
     public ItemDto(PopularItem pi) {
         this.itemId = pi.getItem().getId();
@@ -46,6 +48,7 @@ public class ItemDto {
         this.orderCnt = pi.getOrderCnt();
         this.thumbnailLocation = pi.getItem().getThumbnail().getFileInfo().getLocation();
         this.thumbnailFileName = pi.getItem().getThumbnail().getFileInfo().getSaltedFileName();
+        this.itemType = pi.getItem().getType();
     }
 
     public void setCreatedDate(Timestamp createdDate) {
