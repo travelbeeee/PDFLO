@@ -129,38 +129,41 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void uploadProfile(Long memberId, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException, IOException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
+    public void uploadProfile(Long memberId, ProfileForm form) throws PDFLOException, NoSuchAlgorithmException, IOException {
+        log.info("uploadProfile 메소드 실행");
+        
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
+
+        MultipartFile inputProfile = form.getProfile();
+        FileInformation fileInformation = fileManager.fileSave(inputProfile, FileType.PROFILE);
 
         Optional<Profile> findProfile = profileRepository.findProfileByMember(memberId);
-        if(!findProfile.isEmpty()){ // 기존 프로필 지우기
-            Profile deleteProfile = findProfile.get();
-            fileManager.fileDelete(deleteProfile.getFileInfo().getLocation(), deleteProfile.getFileInfo().getSaltedFileName());
-            profileRepository.delete(deleteProfile);
+        if(findProfile.isPresent()){ // 기존 프로필 지우기
+            Profile profile = findProfile.get();
+            fileManager.fileDelete(profile.getFileInfo().getLocation(), profile.getFileInfo().getSaltedFileName());
+            profile.changeProfile(fileInformation);
         }
-
-        MultipartFile profile = profileForm.getProfile();
-        FileInformation fileInformation = fileManager.fileSave(profile, FileType.PROFILE);
-        Member member = findMember.get();
-
-        Profile newProfile = new Profile(member, fileInformation);
-        profileRepository.save(newProfile);
+        else{
+            Profile newProfile = new Profile(member, fileInformation);
+            profileRepository.save(newProfile);
+        }
     }
 
     @Transactional
     @Override
-    public void deleteProfile(Long memberId) throws PDFLOException {
+    public ReturnCode deleteProfile(Long memberId) throws PDFLOException {
         Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
+        if(findMember.isEmpty()) return ReturnCode.MEMBER_NO_EXIST;
 
         Optional<Profile> findProfile = profileRepository.findProfileByMember(memberId);
-        if(findProfile.isEmpty()) throw new PDFLOException(ReturnCode.PROFILE_NO_EXIST);
+        if(findProfile.isEmpty()) return ReturnCode.PROFILE_NO_EXIST;
 
         Profile profile = findProfile.get();
         fileManager.fileDelete(profile.getFileInfo().getLocation(), profile.getFileInfo().getSaltedFileName());
 
         profileRepository.delete(profile);
+        return ReturnCode.SUCCESS;
     }
 
     @Override

@@ -27,4 +27,8 @@ public class Profile extends BaseEntity {
         this.member = member;
         this.fileInfo = fileInfo;
     }
+
+    public void changeProfile(FileInformation fileInformation) {
+        this.fileInfo = fileInformation;
+    }
 }

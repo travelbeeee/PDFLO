@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO.domain.service;
 
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
+import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.model.entity.*;
 import travelbeeee.PDFLO.domain.model.enumType.PointType;
 import travelbeeee.PDFLO.web.form.LoginForm;
@@ -22,7 +23,7 @@ public interface MemberService {
     void usePoint(Long memberId, Integer amount, PointType pointType) throws PDFLOException; // 포인트(사용,충전,획득)
     List<PointHistory> findMemberPointHistory(Long memberId); // 포인트 내역 조회
     void uploadProfile(Long memberId, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException,  IOException; // 프로필 등록
-    void deleteProfile(Long memberId) throws PDFLOException; // 프로필 삭제
+    ReturnCode deleteProfile(Long memberId) throws PDFLOException; // 프로필 삭제
     Optional<Profile> findProfileByMember(Long memberId); // 프로필 불러오기
     Member findMember(Long memberId) throws PDFLOException; // 회원 찾기
     Optional<Member> findMemberByUsername(String username);
