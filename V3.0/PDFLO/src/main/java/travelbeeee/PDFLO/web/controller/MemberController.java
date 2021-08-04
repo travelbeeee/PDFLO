@@ -21,6 +21,7 @@ import travelbeeee.PDFLO.domain.service.ItemService;
 import travelbeeee.PDFLO.domain.service.MemberService;
 import travelbeeee.PDFLO.domain.service.PopularItemService;
 import travelbeeee.PDFLO.domain.utility.MailSender;
+import travelbeeee.PDFLO.domain.utility.PageMaker;
 import travelbeeee.PDFLO.web.form.*;
 
 import javax.mail.MessagingException;
@@ -313,35 +314,16 @@ public class MemberController {
     public String memberItem(HttpSession httpSession, Model model, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
         pageNum--;
 
-        Integer startPageNum = (pageNum / pageSize) * pageSize + 1;
-        Integer endPageNum = (pageNum / pageSize) * pageSize + pageSize;
-
-        Integer prevPageNum = (pageNum / pageSize) * pageSize + 1 - pageSize;
-        Integer nextPageNum = (pageNum / pageSize) * pageSize + pageSize + 1;
-
         Long memberId = (Long) httpSession.getAttribute("id");
+
         PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "id"));
         Page<PopularItem> pageItems = itemService.findWithItemAndThumbnailByPagingAndMember(pageRequest, memberId);
-        List<PopularItem> items = pageItems.getContent();
-
-        List<ItemDto> itemDtos = items.stream().map(pi -> new ItemDto(pi))
+        List<ItemDto> itemDtos = pageItems.getContent().stream().map(pi -> new ItemDto(pi))
                 .collect(Collectors.toList());
 
-        int totalPages = pageItems.getTotalPages();
-        if(prevPageNum >= 1){
-            model.addAttribute("prevPageNum", prevPageNum);
-        }
-        if (nextPageNum <= totalPages) {
-            model.addAttribute("nextPageNum", nextPageNum);
-        }
-        if(endPageNum >= totalPages){
-            endPageNum = totalPages;
-        }
-
+        PageMaker.makePage(pageItems.getTotalPages(), pageSize, pageNum, model);
         model.addAttribute("items", itemDtos);
         model.addAttribute("curPageNum", pageNum + 1);
-        model.addAttribute("startPageNum", startPageNum);
-        model.addAttribute("endPageNum", endPageNum);
 
         return "item/myItem";
     }
@@ -355,39 +337,19 @@ public class MemberController {
         pageNum--;
 
         Long memberId = (Long) httpSession.getAttribute("id");
+
         PageRequest pageRequest = PageRequest.of(pageNum, sellHistorySizePerPage, Sort.by(Sort.Direction.DESC, "id"));
-
         Page<OrderItem> pageOrderItems = memberService.findMemberSellHistory(memberId, itemId, pageRequest);
-        List<OrderItem> orderItems = pageOrderItems.getContent();
-        List<SellHistoryDto> sellHistoryDtos = orderItems.stream().map(oi -> new SellHistoryDto(oi))
+        List<SellHistoryDto> sellHistoryDtos = pageOrderItems.getContent().stream().map(oi -> new SellHistoryDto(oi))
                 .collect(Collectors.toList());
-
-        Integer startPageNum = (pageNum / pageSize) * pageSize + 1;
-        Integer endPageNum = (pageNum / pageSize) * pageSize + pageSize;
-        Integer prevPageNum = (pageNum / pageSize) * pageSize + 1 - pageSize;
-        Integer nextPageNum = (pageNum / pageSize) * pageSize + pageSize + 1;
-
-        int totalPages = pageOrderItems.getTotalPages();
-        if(prevPageNum >= 1){
-            model.addAttribute("prevPageNum", prevPageNum);
-        }
-        if (nextPageNum <= totalPages) {
-            model.addAttribute("nextPageNum", nextPageNum);
-        }
-        if(endPageNum >= totalPages){
-            endPageNum = totalPages;
-        }
-        log.info("회원이 판매 중인 상품 판매내역");
-        log.info("startPageNum : {} endPageNum : {} prevPageNum : {} nextPageNum : {}", startPageNum, endPageNum, prevPageNum, nextPageNum);
 
         Item item = itemService.findWithThumbnailById(itemId);
         ItemDetailDto itemDetailDto = new ItemDetailDto(item);
 
+        PageMaker.makePage(pageOrderItems.getTotalPages(), pageSize, pageNum, model);
         model.addAttribute("item", itemDetailDto);
         model.addAttribute("orders", sellHistoryDtos);
         model.addAttribute("curPageNum", pageNum + 1);
-        model.addAttribute("startPageNum", startPageNum);
-        model.addAttribute("endPageNum", endPageNum);
 
         return "item/mySell";
     }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import travelbeeee.PDFLO.domain.model.dto.ItemDto;
 import travelbeeee.PDFLO.domain.model.entity.PopularItem;
 import travelbeeee.PDFLO.domain.service.ItemService;
+import travelbeeee.PDFLO.domain.utility.PageMaker;
 
 import java.net.MalformedURLException;
 import java.util.List;
@@ -67,39 +68,16 @@ public class MainController {
         log.info("현재 pageNum : {}", pageNum);
         pageNum--;
 
-        Integer startPageNum = (pageNum / pageSize) * pageSize + 1;
-        Integer endPageNum = (pageNum / pageSize) * pageSize + pageSize;
-
-        Integer prevPageNum = (pageNum / pageSize) * pageSize + 1 - pageSize;
-        Integer nextPageNum = (pageNum / pageSize) * pageSize + pageSize + 1;
-
         PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "score").and(Sort.by(Sort.Direction.DESC, "createdDate")));
         Page<PopularItem> pagePopularItems = itemService.findSellItemsWithItemAndThumbnailByPaging(pageRequest);
-        // 실제 내 pageNum은 pageNum - 1
-        int totalPages = pagePopularItems.getTotalPages();
-        if(prevPageNum >= 1){
-            model.addAttribute("prevPageNum", prevPageNum);
-        }
-        if (nextPageNum <= totalPages) {
-            model.addAttribute("nextPageNum", nextPageNum);
-        }
-        if(endPageNum >= totalPages){
-            endPageNum = totalPages;
-        }
 
-        log.info("startPageNum : {}", startPageNum);
-        log.info("endPageNum : {}", endPageNum);
-        log.info("prevPageNum : {}", prevPageNum);
-        log.info("nextPageNum : {}", nextPageNum);
+        PageMaker.makePage(pagePopularItems.getTotalPages(), pageSize, pageNum, model);
 
-        List<PopularItem> popularItems = pagePopularItems.getContent();
-        List<ItemDto> itemDtos = popularItems.stream().map(pi -> new ItemDto(pi))
+        List<ItemDto> itemDtos = pagePopularItems.getContent().stream().map(pi -> new ItemDto(pi))
                 .collect(Collectors.toList());
 
         model.addAttribute("items", itemDtos);
         model.addAttribute("curPageNum", pageNum + 1);
-        model.addAttribute("startPageNum", startPageNum);
-        model.addAttribute("endPageNum", endPageNum);
         model.addAttribute("popular", true);
         model.addAttribute("recent", false);
         return "/item/list";
@@ -110,35 +88,16 @@ public class MainController {
         log.info("현재 pageNum : {}", pageNum);
         pageNum--;
 
-        Integer startPageNum = (pageNum / pageSize) * pageSize + 1;
-        Integer endPageNum = (pageNum / pageSize) * pageSize + pageSize;
-
-        Integer prevPageNum = (pageNum / pageSize) * pageSize + 1 - pageSize;
-        Integer nextPageNum = (pageNum / pageSize) * pageSize + pageSize + 1;
-
-        PageRequest pageRequest = PageRequest.of(pageNum - 1, itemSizePerPage, Sort.by(Sort.Direction.DESC, "createdDate"));
+        PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<PopularItem> pageRecentItems = itemService.findSellItemsWithItemAndThumbnailByPaging(pageRequest);
 
-        // 실제 내 pageNum은 pageNum - 1
-        int totalPages = pageRecentItems.getTotalPages();
-        if(prevPageNum >= 1){
-            model.addAttribute("prevPageNum", prevPageNum);
-        }
-        if (nextPageNum <= totalPages) {
-            model.addAttribute("nextPageNum", nextPageNum);
-        }
-        if(endPageNum >= totalPages){
-            endPageNum = totalPages;
-        }
+        PageMaker.makePage(pageRecentItems.getTotalPages(), pageSize, pageNum, model);
 
-        List<PopularItem> recentItems = pageRecentItems.getContent();
-        List<ItemDto> itemDtos = recentItems.stream().map(pi -> new ItemDto(pi))
+        List<ItemDto> itemDtos = pageRecentItems.getContent().stream().map(pi -> new ItemDto(pi))
                 .collect(Collectors.toList());
 
         model.addAttribute("items", itemDtos);
         model.addAttribute("curPageNum", pageNum + 1);
-        model.addAttribute("startPageNum", startPageNum);
-        model.addAttribute("endPageNum", endPageNum);
         model.addAttribute("popular", false);
         model.addAttribute("recent", true);
         return "/item/list";
