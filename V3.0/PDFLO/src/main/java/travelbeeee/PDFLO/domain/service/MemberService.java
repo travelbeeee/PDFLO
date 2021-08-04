@@ -1,5 +1,7 @@
 package travelbeeee.PDFLO.domain.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import travelbeeee.PDFLO.domain.exception.PDFLOException;
 import travelbeeee.PDFLO.domain.exception.ReturnCode;
 import travelbeeee.PDFLO.domain.model.entity.*;
@@ -28,6 +30,5 @@ public interface MemberService {
     Member findMember(Long memberId) throws PDFLOException; // 회원 찾기
     Optional<Member> findMemberByUsername(String username);
     List<Order> findOrderWithItemByMember(Long memberId); // 회원이 주문한 내역 조회
-    List<Item> findSellItem(Long memberId); // 회원이 판매 중인 아이템 조회
-    List<OrderItem> findSellHistory(Long itemId); // 회원의 판매 내역 조회
+    Page<OrderItem> findMemberSellHistory(Long memberId, Long itemId, Pageable pageable) throws PDFLOException;
 }

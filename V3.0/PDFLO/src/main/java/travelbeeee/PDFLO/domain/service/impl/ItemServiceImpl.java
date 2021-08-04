@@ -172,6 +172,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Item findWithThumbnailById(Long itemId) throws PDFLOException {
+        return itemRepository.findWithThumbnailById(itemId).orElseThrow(() -> new PDFLOException(ReturnCode.ITEM_NO_EXIST));
+    }
+
+    @Override
     public Page<PopularItem> findSellItemsWithItemAndThumbnailByPaging(Pageable pageable) {
         return popularItemRepository.findSellPopularItemWithItemAndThumbnailPaging(pageable);
     }
@@ -186,5 +191,4 @@ public class ItemServiceImpl implements ItemService {
         Optional<Order> findOrder = orderRepository.findOrderWithMemberOrderItemAndItem(memberId, itemId);
         return findOrder.isPresent();
     }
-
 }

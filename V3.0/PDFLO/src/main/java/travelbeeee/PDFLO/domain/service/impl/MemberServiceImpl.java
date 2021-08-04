@@ -2,6 +2,8 @@ package travelbeeee.PDFLO.domain.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -188,13 +190,18 @@ public class MemberServiceImpl implements MemberService {
         return orderRepository.findAllByMemberWithItem(memberId);
     }
 
+    /**
+     *
+     */
     @Override
-    public List<Item> findSellItem(Long memberId) {
-        return itemRepository.findWithThumbnailByMember(memberId);
-    }
+    public Page<OrderItem> findMemberSellHistory(Long memberId, Long itemId, Pageable pageable) throws PDFLOException {
+        memberRepository.findById(memberId).orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
+        Item item = itemRepository.findById(itemId).orElseThrow(() -> new PDFLOException(ReturnCode.ITEM_NO_EXIST));
 
-    @Override
-    public List<OrderItem> findSellHistory(Long itemId) {
-        return orderItemRepository.findAllWithMemberAndItemByItem(itemId);
+        if(item.getMember().getId() != memberId){
+            throw new PDFLOException(ReturnCode.MEMBER_NO_PERMISSION_ITEM);
+        }
+
+        return orderItemRepository.findPagingWithOrderMemberByItem(itemId, pageable);
     }
 }

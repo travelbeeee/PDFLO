@@ -41,15 +41,19 @@ public class ItemDetailDto {
         this.price = item.getPrice();
         this.createdDate = item.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
 
-        FileInformation thumbnailFileInfo = item.getThumbnail().getFileInfo();
-        FileInformation pdfFileInfo = item.getPdf().getFileInfo();
+        if(item.getThumbnail().getFileInfo() != null){
+            FileInformation thumbnailFileInfo = item.getThumbnail().getFileInfo();
+            this.thumbnailLocation = thumbnailFileInfo.getLocation();
+            this.thumbnailFileName = thumbnailFileInfo.getSaltedFileName();
+        }
+        if(item.getPdf().getFileInfo() != null){
+            FileInformation pdfFileInfo = item.getPdf().getFileInfo();
+            this.pdfLocation = pdfFileInfo.getLocation();
+            this.pdfFileName = pdfFileInfo.getSaltedFileName();
+        }
 
-        this.thumbnailLocation = thumbnailFileInfo.getLocation();
-        this.thumbnailFileName = thumbnailFileInfo.getSaltedFileName();
-        this.pdfLocation = pdfFileInfo.getLocation();
-        this.pdfFileName = pdfFileInfo.getSaltedFileName();
-        List<Comment> comments = item.getComments();
-        if(!comments.isEmpty()){
+        if(!item.getComments().isEmpty()){
+            List<Comment> comments = item.getComments();
             this.comments = comments.stream()
                     .map(c -> new CommentDto(c))
                     .collect(Collectors.toList());

@@ -1,5 +1,7 @@
 package travelbeeee.PDFLO.domain.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,12 +22,7 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query("select oi from OrderItem oi where oi.item.id in :itemIds")
     List<OrderItem> findAllByItems(@Param("itemIds") List<Long> itemIds);
 
-    @Query("select oi from OrderItem oi join fetch oi.order o join fetch o.member join fetch oi.item i where oi.item.id = :itemId")
-    List<OrderItem> findAllWithMemberAndItemByItem(@Param("itemId") Long itemId);
-
-    @Query("select oi from OrderItem oi where oi.item.id = :itemId")
-    List<OrderItem> findAllByItem(Long itemId);
-
-    @Query("select oi from OrderItem oi join fetch oi.item")
-    List<OrderItem> findAllWithItem();
+    @Query(value = "select oi from OrderItem oi join fetch oi.order o join fetch o.member where oi.item.id = :itemId",
+    countQuery = "select count(oi) from OrderItem oi where oi.item.id = :itemId")
+    Page<OrderItem> findPagingWithOrderMemberByItem(@Param("itemId") Long itemId, Pageable pageable);
 }

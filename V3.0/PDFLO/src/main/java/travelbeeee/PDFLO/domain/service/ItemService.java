@@ -18,6 +18,7 @@ public interface ItemService{
     void reSell(Long memberId, Long itemId) throws PDFLOException; // 상품 재판매
     byte[] downloadItem(Long memberId, Long itemId) throws PDFLOException, IOException;
     Item findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(Long itemId) throws PDFLOException;
+    Item findWithThumbnailById(Long itemId) throws PDFLOException;
     Page<PopularItem> findSellItemsWithItemAndThumbnailByPaging(Pageable pageable);
     Page<PopularItem> findWithItemAndThumbnailByPagingAndMember(Pageable pageable, Long memberId);
     boolean checkBuyer(Long memberId, Long itemId);
