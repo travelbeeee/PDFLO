@@ -49,9 +49,11 @@
                     </div>
                 </div>
                 <a th:if="${prevPageNum} != null" th:href="@{/member/item/{prevPageNum}(prevPageNum = ${prevPageNum})}">...</a>
-                <th:block th:each="num : ${#numbers.sequence(startPageNum,endPageNum)}">
-                    <a th:href="@{/member/item/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
-                </th:block>
+                <div th:if="${startPageNum} != null and ${endPageNum} != null">
+                    <th:block th:each="num : ${#numbers.sequence(startPageNum,endPageNum)}">
+                        <a th:href="@{/member/item/{itemId}/{pageNum}(itemId =${item.itemId}, pageNum = ${num})}" th:text="${num}"></a>
+                    </th:block>
+                </div>
                 <a th:if="${nextPageNum} != null" th:href="@{/member/item/{nextPageNum}(nextPageNum = ${nextPageNum})}">...</a>
 
             </div>

@@ -8,14 +8,17 @@
     <title>포인트충전페이지</title>
     <th:block th:replace="fragments/head.html"></th:block>
     <th:block th:replace="fragments/headJQ.html"></th:block>
+    <link rel="stylesheet" href="/css/member/signUp.css">
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
-    <form th:action th:object="${pointForm}" method="post">
-        <input type="number" th:field="*{point}" th:errorclass="field-error"  placeholder="충전할 금액을 입력해주세요(최소 천원, 최대 백만원 충전 가능)" min="1000" max="1000000" required>
-        <div class="field-error" th:errors="*{point}"></div>
-        <input type="submit" value="충전하기">
-    </form>
+    <main class="form-signin">
+        <form role="form" th:action th:object="${pointForm}" method="post">
+            <input class="form-control" type="number" th:field="*{point}" th:errorclass="field-error"  placeholder="충전할 금액을 입력해주세요(최소 천원, 최대 백만원 충전 가능)" min="1000" max="1000000" required>
+            <div class="field-error" th:errors="*{point}"></div>
+            <button class="w-100 btn btn-lg btn-primary" value="충전하기"/>
+        </form>
+    </main>
 <th:block th:replace="fragments/footer.html"></th:block>
 </body>
 </html>
