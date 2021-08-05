@@ -22,20 +22,15 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    Member member;
+    private Member member;
+
+    private Integer totalPrice;
 
     @OneToMany(mappedBy = "order")
     List<OrderItem> orderItems = new ArrayList<>();
 
-    public Order(Member member) {
+    public Order(Member member, Integer totalPrice) {
         this.member = member;
-    }
-
-    public int getTotalPrice(){
-        int totalPrice = 0;
-        for (OrderItem orderItem : orderItems) {
-            totalPrice += orderItem.getOrderPrice();
-        }
-        return totalPrice;
+        this.totalPrice = totalPrice;
     }
 }

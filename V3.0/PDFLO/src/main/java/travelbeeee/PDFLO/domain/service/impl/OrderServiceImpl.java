@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
         if(member.getPoint() < totalPrice) throw new PDFLOException(ReturnCode.MEMBER_INSUFFICIENT_BALANCE);
 
         // 6)
-        Order order = new Order(member);
+        Order order = new Order(member, totalPrice);
         orderRepository.save(order);
 
         for (Item item : items) {
