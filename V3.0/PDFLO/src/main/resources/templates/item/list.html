@@ -36,7 +36,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col" th:each="item : ${items}">
                     <div class="card shadow-sm">
-                        <img th:src="|/images/${item.thumbnailLocation}${item.thumbnailFileName}|" alt="상품썸네일">
+                        <img th:src="|/images/${item.thumbnail}|" alt="상품썸네일">
                         <div class="card-body">
                             <p class="card-text" th:text="${item.title}"></p>
                             <div class="d-flex justify-content-between align-items-center">
@@ -60,7 +60,8 @@
             <a th:if="${prevPageNum} != null and ${popular} == true" th:href="@{/popular/{prevPageNum}(prevPageNum = ${prevPageNum})}">...</a>
             <div th:if="${startPageNum} != null and ${endPageNum} != null">
                 <th:block th:each="num : ${#numbers.sequence(startPageNum,endPageNum)}">
-                    <a th:href="@{/member/item/{itemId}/{pageNum}(itemId =${item.itemId}, pageNum = ${num})}" th:text="${num}"></a>
+                    <a th:if="${recent} == true" th:href="@{/recent/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
+                    <a th:if="${popular} == true" th:href="@{/popular/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
                 </th:block>
             </div>
             <a th:if="${nextPageNum} != null and ${recent} == true" th:href="@{/recent/{nextPageNum}(nextPageNum = ${nextPageNum})}">...</a>

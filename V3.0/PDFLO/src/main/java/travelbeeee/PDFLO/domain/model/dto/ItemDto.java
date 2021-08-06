@@ -34,8 +34,7 @@ public class ItemDto {
     String commentAvg;
     Integer commentCnt;
     Integer orderCnt;
-    String thumbnailLocation;
-    String thumbnailFileName;
+    String thumbnail;
     ItemType itemType;
 
     public ItemDto(PopularItem pi) {
@@ -46,13 +45,7 @@ public class ItemDto {
         this.commentAvg = df.format(pi.getCommentAvg());
         this.commentCnt = pi.getCommentCnt();
         this.orderCnt = pi.getOrderCnt();
-        this.thumbnailLocation = pi.getItem().getThumbnail().getFileInfo().getLocation();
-        this.thumbnailFileName = pi.getItem().getThumbnail().getFileInfo().getSaltedFileName();
+        this.thumbnail = pi.getItem().getThumbnail().getFileInfo().resizedFileReference();
         this.itemType = pi.getItem().getType();
     }
-
-    public void setCreatedDate(Timestamp createdDate) {
-        this.createdDate = createdDate.toLocalDateTime().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
-    }
-
 }

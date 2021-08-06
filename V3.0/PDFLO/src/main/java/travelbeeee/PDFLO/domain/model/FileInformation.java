@@ -17,4 +17,12 @@ public class FileInformation {
         this.saltedFileName = saltedFileName;
         this.location = location;
     }
+
+    public String fileReference(){
+        return this.location + this.saltedFileName;
+    }
+
+    public String resizedFileReference(){
+        return this.location + "Resized-" + this.saltedFileName;
+    }
 }
