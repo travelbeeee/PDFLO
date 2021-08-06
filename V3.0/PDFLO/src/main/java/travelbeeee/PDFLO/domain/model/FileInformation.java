@@ -6,7 +6,7 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter @Setter
+@Getter
 public class FileInformation {
     private String originFileName;
     private String saltedFileName;
