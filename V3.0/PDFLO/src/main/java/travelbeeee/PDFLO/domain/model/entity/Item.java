@@ -30,11 +30,11 @@ public class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ItemType type;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "thumbnail_id")
     private Thumbnail thumbnail;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "pdf_id")
     private Pdf pdf;
 

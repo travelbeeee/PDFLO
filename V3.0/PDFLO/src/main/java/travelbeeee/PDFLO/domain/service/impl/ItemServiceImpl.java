@@ -57,8 +57,8 @@ public class ItemServiceImpl implements ItemService {
         Item item = new Item(member, itemForm.getTitle(), itemForm.getContent(), itemForm.getPrice(), thumbnail, pdf, ItemType.SELL);
         PopularItem popularItem = new PopularItem(item, 0.0, 0.0, 0, 0);
 
-        pdfRepository.save(pdf);
-        thumbnailRepository.save(thumbnail);
+//        pdfRepository.save(pdf);
+//        thumbnailRepository.save(thumbnail);
         itemRepository.save(item);
         popularItemRepository.save(popularItem);
     }
