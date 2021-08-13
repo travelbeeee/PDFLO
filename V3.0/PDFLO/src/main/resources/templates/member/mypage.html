@@ -47,7 +47,8 @@
         });
     });
 
-    $('#memberDeleteBtn').on('click'), function(){
+    $('#memberDeleteBtn').on('click', function(){
+        console.log("memberDeleteBtn");
         $.ajax({
             url: "/member",
             type: "DELETE",
