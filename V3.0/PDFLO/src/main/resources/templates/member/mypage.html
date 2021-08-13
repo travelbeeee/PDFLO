@@ -21,8 +21,9 @@
     <a href="/comment/member">내가 남긴 후기 보러가기</a>
     <a href="/member/profile">프로필사진등록 및 수정하기</a><br>
     <button type="button" id="deleteProfileBtn" th:text="#{button.profileDelete}"></button>
-    <a href="/member/modify">비밀번호 변경하기</a><br>
-    <a href="/member/delete">회원 탈퇴하기</a><br>
+    <a th:if="${session['checkPassword']} == null" th:href="@{/member/check}">회원정보 변경하기</a>
+    <a th:if="${session['checkPassword']} != null" th:href="@{/member/password}">비밀번호 수정하기</a>
+    <button th:if="${session['checkPassword']} != null" id="memberDeleteBtn" type="button">회원 탈퇴하기</button>
     <th:block th:replace="fragments/footer.html"></th:block>
 </body>
 <script>
@@ -38,6 +39,25 @@
                     window.location.href = "/member/login?redirectURL=/member/mypage";
                 }else if (data == "PROFILE_NO_EXIST") {
                     alert("프로필을 먼저 등록해주세요.");
+                }
+            },
+            error:function(){
+                alert("다시 한 번 시도해주세요.");
+            }
+        });
+    });
+
+    $('#memberDeleteBtn').on('click'), function(){
+        $.ajax({
+            url: "/member",
+            type: "DELETE",
+            success: function(data){
+                if(data == "SUCCESS"){
+                    alert("회원 탈퇴 성공");
+                    window.location.href = "/";
+                }else if(data == "MEMBER_NO_EXIST"){
+                    alert("로그인을 먼저 진행해주세요.");
+                    window.location.href = "/member/login?redirectURL=/member/mypage";
                 }
             },
             error:function(){

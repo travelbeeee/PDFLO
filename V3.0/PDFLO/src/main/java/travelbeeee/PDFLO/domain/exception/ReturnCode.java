@@ -32,6 +32,7 @@ public enum ReturnCode {
     COMMENT_NO_EXIST(400, "존재하지 않는 후기입니다."),
     CART_NO_EXIST(400, "존재하지 않는 장바구니입니다"),
     CART_ALREADY_EXIST(400, "이미 장바구니에 담은 상품입니다"),
+    INVALID_ACCESS(400, "비정상적인 접근입니다"),
     SUCCESS(200, "성공");
 
     final int status;

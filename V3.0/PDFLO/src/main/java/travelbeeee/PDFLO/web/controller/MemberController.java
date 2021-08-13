@@ -61,7 +61,10 @@ public class MemberController {
 
     /**
      * 회원가입 진행
-     * 아이디, 비밀번호, 이메일 입력 오류시 다시 회원가입 폼 페이지로 보내기.
+     * 1) 아이디, 비밀번호, 이메일 입력 오류시 다시 회원가입 폼 페이지로 보내기.
+     * 2) 메일 인증을 진행하지 않고 넘어온 회원은 다시 회원가입 폼 페이지로 보내기.
+     * 3) 다른 메일로 인증하고 우회해서 넘어온 회원은 다시 회원가입 폼 페이지로 보내기.
+     * 4) 아이디가 중복되는 회원은 다시 회원가입 폼 페이지로 보내기.
      */
     @PostMapping("/signUp")
     public String signUp(@Valid @ModelAttribute SignUpForm form, BindingResult bindingResult, HttpServletRequest request) throws PDFLOException, NoSuchAlgorithmException {
@@ -107,9 +110,9 @@ public class MemberController {
 
     /**
      * 로그인 진행
-     * 아이디, 비밀번호 입력 오류시 다시 회원가입 폼 페이지로 보내기.
-     * 아이디, 비밀번호가 제대로 입력되었다면 세션에 로그인 상태 유지를 위한 Id 값을 추가
-     * 프로필 사진이 있는 회원이라면 사진을 추가해서 기존에 요청을 보냈던 페이지로 넘겨주자.
+     * 1) 아이디, 비밀번호 입력 오류시 다시 회원가입 폼 페이지로 보내기.
+     * 2) 아이디, 비밀번호가 제대로 입력되었다면 세션에 로그인 상태 유지를 위한 Id 값을 추가
+     * 3) 프로필 사진이 있는 회원이라면 사진을 추가해서 기존에 요청을 보냈던 페이지로 넘겨주자.
      */
     @PostMapping("/login")
     public String login(@Valid LoginForm loginForm, BindingResult bindingResult,
@@ -123,8 +126,8 @@ public class MemberController {
             bindingResult.reject("LoginFail", null, "아이디 또는 비밀번호가 틀렸습니다.(디폴트메시지)");
             return "/member/login";
         }
-        Member member = loginMember.get();
 
+        Member member = loginMember.get();
         log.info("로그인 결과 Member : {}", member);
         httpSession.setAttribute("id", member.getId());
 
@@ -138,7 +141,6 @@ public class MemberController {
         return "redirect:" + redirectURL;
     }
 
-
     /**
      * 로그인 상태라면 세션을 날려서 로그인 상태를 초기화해준다.
      */
@@ -150,40 +152,42 @@ public class MemberController {
     }
 
     /**
-     * 회원을 삭제하기 전에 비밀번호를 한 번 더 확인하는 페이지로 보낸다.
+     * 회원탈퇴 혹은 비밀번호 수정 전에 비밀번호 확인 Form으로 보내기
      */
-    @GetMapping("/delete")
-    public String checkPasswordBeforeDelete() throws PDFLOException {
-        return "/member/delete";
+    @GetMapping("/check")
+    public String memberCheckForm(Model model) {
+        model.addAttribute("passwordForm", new PasswordForm());
+
+        return "/member/checkPassword";
     }
 
     /**
-     * 확인한 비밀번호가 맞다면 회원을 삭제한다.
+     * 비밀번호 재확인이 완료된 회원은 세션에 "checkPassword" 를 추가해준다.
      */
-    @PostMapping("/delete")
-    public String memberDelete(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
+    @PostMapping("/check")
+    public String memberCheck(@Validated @ModelAttribute PasswordForm passwordForm,
+                              BindingResult bindingResult, HttpSession httpSession) throws PDFLOException, NoSuchAlgorithmException {
+        if (bindingResult.hasErrors()) {
+            return "/member/checkPassword";
+        }
         Long memberId = (Long) httpSession.getAttribute("id");
-        memberService.checkPassword(memberId, password);
-        memberService.delete(memberId);
-        httpSession.invalidate();
-        return "redirect:/";
+
+        memberService.checkPassword(memberId, passwordForm.getPassword());
+        httpSession.setAttribute("checkPassword", true);
+
+        return "/member/mypage";
     }
 
     /**
-     * 비밀번호를 수정하기 전에 비밀번호를 한 번 더 확인하는 페이지로 보낸다.
+     * 비밀번호 재확인을 하고 온 회원만 비밀번호 수정이 가능하다
      */
     @GetMapping("/modify")
-    public String checkPasswordBeforeModify() throws PDFLOException {
-        return "/member/modify";
-    }
+    public String memberModifyForm(HttpSession httpSession, Model model) throws PDFLOException, NoSuchAlgorithmException {
+        if(httpSession.getAttribute("checkPassword") == null){
+            throw new PDFLOException(ReturnCode.INVALID_ACCESS);
+        }
 
-    /**
-     * 확인한 비밀번호가 맞다면 비밀번호 수정 페이지로 이동한다.
-     */
-    @PostMapping("/modifyForm")
-    public String memberModifyForm(HttpSession httpSession, String password) throws PDFLOException, NoSuchAlgorithmException {
-        Long memberId = (Long) httpSession.getAttribute("id");
-        memberService.checkPassword(memberId, password);
+        model.addAttribute("passwordForm", new PasswordForm());
         return "/member/modifyForm";
     }
 
@@ -191,9 +195,14 @@ public class MemberController {
      * 입력한 새로운 비밀번호로 데이터를 수정한다.
      */
     @PostMapping("/modify")
-    public String memberModify(HttpSession httpSession, String newPassword) throws PDFLOException, NoSuchAlgorithmException {
+    public String memberModify(HttpSession httpSession, @Validated @ModelAttribute PasswordForm passwordForm,
+                               BindingResult bindingResult) throws PDFLOException, NoSuchAlgorithmException {
+        if (bindingResult.hasErrors()) {
+            return "/member/modifyForm";
+        }
+
         Long memberId = (Long) httpSession.getAttribute("id");
-        memberService.updatePassword(memberId, newPassword);
+        memberService.updatePassword(memberId, passwordForm.getPassword());
 
         return "redirect:/";
     }

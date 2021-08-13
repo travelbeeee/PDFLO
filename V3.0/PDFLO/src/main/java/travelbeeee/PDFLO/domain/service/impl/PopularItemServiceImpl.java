@@ -99,9 +99,7 @@ public class PopularItemServiceImpl implements PopularItemService {
                     }
                     orderCnt = orderItems.size();
                 }
-                log.info("@@@@@@@@@@@@@@@UPDATE-BEGIN@@@@@@@@@@@@@@@@@@@@@2");
                 popularItemRepository.updatePopular(itemId, orderScore + commentScore, commentAvg, commentCnt, orderCnt);
-                log.info("@@@@@@@@@@@@@@@UPDATE-END@@@@@@@@@@@@@@@@@@@@@2");
             }
             if(pageNum == 0 && itemIds.size() == 0){ // 초기 아무것도 없는 상태
                 break;

@@ -72,8 +72,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public void delete(Long memberId) {
+    public ReturnCode delete(Long memberId) {
+        if(memberRepository.findById(memberId).isEmpty()){
+            return ReturnCode.MEMBER_NO_EXIST;
+        }
         memberRepository.deleteById(memberId);
+        return ReturnCode.SUCCESS;
     }
 
     @Transactional
@@ -87,10 +91,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void checkPassword(Long memberId, String password) throws PDFLOException, NoSuchAlgorithmException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
-
-        Member member = findMember.get();
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST)
+        );
         if (!member.getPassword().equals(sha256Encryption.sha256(password, member.getSalt()))) {
             throw new PDFLOException(ReturnCode.PASSWORD_INPUT_INVALID);
         }

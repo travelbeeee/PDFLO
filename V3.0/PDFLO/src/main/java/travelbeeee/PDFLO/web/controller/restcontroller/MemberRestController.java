@@ -16,6 +16,7 @@ import travelbeeee.PDFLO.web.form.UsernameForm;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 @RestController
@@ -39,8 +40,7 @@ public class MemberRestController {
         String email = form.getEmail();
         int authCode = mailSender.sendingAuthMail(email);
         session.setAttribute("authCode", String.valueOf(authCode));
-        log.info("email : {}", email);
-        log.info("authCode : {}", authCode);
+
         return ReturnCode.SUCCESS;
     }
 
@@ -73,6 +73,22 @@ public class MemberRestController {
     }
 
     /**
+     * 확인한 비밀번호가 맞다면 회원을 삭제한다.
+     */
+    @DeleteMapping
+    public ReturnCode memberDelete(HttpSession httpSession) throws PDFLOException, NoSuchAlgorithmException {
+        if(httpSession.getAttribute("checkPassword") == null){
+            throw new PDFLOException(ReturnCode.INVALID_ACCESS);
+        }
+        Long memberId = (Long) httpSession.getAttribute("id");
+        ReturnCode result = memberService.delete(memberId);
+        if (result == ReturnCode.SUCCESS) {
+            httpSession.invalidate();
+        }
+        return result;
+    }
+
+    /**
      * 해당 회원의 프로필 파일 삭제하기.
      */
     @DeleteMapping("/profile")
@@ -84,6 +100,5 @@ public class MemberRestController {
             httpSession.removeAttribute("profile");
         }
         return returnCode;
-
     }
 }
