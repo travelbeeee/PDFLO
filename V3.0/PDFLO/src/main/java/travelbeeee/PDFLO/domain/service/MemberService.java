@@ -23,12 +23,12 @@ public interface MemberService {
     void checkPassword(Long memberId, String password) throws PDFLOException, NoSuchAlgorithmException;
     void updatePassword(Long memberId, String newPassword) throws NoSuchAlgorithmException, PDFLOException; // 비밀번호변경
     void usePoint(Long memberId, Integer amount, PointType pointType) throws PDFLOException; // 포인트(사용,충전,획득)
-    List<PointHistory> findMemberPointHistory(Long memberId); // 포인트 내역 조회
+    Page<PointHistory> findPointHistoryBymember(Long memberId, Pageable pageable); // 포인트 내역 조회
+    Page<Order> findOrderByMember(Long memberId, Pageable pageable);
     void uploadProfile(Long memberId, ProfileForm profileForm) throws PDFLOException, NoSuchAlgorithmException,  IOException; // 프로필 등록
     ReturnCode deleteProfile(Long memberId) throws PDFLOException; // 프로필 삭제
     Optional<Profile> findProfileByMember(Long memberId); // 프로필 불러오기
     Member findMember(Long memberId) throws PDFLOException; // 회원 찾기
     Optional<Member> findMemberByUsername(String username);
-    List<Order> findOrderWithItemByMember(Long memberId); // 회원이 주문한 내역 조회
     Page<OrderItem> findMemberSellHistory(Long memberId, Long itemId, Pageable pageable) throws PDFLOException;
 }

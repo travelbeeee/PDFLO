@@ -3,6 +3,7 @@ package travelbeeee.PDFLO.domain.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,8 +129,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<PointHistory> findMemberPointHistory(Long memberId) {
-        return pointHistoryRepository.findMemberPointHistory(memberId);
+    public Page<PointHistory> findPointHistoryBymember(Long memberId, Pageable pageable) {
+        return pointHistoryRepository.findMemberPointHistory(memberId, pageable);
     }
 
     @Transactional
@@ -189,8 +190,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<Order> findOrderWithItemByMember(Long memberId) {
-        return orderRepository.findAllByMemberWithItem(memberId);
+    public Page<Order> findOrderByMember(Long memberId, Pageable pageable) {
+        return orderRepository.findAllByMember(memberId, pageable);
     }
 
     /**
