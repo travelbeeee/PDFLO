@@ -66,7 +66,7 @@
                     </div>
                 </div>
             </div>
-            <a th:if="${popularHasNext} == true" th:href="@{/popular/1}" th:text="#{a.hot}"></a>
+            <a th:if="${popularHasNext} == true" th:href="@{/popular/0}" th:text="#{a.hot}"></a>
         </div>
     </div>
 </th:block>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <a th:if="${recentHasNext} == true" th:href="@{/recent/1}" th:text="#{a.new}"></a>
+            <a th:if="${recentHasNext} == true" th:href="@{/recent/0}" th:text="#{a.new}"></a>
         </div>
     </div>
 </th:block>

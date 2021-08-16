@@ -60,8 +60,8 @@
             <a th:if="${prevPageNum} != null and ${popular} == true" th:href="@{/popular/{prevPageNum}(prevPageNum = ${prevPageNum})}">...</a>
             <div th:if="${startPageNum} != null and ${endPageNum} != null">
                 <th:block th:each="num : ${#numbers.sequence(startPageNum,endPageNum)}">
-                    <a th:if="${recent} == true" th:href="@{/recent/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
-                    <a th:if="${popular} == true" th:href="@{/popular/{pageNum}(pageNum = ${num})}" th:text="${num}"></a>
+                    <a th:if="${recent} == true" th:href="@{/recent/{pageNum}(pageNum = ${num})}" th:text="${num + 1}"></a>
+                    <a th:if="${popular} == true" th:href="@{/popular/{pageNum}(pageNum = ${num})}" th:text="${num + 1}"></a>
                 </th:block>
             </div>
             <a th:if="${nextPageNum} != null and ${recent} == true" th:href="@{/recent/{nextPageNum}(nextPageNum = ${nextPageNum})}">...</a>
