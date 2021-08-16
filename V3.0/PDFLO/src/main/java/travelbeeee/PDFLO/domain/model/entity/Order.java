@@ -25,12 +25,14 @@ public class Order extends BaseEntity {
     private Member member;
 
     private Integer totalPrice;
+    private Integer orderCount;
 
     @OneToMany(mappedBy = "order")
     List<OrderItem> orderItems = new ArrayList<>();
 
-    public Order(Member member, Integer totalPrice) {
+    public Order(Member member, Integer totalPrice, Integer orderCount) {
         this.member = member;
         this.totalPrice = totalPrice;
+        this.orderCount = orderCount;
     }
 }

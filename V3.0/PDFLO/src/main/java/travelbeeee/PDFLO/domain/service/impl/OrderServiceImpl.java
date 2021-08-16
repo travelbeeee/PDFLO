@@ -66,7 +66,7 @@ public class OrderServiceImpl implements OrderService {
         if(member.getPoint() < totalPrice) throw new PDFLOException(ReturnCode.MEMBER_INSUFFICIENT_BALANCE);
 
         // 6)
-        Order order = new Order(member, totalPrice);
+        Order order = new Order(member, totalPrice, itemIds.size());
         orderRepository.save(order);
 
         for (Item item : items) {
@@ -87,7 +87,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<Order> findOrderByMember(Long memberId) {
-        return orderRepository.findAllWithOrderItemByMember(memberId);
+    public List<OrderItem> findOrderItemWithItemThumbnailByOrder(Long orderId) {
+        return orderItemRepository.findAllWithItemWithThumbnailByOrder(orderId);
     }
+
 }

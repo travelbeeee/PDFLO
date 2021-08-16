@@ -22,6 +22,9 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
     @Query("select oi from OrderItem oi where oi.item.id in :itemIds")
     List<OrderItem> findAllByItems(@Param("itemIds") List<Long> itemIds);
 
+    @Query("select oi from OrderItem oi join fetch oi.item i join fetch i.thumbnail where oi.order.id = :orderId")
+    List<OrderItem> findAllWithItemWithThumbnailByOrder(@Param("orderId") Long orderId);
+
     @Query(value = "select oi from OrderItem oi join fetch oi.order o join fetch o.member where oi.item.id = :itemId",
     countQuery = "select count(oi) from OrderItem oi where oi.item.id = :itemId")
     Page<OrderItem> findPagingWithOrderMemberByItem(@Param("itemId") Long itemId, Pageable pageable);
