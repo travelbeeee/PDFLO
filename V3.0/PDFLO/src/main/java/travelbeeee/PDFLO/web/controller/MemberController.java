@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,8 +18,6 @@ import travelbeeee.PDFLO.domain.model.entity.*;
 import travelbeeee.PDFLO.domain.model.enumType.PointType;
 import travelbeeee.PDFLO.domain.service.ItemService;
 import travelbeeee.PDFLO.domain.service.MemberService;
-import travelbeeee.PDFLO.domain.service.PopularItemService;
-import travelbeeee.PDFLO.domain.utility.MailSender;
 import travelbeeee.PDFLO.domain.utility.PageMaker;
 import travelbeeee.PDFLO.web.form.*;
 
@@ -34,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,6 +39,8 @@ import java.util.stream.Stream;
 public class MemberController {
 
     private final Integer itemSizePerPage = 6;
+    private final Integer orderSizePerPage = 6;
+    private final Integer pointHistorySizePerPage = 15;
     private final Integer sellHistorySizePerPage = 10;
     private final Integer pageSize = 10;
 
@@ -274,25 +272,23 @@ public class MemberController {
     }
 
 
-
     /**
      * 해당 회원의 주문 내역 가지고오기
      */
-    @GetMapping("/order")
-    public String orderHistory(HttpSession httpSession, Model model) throws PDFLOException {
+    @GetMapping("/order/{pageNum}")
+    public String orderHistory(HttpSession httpSession, Model model, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
-        List<Order> orders = memberService.findOrderWithItemByMember(memberId);
-        List<OrderHistoryDto> orderList = new ArrayList<>();
+        PageRequest pageRequest = PageRequest.of(pageNum, orderSizePerPage, Sort.by(Sort.Direction.DESC, "id"));
 
-        for (Order order : orders) {
-            List<OrderItem> orderItems = order.getOrderItems();
-            for (OrderItem orderItem : orderItems) {
-                orderList.add(new OrderHistoryDto(order, orderItem));
-            }
-        }
+        Page<Order> pageOrder = memberService.findOrderByMember(memberId, pageRequest);
 
-        model.addAttribute("orderList", orderList);
+        List<Order> orders = pageOrder.getContent();
+        List<OrderDto> orderDtos = orders.stream().map(o -> new OrderDto(o)).collect(Collectors.toList());
+
+        PageMaker.calcPageNum(pageOrder.getTotalPages(), pageSize, pageNum, model);
+        model.addAttribute("orders", orderDtos);
+        model.addAttribute("curPageNum", pageNum);
 
         return "/member/order";
     }
@@ -300,18 +296,23 @@ public class MemberController {
     /**
      * 해당 회원의 포인트 사용 내역 가져오기
      */
-    @GetMapping("/point")
-    public String pointHistory(HttpSession httpSession, Model model) throws PDFLOException {
-
+    @GetMapping("/point/{pageNum}")
+    public String pointHistory(HttpSession httpSession, Model model, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
-        List<PointHistory> memberPointHistory = memberService.findMemberPointHistory(memberId);
+        PageRequest pageRequest = PageRequest.of(pageNum, pointHistorySizePerPage, Sort.by(Sort.Direction.DESC, "id"));
+
+        Page<PointHistory> pageMemberPointHistory = memberService.findPointHistoryBymember(memberId, pageRequest);
+
+        List<PointHistory> memberPointHistory = pageMemberPointHistory.getContent();
 
         List<PointHistoryDto> pointHistoryList = memberPointHistory.stream()
                 .map(ph -> new PointHistoryDto(ph))
                 .collect(Collectors.toList());
 
+        PageMaker.calcPageNum(pageMemberPointHistory.getTotalPages(), pageSize, pageNum, model);
         model.addAttribute("pointHistoryList", pointHistoryList);
+        model.addAttribute("curPageNum", pageNum);
 
         return "/member/pointHistory";
     }
@@ -321,8 +322,6 @@ public class MemberController {
      */
     @GetMapping("/item/{pageNum}")
     public String memberItem(HttpSession httpSession, Model model, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
-        pageNum--;
-
         Long memberId = (Long) httpSession.getAttribute("id");
 
         PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "id"));
@@ -330,9 +329,9 @@ public class MemberController {
         List<ItemDto> itemDtos = pageItems.getContent().stream().map(pi -> new ItemDto(pi))
                 .collect(Collectors.toList());
 
-        PageMaker.makePage(pageItems.getTotalPages(), pageSize, pageNum, model);
+        PageMaker.calcPageNum(pageItems.getTotalPages(), pageSize, pageNum, model);
         model.addAttribute("items", itemDtos);
-        model.addAttribute("curPageNum", pageNum + 1);
+        model.addAttribute("curPageNum", pageNum);
 
         return "item/myItem";
     }
@@ -343,8 +342,6 @@ public class MemberController {
     @GetMapping("/item/{itemId}/{pageNum}")
     public String memberSell(HttpSession httpSession, Model model,
                              @PathVariable("itemId") Long itemId, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
-        pageNum--;
-
         Long memberId = (Long) httpSession.getAttribute("id");
 
         PageRequest pageRequest = PageRequest.of(pageNum, sellHistorySizePerPage, Sort.by(Sort.Direction.DESC, "id"));
@@ -355,10 +352,10 @@ public class MemberController {
         Item item = itemService.findWithThumbnailById(itemId);
         ItemDetailDto itemDetailDto = new ItemDetailDto(item);
 
-        PageMaker.makePage(pageOrderItems.getTotalPages(), pageSize, pageNum, model);
+        PageMaker.calcPageNum(pageOrderItems.getTotalPages(), pageSize, pageNum, model);
         model.addAttribute("item", itemDetailDto);
         model.addAttribute("orders", sellHistoryDtos);
-        model.addAttribute("curPageNum", pageNum + 1);
+        model.addAttribute("curPageNum", pageNum);
 
         return "item/mySell";
     }

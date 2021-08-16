@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/comment")
 public class CommentController {
 
     private final CommentService commentService;
@@ -37,7 +38,7 @@ public class CommentController {
      * 후기 남기기
      */
     @ResponseBody
-    @PostMapping("/comment/{itemId}")
+    @PostMapping("/{itemId}")
     public ReturnCode uploadComment(HttpSession httpSession, @PathVariable("itemId") Long itemId,
                                     @Validated @ModelAttribute CommentForm commentForm, BindingResult bindingResult) throws PDFLOException {
         log.info("UploadComment 메소드");
@@ -50,7 +51,7 @@ public class CommentController {
         return resultReturnCode;
     }
 
-    @DeleteMapping("/comment/{itemId}/{commentId}")
+    @DeleteMapping("/{itemId}/{commentId}")
     @ResponseBody
     public ReturnCode deleteComment(HttpSession httpSession, @PathVariable("commentId") Long commentId,
                                 @PathVariable("itemId") Long itemId) throws PDFLOException {
@@ -59,16 +60,4 @@ public class CommentController {
         return commentService.deleteComment(memberId, commentId);
     }
 
-    @GetMapping("/comment/member")
-    public String myComment(HttpSession httpSession, Model model) throws PDFLOException {
-        Long memberId = (Long) httpSession.getAttribute("id");
-        List<Comment> comments = commentService.findAllWithItemByMember(memberId);
-        List<CommentItemDto> commentList = comments.stream()
-                .map(c -> new CommentItemDto(c))
-                .collect(Collectors.toList());
-
-        model.addAttribute("commentList", commentList);
-
-        return "/member/mycomment";
-    }
 }

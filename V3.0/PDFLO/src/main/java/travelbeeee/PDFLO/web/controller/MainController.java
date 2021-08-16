@@ -66,18 +66,17 @@ public class MainController {
     @GetMapping("/popular/{pageNum}")
     public String popularItems(@PathVariable("pageNum") Integer pageNum, Model model) {
         log.info("현재 pageNum : {}", pageNum);
-        pageNum--;
 
         PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "score").and(Sort.by(Sort.Direction.DESC, "createdDate")));
         Page<PopularItem> pagePopularItems = itemService.findSellItemsWithItemAndThumbnailByPaging(pageRequest);
 
-        PageMaker.makePage(pagePopularItems.getTotalPages(), pageSize, pageNum, model);
+        PageMaker.calcPageNum(pagePopularItems.getTotalPages(), pageSize, pageNum, model);
 
         List<ItemDto> itemDtos = pagePopularItems.getContent().stream().map(pi -> new ItemDto(pi))
                 .collect(Collectors.toList());
 
         model.addAttribute("items", itemDtos);
-        model.addAttribute("curPageNum", pageNum + 1);
+        model.addAttribute("curPageNum", pageNum);
         model.addAttribute("popular", true);
         model.addAttribute("recent", false);
         return "/item/list";
@@ -86,18 +85,17 @@ public class MainController {
     @GetMapping("/recent/{pageNum}")
     public String recentItems(@PathVariable("pageNum") Integer pageNum, Model model) {
         log.info("현재 pageNum : {}", pageNum);
-        pageNum--;
 
         PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "createdDate"));
         Page<PopularItem> pageRecentItems = itemService.findSellItemsWithItemAndThumbnailByPaging(pageRequest);
 
-        PageMaker.makePage(pageRecentItems.getTotalPages(), pageSize, pageNum, model);
+        PageMaker.calcPageNum(pageRecentItems.getTotalPages(), pageSize, pageNum, model);
 
         List<ItemDto> itemDtos = pageRecentItems.getContent().stream().map(pi -> new ItemDto(pi))
                 .collect(Collectors.toList());
 
         model.addAttribute("items", itemDtos);
-        model.addAttribute("curPageNum", pageNum + 1);
+        model.addAttribute("curPageNum", pageNum);
         model.addAttribute("popular", false);
         model.addAttribute("recent", true);
         return "/item/list";
