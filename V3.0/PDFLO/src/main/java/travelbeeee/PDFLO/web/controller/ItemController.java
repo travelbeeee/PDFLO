@@ -61,17 +61,23 @@ public class ItemController {
     public String itemDetail(HttpSession httpSession, @PathVariable("itemId") Long itemId, Model model) throws PDFLOException {
         Item item = itemService.findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(itemId);
         Long memberId = (Long) httpSession.getAttribute("id");
+
+        boolean isSeller = false;
+        boolean isClient = false;
+        boolean isBuyer = false;
+
         if (item.getMember().getId() == memberId) {
-            model.addAttribute("SELLER", true);
+            isSeller = true;
         }else{
-            model.addAttribute("CLIENT", true);
+            isClient = true;
             if (itemService.checkBuyer(memberId, itemId)) {
-                model.addAttribute("BUYER", true);
+                isBuyer = true;
             }
         }
 
-        log.info("Item Content테스트\n테스트테스트");
-        log.info("{}", item.getContent());
+        model.addAttribute("SELLER", isSeller);
+        model.addAttribute("CLIENT", isClient);
+        model.addAttribute("BUYER", isBuyer);
 
         ItemDetailDto itemDetailDto = new ItemDetailDto(item);
         model.addAttribute("item", itemDetailDto);
