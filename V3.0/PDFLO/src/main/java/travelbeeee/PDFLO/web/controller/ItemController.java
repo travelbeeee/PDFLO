@@ -1,6 +1,7 @@
 package travelbeeee.PDFLO.web.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,7 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/item")
+@Slf4j
 public class ItemController {
 
     private final ItemService itemService;
@@ -67,6 +69,9 @@ public class ItemController {
                 model.addAttribute("BUYER", true);
             }
         }
+
+        log.info("Item Content테스트\n테스트테스트");
+        log.info("{}", item.getContent());
 
         ItemDetailDto itemDetailDto = new ItemDetailDto(item);
         model.addAttribute("item", itemDetailDto);
@@ -117,6 +122,7 @@ public class ItemController {
     public void itemDownload(HttpSession httpSession, @PathVariable("itemId") Long itemId, HttpServletResponse response) throws PDFLOException, IOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
+        log.info("itemDownload 메소드 실행");
         byte[] pdfFile = itemService.downloadItem(memberId, itemId);
         response.addHeader("Content-Disposition", "attachment; fileName=content.pdf");
         response.getOutputStream().write(pdfFile);

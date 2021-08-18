@@ -275,8 +275,8 @@ public class MemberController {
     /**
      * 해당 회원의 주문 내역 가지고오기
      */
-    @GetMapping("/order/{pageNum}")
-    public String orderHistory(HttpSession httpSession, Model model, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
+    @GetMapping("/order")
+    public String orderHistory(HttpSession httpSession, Model model, @RequestParam("pageNum") Integer pageNum) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
         PageRequest pageRequest = PageRequest.of(pageNum, orderSizePerPage, Sort.by(Sort.Direction.DESC, "id"));
@@ -296,8 +296,8 @@ public class MemberController {
     /**
      * 해당 회원의 포인트 사용 내역 가져오기
      */
-    @GetMapping("/point/{pageNum}")
-    public String pointHistory(HttpSession httpSession, Model model, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
+    @GetMapping("/point")
+    public String pointHistory(HttpSession httpSession, Model model, @RequestParam("pageNum") Integer pageNum) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
         PageRequest pageRequest = PageRequest.of(pageNum, pointHistorySizePerPage, Sort.by(Sort.Direction.DESC, "id"));
@@ -320,8 +320,8 @@ public class MemberController {
     /**
      *  회원이 판매 중인 상품 보기
      */
-    @GetMapping("/item/{pageNum}")
-    public String memberItem(HttpSession httpSession, Model model, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
+    @GetMapping("/item")
+    public String memberItem(HttpSession httpSession, Model model, @RequestParam("pageNum") Integer pageNum) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
         PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "id"));
@@ -339,9 +339,9 @@ public class MemberController {
     /**
      *  회원이 판매 중인 상품의 판매 내역 보기
      */
-    @GetMapping("/item/{itemId}/{pageNum}")
+    @GetMapping("/item/{itemId}")
     public String memberSell(HttpSession httpSession, Model model,
-                             @PathVariable("itemId") Long itemId, @PathVariable("pageNum") Integer pageNum) throws PDFLOException {
+                             @PathVariable("itemId") Long itemId, @RequestParam("pageNum") Integer pageNum) throws PDFLOException {
         Long memberId = (Long) httpSession.getAttribute("id");
 
         PageRequest pageRequest = PageRequest.of(pageNum, sellHistorySizePerPage, Sort.by(Sort.Direction.DESC, "id"));

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import travelbeeee.PDFLO.domain.model.dto.ItemDto;
 import travelbeeee.PDFLO.domain.model.entity.PopularItem;
@@ -63,8 +64,8 @@ public class MainController {
         return "index";
     }
 
-    @GetMapping("/popular/{pageNum}")
-    public String popularItems(@PathVariable("pageNum") Integer pageNum, Model model) {
+    @GetMapping("/popular")
+    public String popularItems(@RequestParam("pageNum") Integer pageNum, Model model) {
         log.info("현재 pageNum : {}", pageNum);
 
         PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "score").and(Sort.by(Sort.Direction.DESC, "createdDate")));
@@ -82,8 +83,8 @@ public class MainController {
         return "/item/list";
     }
 
-    @GetMapping("/recent/{pageNum}")
-    public String recentItems(@PathVariable("pageNum") Integer pageNum, Model model) {
+    @GetMapping("/recent")
+    public String recentItems(@RequestParam("pageNum") Integer pageNum, Model model) {
         log.info("현재 pageNum : {}", pageNum);
 
         PageRequest pageRequest = PageRequest.of(pageNum, itemSizePerPage, Sort.by(Sort.Direction.DESC, "createdDate"));
