@@ -41,9 +41,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void putOrder(Long memberId, List<Long> itemIds) throws PDFLOException {
         // 1)
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
-        Member member = findMember.get();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
 
         // 2)
         List<Item> items = itemRepository.findSelectedItemWithMember(itemIds);

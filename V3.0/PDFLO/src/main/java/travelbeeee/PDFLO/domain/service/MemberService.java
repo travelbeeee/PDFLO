@@ -19,7 +19,6 @@ public interface MemberService {
     Optional<Member> login(LoginForm loginDto) throws PDFLOException, NoSuchAlgorithmException; // 로그인
     void signUp(SignUpForm signUpDto) throws PDFLOException, NoSuchAlgorithmException; // 회원가입
     ReturnCode delete(Long memberId); // 회원탈퇴
-    void authorize(Long memberId) throws PDFLOException; // 메일인증
     void checkPassword(Long memberId, String password) throws PDFLOException, NoSuchAlgorithmException;
     void updatePassword(Long memberId, String newPassword) throws NoSuchAlgorithmException, PDFLOException; // 비밀번호변경
     void usePoint(Long memberId, Integer amount, PointType pointType) throws PDFLOException; // 포인트(사용,충전,획득)

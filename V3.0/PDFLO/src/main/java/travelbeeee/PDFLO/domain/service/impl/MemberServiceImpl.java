@@ -81,20 +81,10 @@ public class MemberServiceImpl implements MemberService {
         return ReturnCode.SUCCESS;
     }
 
-    @Transactional
-    @Override
-    public void authorize(Long memberId) throws PDFLOException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
-
-        Member member = findMember.get();
-    }
-
     @Override
     public void checkPassword(Long memberId, String password) throws PDFLOException, NoSuchAlgorithmException {
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST)
-        );
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow( () -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
         if (!member.getPassword().equals(sha256Encryption.sha256(password, member.getSalt()))) {
             throw new PDFLOException(ReturnCode.PASSWORD_INPUT_INVALID);
         }
@@ -103,20 +93,18 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public void updatePassword(Long memberId, String newPassword) throws NoSuchAlgorithmException, PDFLOException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
+        Member member = memberRepository.findById(memberId)
+                    .orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
 
-        Member member = findMember.get();
         member.changePassword(sha256Encryption.sha256(newPassword, member.getSalt()));
     }
 
     @Transactional
     @Override
     public void usePoint(Long memberId, Integer amount, PointType pointType) throws PDFLOException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST); // 존재하지않는회원
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
 
-        Member member = findMember.get();
         if(pointType == PointType.USE && member.getPoint() < amount){
             throw new PDFLOException(ReturnCode.MEMBER_INSUFFICIENT_BALANCE); // 잔액부족
         }
@@ -159,13 +147,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     @Override
     public ReturnCode deleteProfile(Long memberId) throws PDFLOException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) return ReturnCode.MEMBER_NO_EXIST;
+        memberRepository.findById(memberId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
 
-        Optional<Profile> findProfile = profileRepository.findProfileByMember(memberId);
-        if(findProfile.isEmpty()) return ReturnCode.PROFILE_NO_EXIST;
+        Profile profile = profileRepository.findProfileByMember(memberId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.PROFILE_NO_EXIST));
 
-        Profile profile = findProfile.get();
         fileManager.fileDelete(profile.getFileInfo().getLocation(), profile.getFileInfo().getSaltedFileName());
 
         profileRepository.delete(profile);
@@ -179,9 +166,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member findMember(Long memberId) throws PDFLOException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
-        return findMember.get();
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
     }
 
     @Override

@@ -37,11 +37,18 @@ public class ItemServiceImpl implements ItemService {
     private final OrderRepository orderRepository;
     private final FileManager fileManager;
 
+    /**
+     * 상품 업로드 메소드
+     * 1) 상품을 업로드하려는 회원을 조회한다.
+     * 2) 입력된 PDF 파일, 썸네일 파일을 저장소에 물리적 저장을 한다.
+     * 3) PDF 엔티티, 썸네일 엔티티를 생성해 DB에 저장한다.
+     * 4) ITEM 엔티티를 생성하고, 같은 생명 주기를 가지는 PopularItem엔티티도 생성해서 저장한다.
+     */
     @Transactional
     @Override
     public void uploadItem(Long memberId, ItemForm itemForm) throws NoSuchAlgorithmException, PDFLOException, IOException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
 
         MultipartFile pdfFile = itemForm.getPdfFile();
         MultipartFile thumbnailFile = itemForm.getThumbnailFile();
@@ -52,13 +59,9 @@ public class ItemServiceImpl implements ItemService {
         Pdf pdf = new Pdf(pdfFileInformation);
         Thumbnail thumbnail = new Thumbnail(thumbnailFileInformation);
 
-        Member member = findMember.get();
-
         Item item = new Item(member, itemForm.getTitle(), itemForm.getContent(), itemForm.getPrice(), thumbnail, pdf, ItemType.SELL);
         PopularItem popularItem = new PopularItem(item, 0.0, 0.0, 0, 0);
 
-//        pdfRepository.save(pdf);
-//        thumbnailRepository.save(thumbnail);
         itemRepository.save(item);
         popularItemRepository.save(popularItem);
     }
@@ -69,7 +72,7 @@ public class ItemServiceImpl implements ItemService {
      * 3) Item의 PDF / Thumbnail 파일을 삭제한다.
      * 4) Item의 PDF / Thumbnail 엔티티를 삭제한다.
      * 5) 새롭게 입력된 PDF / Thumbnail 파일을 저장한다.
-     * 6) 새롭게 입력된 PDF / Thumbnail 엔티티를 저장한ㄷ.
+     * 6) 새롭게 입력된 PDF / Thumbnail 엔티티를 저장한다.
      * 7) Item 의 값들을 변경한다.
      */
     //TODO : 삭제, 삽입 --> 수정
@@ -108,10 +111,9 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public void deleteItem(Long memberId, Long itemId) throws PDFLOException {
-        Optional<Item> findItem = itemRepository.findById(itemId);
-        if(findItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow( () -> new PDFLOException(ReturnCode.ITEM_NO_EXIST));
 
-        Item item = findItem.get();
         if(item.getMember().getId() != memberId) throw new PDFLOException(ReturnCode.MEMBER_NOT_SELLER);
 
         item.stopSell();
@@ -125,10 +127,8 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     @Override
     public void reSell(Long memberId, Long itemId) throws PDFLOException {
-        Optional<Item> findItem = itemRepository.findById(itemId);
-        if(findItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
-
-        Item item = findItem.get();
+        Item item = itemRepository.findById(itemId)
+        .orElseThrow( () -> new PDFLOException(ReturnCode.ITEM_NO_EXIST));
 
         if(item.getMember().getId() != memberId) throw new PDFLOException(ReturnCode.MEMBER_NOT_SELLER);
 
@@ -144,19 +144,14 @@ public class ItemServiceImpl implements ItemService {
      */
     @Override
     public byte[] downloadItem(Long memberId, Long itemId) throws PDFLOException, IOException {
-        Optional<Member> findMember = memberRepository.findById(memberId);
-        if(findMember.isEmpty()) throw new PDFLOException(ReturnCode.MEMBER_NO_EXIST);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.MEMBER_NO_EXIST));
 
-        Optional<Item> findItem = itemRepository.findById(itemId);
-        if(findItem.isEmpty()) throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.ITEM_NO_EXIST));
 
-        Member member = findMember.get();
-        Item item = findItem.get();
-
-        Optional<OrderItem> findOrderItem = orderItemRepository.findByMemberAndItem(member, item);
-        if (findOrderItem.isEmpty()) {
-            throw new PDFLOException(ReturnCode.DOWNLOAD_NO_PERMISSION);
-        }
+        orderItemRepository.findByMemberAndItem(member, item)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.DOWNLOAD_NO_PERMISSION));
 
         FileInformation fileInfo = itemRepository.findWithPDFById(itemId).get().getPdf().getFileInfo();
         return fileManager.fileDownload(fileInfo.getLocation(), fileInfo.getSaltedFileName());
@@ -164,11 +159,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(Long itemId) throws PDFLOException {
-        Optional<Item> findItem = itemRepository.findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(itemId);
-        if(findItem.isEmpty()) {
-            throw new PDFLOException(ReturnCode.ITEM_NO_EXIST);
-        }
-        return findItem.get();
+        return itemRepository.findWithMemberAndPdfAndThumbnailAndCommentAndRecommentById(itemId)
+                .orElseThrow(() -> new PDFLOException(ReturnCode.ITEM_NO_EXIST));
     }
 
     @Override
