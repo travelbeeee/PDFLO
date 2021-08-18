@@ -40,7 +40,7 @@
                                             판매 수 : <div th:text="${item.orderCnt}"></div>
                                         </div>
                                         <div th:text="${item.itemType}"></div>
-                                        <a th:href="@{/member/item/{itemId}/1(itemId=${item.itemId})}"><button type="button" class="btn btn-sm btn-outline-secondary">판매 내역 자세히 보러가기</button></a>
+                                        <a th:href="@{/member/item/{itemId}?pageNum=0(itemId=${item.itemId})}"><button type="button" class="btn btn-sm btn-outline-secondary">판매 내역 자세히 보러가기</button></a>
                                     </div>
                                     <small class="text-muted" th:text="${item.createdDate}"></small>
                                 </div>

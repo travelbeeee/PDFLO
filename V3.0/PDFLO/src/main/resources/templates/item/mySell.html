@@ -12,19 +12,43 @@
     <th:block th:replace="fragments/header.html"></th:block>
 
     <div id="itemId" th:text="${item.itemId}" hidden></div>
-    <img th:src="|/images/${item.thumbnailLocation}${item.thumbnailFileName}|" alt="썸네일페이지">
-    제목 : <th:block th:text="${item.title}"/><br>
-    내용 : <th:block th:text="${item.content}"/><br>
-    가격 : <th:block th:text="${item.price}"/><br>
-    작성자 : <th:block th:text="${item.username}"/><br>
+    <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+            <div class="col-10 col-sm-8 col-lg-6">
+                <img th:src="|/images/${item.thumbnailLocation}${item.thumbnailFileName}|" width="500" height="500" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" loading="lazy">
+            </div>
+            <div class="col-lg-6">
+                <h1 class="display-5 fw-bold lh-1 mb-3" th:text="${item.title}"></h1>
+                <p class="lead" th:text="${item.content}"></p>
+                <p class="lead" th:text="'가격  ' + ${item.price}"></p>
+                <p class="lead" th:text="'작성자  ' + ${item.username}"></p>
 
-    <br><br>
-    판매 내역<br>
-    <div th:each="order : ${orders}">
-        <p>주문번호 : <span th:text="${order.orderId}"></span></p>
-        <p>구매자 : <span th:text="${order.username}"></span></p>
-        <p>구매 가격 : <span th:text="${order.orderPrice}"></span></p>
-        <p>구매 날짜 : <span th:text="${order.createdDate}"></span></p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <button th:if="${CLIENT} == true" id="putCartBtn" type="button" class="btn btn-primary btn-lg px-4 gap-3">장바구니에 담기</button>
+                    <form th:if="${CLIENT} == true and ${BUYER} == false" th:action="@{/cart/{itemId}(itemId=${item.itemId})}" method="post">
+                        <button class="btn btn-primary btn-lg px-4 gap-3">구매하기</button>
+                    </form>
+                    <form th:if="${BUYER} == true" th:action="@{/item/download/{itemId}(itemId=${item.itemId})}" method="post">
+                        <button class="btn btn-secondary btn-lg px-4 gap-3">다운로드하기</button>
+                    </form>
+                    <form th:if="${SELLER} == true" th:action="@{/item/delete/{itemId}(itemId=${item.itemId})}" method="post">
+                        <button class="btn btn-secondary btn-lg px-4 gap-3">상품 판매 중단하기</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div th:if="${not #arrays.isEmpty(orders)}" class="col-lg-6 mx-auto">
+        판매 내역<br>
+        <div class="list-group" th:each="order : ${orders}">
+            <div class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                <h6 class="mb-0" th:text="'주문번호  ' + ${order.orderId}"></h6>
+                <h6 class="mb-0" th:text="'구매자  ' + ${order.username}"></h6>
+                <p class="mb-0 opacity-75" th:text="'구매 가격  ' + ${order.orderPrice}"></p>
+                <p class="mb-0 opacity-75" th:text="'구매 날짜  ' + ${order.createdDate}"></p>
+            </div>
+        </div>
     </div>
     <a th:if="${prevPageNum} != null" th:href="@{/member/item/{itemId}?pageNum={prevPageNum}(itemId = ${item.itemId}, prevPageNum = ${prevPageNum})}">...</a>
     <div th:if="${startPageNum} != null and ${endPageNum} != null">
