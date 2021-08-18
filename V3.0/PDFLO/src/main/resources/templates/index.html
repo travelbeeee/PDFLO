@@ -8,6 +8,7 @@
     <title>메인 페이지</title>
     <th:block th:replace="fragments/head.html"></th:block>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/product/">
     <!-- Bootstrap core CSS -->
     <style>
         .bd-placeholder-img {
@@ -23,10 +24,32 @@
                 font-size: 3.5rem;
             }
         }
+
+        #mainImage{
+            background-image: url("/img/main-cover.png");
+            background-repeat: no-repeat;
+        }
+
+        #listHeadText{
+            font-size : x-large;
+        }
     </style>
+    <link href="product.css" rel="stylesheet">
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
+<div id="mainImage" class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+    <div class="col-md-5 p-lg-5 mx-auto my-5">
+        <h3 class="display-4 fw-normal">외출이 부담스럽다면?</h3>
+        <p class="lead fw-normal">집에서 지식 얻고!</p>
+        <p class="lead fw-normal">지식 공유해서 돈도 벌고!</p>
+        <p class="lead fw-normal">국내 최대 전자책 공유사이트 PDFLO를 이용해보세요.</p>
+        <a class="btn btn-outline-secondary" th:href="@{/member/signUp}">서비스 시작하기</a>
+    </div>
+    <div class="product-device shadow-sm d-none d-md-block"></div>
+    <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+</div>
+
 <!-- 그렇지 않다면 "아직 구매할 수 있는 pdf가 없어요!, 첫번째 판매자가 되보세요" -->
 <th:block th:if="${#arrays.isEmpty(popularItems)}">
     <section class="py-5 text-center container">
@@ -41,7 +64,7 @@
 <!-- HOT 게시물 -->
 <th:block th:if="${not #arrays.isEmpty(popularItems)}">
     <div class="album py-5 bg-light">
-        <p class="text-lg-center" th:text="#{hot}"></p>
+        <p id="listHeadText" class="text-lg-center" th:text="#{hot}"></p>
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col" th:each="item : ${popularItems}">
@@ -50,14 +73,14 @@
                         <div class="card-body">
                             <p class="card-text" th:text="${item.title}"></p>
                             <div class="d-flex justify-content-between align-items-center">
+                                <div th:if="${item.commentCnt} != 0">
+                                    <div>평점 : <span th:text="${item.commentAvg}"></span></div>
+                                    <div>후기 수 : <span th:text="${item.commentCnt}"></span></div>
+                                </div>
+                                <div th:if="${item.orderCnt} != 0">
+                                    <div>판매량 : <span th:text="${item.orderCnt}"></span></div>
+                                </div>
                                 <div class="btn-group">
-                                    <div th:if="${item.commentCnt} != 0">
-                                        평점 : <div th:text="${item.commentAvg}"></div>
-                                        후기 수 : <div th:text="${item.commentCnt}"></div>
-                                    </div>
-                                    <div th:if="${item.orderCnt} != 0">
-                                        구매 수 : <div th:text="${item.orderCnt}"></div>
-                                    </div>
                                     <a th:href="@{/item/{itemId}(itemId=${item.itemId})}"><button type="button" class="btn btn-sm btn-outline-secondary">View</button></a>
                                 </div>
                                 <small class="text-muted" th:text="${item.createdDate}"></small>
@@ -66,14 +89,14 @@
                     </div>
                 </div>
             </div>
-            <a th:if="${popularHasNext} == true" th:href="@{/popular/0}" th:text="#{a.hot}"></a>
+            <a id="hotLink" th:if="${popularHasNext} == true" th:href="@{/popular?pageNum=0}" th:text="#{a.hot}"></a>
         </div>
     </div>
 </th:block>
 <!-- RECENT 게시물 -->
 <th:block th:if="${not #arrays.isEmpty(recentItems)}">
     <div class="album py-5 bg-light">
-        <p class="text-lg-center" th:text="#{new}"></p>
+        <p id="listHeadText" class="text-lg-center" th:text="#{new}"></p>
         <div class="container">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                 <div class="col" th:each="item : ${recentItems}">
@@ -98,7 +121,7 @@
                     </div>
                 </div>
             </div>
-            <a th:if="${recentHasNext} == true" th:href="@{/recent/0}" th:text="#{a.new}"></a>
+            <a id="newLink" th:if="${recentHasNext} == true" th:href="@{/recent?pageNum=0}" th:text="#{a.new}"></a>
         </div>
     </div>
 </th:block>

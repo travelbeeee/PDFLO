@@ -26,12 +26,12 @@
         <p>구매 가격 : <span th:text="${order.orderPrice}"></span></p>
         <p>구매 날짜 : <span th:text="${order.createdDate}"></span></p>
     </div>
-    <a th:if="${prevPageNum} != null" th:href="@{/member/item/{itemId}/{prevPageNum}(itemId = ${item.itemId}, prevPageNum = ${prevPageNum})}">...</a>
+    <a th:if="${prevPageNum} != null" th:href="@{/member/item/{itemId}?pageNum={prevPageNum}(itemId = ${item.itemId}, prevPageNum = ${prevPageNum})}">...</a>
     <div th:if="${startPageNum} != null and ${endPageNum} != null">
         <th:block th:each="num : ${#numbers.sequence(startPageNum,endPageNum)}">
-            <a th:href="@{/member/item/{itemId}/{pageNum}(itemId =${item.itemId}, pageNum = ${num})}" th:text="${num + 1}"></a>
+            <a th:href="@{/member/item/{itemId}?pageNum={pageNum}(itemId =${item.itemId}, pageNum = ${num})}" th:text="${num + 1}"></a>
         </th:block>
     </div>
-    <a th:if="${nextPageNum} != null" th:href="@{/member/item/{itemId}/{nextPageNum}(itemId = ${item.itemId}, nextPageNum = ${nextPageNum})}">...</a>
+    <a th:if="${nextPageNum} != null" th:href="@{/member/item/{itemId}?pageNum={nextPageNum}(itemId = ${item.itemId}, nextPageNum = ${nextPageNum})}">...</a>
 </body>
 </html>
