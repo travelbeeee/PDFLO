@@ -21,21 +21,22 @@
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
-<main class="form-signin">
-    <h1 class="h3 mb-3 fw-normal text-center" th:text="#{login}"></h1>
-    <form role="form" th:action th:object="${loginForm}" method="post">
-        <div th:if="${#fields.hasGlobalErrors()}">
-            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
-        </div>
-        <label th:text="#{label.username}"></label>
-        <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error" placeholder="아이디를 입력해주세요.">
-        <div class="field-error" th:errors="*{username}"></div>
-        <label class="text-start"  th:text="#{label.password}"></label>
-        <input type="password" class="form-control" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
-        <div class="field-error" th:errors="*{password}"></div>
-        <button class="w-100 btn btn-lg btn-primary" th:text="#{button.login}"></button>
-        <p class="mt-5 mb-3 text-muted text-center">&copy; 2021</p>
-    </form>
-</main>
+    <main class="form-signin">
+        <h1 class="h3 mb-3 fw-normal text-center" th:text="#{login}"></h1>
+        <form role="form" th:action th:object="${loginForm}" method="post">
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}">글로벌 오류 메시지</p>
+            </div>
+            <label th:text="#{label.username}"></label>
+            <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error" placeholder="아이디를 입력해주세요.">
+            <div class="field-error" th:errors="*{username}"></div>
+            <label class="text-start"  th:text="#{label.password}"></label>
+            <input type="password" class="form-control" th:field="*{password}" placeholder="비밀번호를 입력해주세요.">
+            <div class="field-error" th:errors="*{password}"></div>
+            <button class="w-100 btn btn-lg btn-primary" th:text="#{button.login}"></button>
+            <p class="mt-5 mb-3 text-muted text-center">&copy; 2021</p>
+        </form>
+    </main>
+<th:block th:replace="fragments/footer.html"></th:block>
 </body>
 </html>
