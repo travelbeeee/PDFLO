@@ -32,38 +32,17 @@ public class FileManager {
     private String resizeName = "resized-";
     private String fileSeperator = "/";
 
-    @AllArgsConstructor
-    class Resize{
-        boolean needResize;
-        int width, height;
-    }
-
-    private HashMap<FileType,String> locationMap = new HashMap<FileType,String>();
-    private HashMap<FileType, Resize> resizeMap = new HashMap<>();
-
-    @PostConstruct
-    private void postConstruct(){
-        locationMap.put(FileType.PDF, "pdf/");
-        locationMap.put(FileType.PROFILE, "profile/");
-        locationMap.put(FileType.THUMBNAIL, "thumbnail/");
-
-        resizeMap.put(FileType.PDF, new Resize(false, 0, 0));
-        resizeMap.put(FileType.PROFILE, new Resize(true, 40, 40));
-        resizeMap.put(FileType.THUMBNAIL, new Resize( true, 400, 400));
-    }
-
     /**
-     * FileType에 따라서 MultipartFile 을 저장하는 메소드 
+     * FileType에 따라서 MultipartFile 을 저장하는 메소드
      */
     public FileInformation fileSave(MultipartFile file, FileType fileType) throws NoSuchAlgorithmException, IOException {
         String originFileName = file.getOriginalFilename();
         String extension = getExt(originFileName);
         String saltedFileName = UUID.randomUUID().toString() + "." + extension;
-        String location = makeSavePath(locationMap.get(fileType));
-        Resize resize = resizeMap.get(fileType);
+        String location = makeSavePath(fileType.getTypePath());
         file.transferTo(new File(getFullPath(saltedFileName, location)));
-        if(resize.needResize){
-            resizeImage(getFullPath(saltedFileName, location), resize.width, resize.height);
+        if(fileType.getNeedResized()){
+            resizeImage(getFullPath(saltedFileName, location), fileType.getResizeWidth(), fileType.getResizeHeight());
         }
         return new FileInformation(originFileName, saltedFileName, location);
     }
