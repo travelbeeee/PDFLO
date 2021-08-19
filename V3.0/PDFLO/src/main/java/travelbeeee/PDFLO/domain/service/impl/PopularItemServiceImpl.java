@@ -37,11 +37,11 @@ public class PopularItemServiceImpl implements PopularItemService {
     private final OrderItemRepository orderItemRepository;
     private final PopularItemRepository popularItemRepository;
 
-    @PersistenceContext
-    EntityManager em;
-
     /**
      * 인기 게시물 갱신 메소드
+     *
+     * 매일 0시에 실행되고, 2000개씩 업데이트를 진행한다.
+     *
      * [ 가산점 기준 ]
      * ~7일 이내 5점
      * 8 ~ 30일 이내 4점
@@ -49,19 +49,13 @@ public class PopularItemServiceImpl implements PopularItemService {
      * 61 ~ 90일 이내 2점
      * 91일 ~ 1점
      * --> Sum(기간 별 가산점 * 구매 수) + Sum(기간 별 가산점 * 후기 수 * 상대평점)
-     *
-     * Schedule + Batch (매일 0시에 실행되고, 2000개씩 업데이트를 진행한다.)
-     *
      */
     //TODO : 인기도 계산 Batch하기
-//    @Scheduled(cron = "0 0 00 * * ?") // 매일 0시에 실행
+    @Scheduled(cron = "0 0 00 * * ?") // 매일 0시에 실행
     @Scheduled(fixedDelay = 100000)
     @Override
     public void updatePopularScore() {
         LocalDateTime curTime = LocalDateTime.now();
-
-        log.info("updatePopularScore 실행");
-        log.info("현재 시간 : {}", curTime);
 
         final Double MAX_COMMENT_SCORE = 5.0;
         final Integer BATCH_SIZE = 5;
@@ -71,7 +65,6 @@ public class PopularItemServiceImpl implements PopularItemService {
         while (pageNum == 0 || itemIds.size() == BATCH_SIZE) {
             PageRequest pageRequest = PageRequest.of(pageNum, BATCH_SIZE, Sort.by(Sort.Direction.ASC, "id"));
             itemIds = itemRepository.findAllId(pageRequest);
-            log.info("itemIds : {}", itemIds);
             Map<Long, ArrayList<OrderItem>> orderItemMap = makeOrderItemMap(orderItemRepository.findAllByItems(itemIds));
             Map<Long, ArrayList<Comment>> commentMap = makeCommentMap(commentRepository.findAllByItems(itemIds));
             for (Long itemId : itemIds) {
@@ -139,7 +132,6 @@ public class PopularItemServiceImpl implements PopularItemService {
         }
         return res;
     }
-
 
     private Double calculateExtraPoints(long betweenDays) {
         if (betweenDays <= 7) return 5.0;
