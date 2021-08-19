@@ -10,18 +10,23 @@
 </head>
 <body>
     <th:block th:replace="fragments/header.html"></th:block>
-    안녕하세요~ <th:block th:text="${username}"/><br>
-    내 포인트 : <th:block th:text="${point}"/><br>
-
-    <a href="/member/charge">포인트충전하러가기</a><br>
-    <a href="/member/point?pageNum=0">포인트사용내역보러가기</a><br>
-    <a href="/member/order?pageNum=0">주문내역보러가기</a><br>
-    <a href="/member/item?pageNum=0">내가 등록한 상품 보러가기</a><br>
-    <a href="/member/profile">프로필사진등록 및 수정하기</a><br>
-    <button type="button" id="deleteProfileBtn" th:text="#{button.profileDelete}"></button>
-    <a th:if="${session['checkPassword']} == null" th:href="@{/member/check}">회원정보 변경하기</a>
-    <a th:if="${session['checkPassword']} != null" th:href="@{/member/password}">비밀번호 수정하기</a>
-    <button th:if="${session['checkPassword']} != null" id="memberDeleteBtn" type="button">회원 탈퇴하기</button>
+    <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+            <h1 class="display-5 fw-bold" th:text="'안녕하세요~ ' + ${username} + '님'"/>
+            <h1 class="display-5 fw-bold" th:text="'보유 포인트 : ' + ${point} + '원'"/>
+            <div class="col-lg-6">
+                <div><a class="lead" th:href="@{/member/charge}" th:text="'포인트 충전하러가기'"></a></div>
+                <div><a class="lead" th:href="@{/member/point?pageNum=0}" th:text="'포인트 사용내역 보러가기'"></a></div>
+                <div><a class="lead" th:href="@{/member/order?pageNum=0}" th:text="'주문내역 보러가기'"></a></div>
+                <div> <a class="lead" th:href="@{/member/item?pageNum=0}" th:text="'판매 중인 상품 보러가기'"></a></div>
+                <div><a class="lead" th:href="@{/member/profile}" th:text="'프로필사진등록 및 수정하기'"></a></div>
+                <div><button class="btn-secondary" type="button" id="deleteProfileBtn" th:text="#{button.profileDelete}"></button></div>
+                <div><a class="lead" th:if="${session['checkPassword']} == null" th:href="@{/member/check}" th:text="'회원정보 변경하기'"></a></div>
+                <div><button class="btn-secondary" type="button" th:if="${session['checkPassword']} != null" id="memberDeleteBtn" th:text="'비밀번호 수정하기'"></button></div>
+                <div><button class="btn-secondary" type="button" th:if="${session['checkPassword']} != null" th:text="'회원 탈퇴하기'"></button></div>
+            </div>
+        </div>
+    </div>
     <th:block th:replace="fragments/footer.html"></th:block>
 </body>
 <script>

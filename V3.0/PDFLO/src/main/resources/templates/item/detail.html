@@ -39,40 +39,43 @@
             </div>
         </div>
     </div>
-        <form th:if="${BUYER} == true" th:object="${commentForm}" method="post">
-            <input type="text" placeholder="후기를 남겨주세요." th:field="*{comment}">
-            <small th:text="#{form.comment.comment}"></small>
-            <div class="field-error" th:errors="*{comment}"></div>
-            <input type="number" min="0.0" max="5.0" th:field="*{score}">
-            <small th:text="#{form.comment.score}"></small>
-            <button id="commentUploadBtn" class="btn-secondary" type="button" th:text="#{button.commentUpload}"></button>
-        </form>
-        <br>
-        <div th:if="${not #arrays.isEmpty(item.comments)}" class="col-lg-6 mx-auto">
-            작성된 후기!<br>
-            <div class="list-group" th:each="comment : ${item.comments}">
-                <div class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
-                        <div id="commentId" th:text="${comment.commentId}" hidden></div>
-                        <div>
-                            <h6 class="mb-0" th:text="'후기  ' + ${comment.comment}"></h6>
-                            <h6 class="mb-0" th:text="'별점  ' + ${comment.score}"></h6>
-                            <p class="mb-0 opacity-75" th:text="'작성 날짜  ' + ${comment.createdDate}"></p>
-                            <p class="mb-0 opacity-75" th:text="'작성자  ' + ${comment.username}"></p>
-                            <button class="btn-secondary" th:if="${comment.memberId} == ${session['id']}" type="button" th:id="commentDeleteBtn" th:onclick="deleteComment([[${comment.commentId}]]);" th:text="#{button.commentDelete}"></button>
-                            <div th:if="${comment.recommentId} != null">
-                                <br>
-                                <p>판매자의 답글</p>
-                                <p th:text="${comment.recomment}"></p>
-                                <p th:text="${comment.recommentCreatedDate}"></p>
-                                <button class="btn-secondary" type="button" th:id="recommentDeleteBtn" th:onclick="deleteRecomment([[${comment.recommentId}]]);" th:text="#{button.recommentDelete}"></button>
-                            </div>
-                            <div th:if="${comment.recommentId} == null">
-                                <button class="btn-secondary"  th:if="${SELLER} == true" th:id="recommentFormBtn + ${comment.commentId}" type="button" th:onclick="uploadFormRecomment([[${comment.commentId}]]);" th:text="#{button.recommentUpload}"></button>
-                                <input th:type="text" th:id="recommentForm + ${comment.commentId}" hidden>
-                                <button class="btn-secondary" th:id="recommentUploadBtn + ${comment.commentId}" type="button" th:onclick="uploadRecomment([[${comment.commentId}]]);" th:text="#{button.recommentUpload}" hidden></button>
-                            </div>
+    <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+            <form th:if="${BUYER} == true" th:object="${commentForm}" method="post">
+                <input type="text" placeholder="후기를 남겨주세요." th:field="*{comment}">
+                <small th:text="#{form.comment.comment}"></small>
+                <div class="field-error" th:errors="*{comment}"></div>
+                <input type="number" min="0.0" max="5.0" th:field="*{score}">
+                <small th:text="#{form.comment.score}"></small>
+                <button id="commentUploadBtn" class="btn-secondary" type="button" th:text="#{button.commentUpload}"></button>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${not #arrays.isEmpty(item.comments)}" class="col-lg-6 mx-auto">
+        작성된 후기!<br>
+        <div class="list-group" th:each="comment : ${item.comments}">
+            <div class="list-group-item list-group-item-action d-flex gap-3 py-3" aria-current="true">
+                    <div id="commentId" th:text="${comment.commentId}" hidden></div>
+                    <div>
+                        <h6 class="mb-0" th:text="'후기  ' + ${comment.comment}"></h6>
+                        <h6 class="mb-0" th:text="'별점  ' + ${comment.score}"></h6>
+                        <p class="mb-0 opacity-75" th:text="'작성 날짜  ' + ${comment.createdDate}"></p>
+                        <p class="mb-0 opacity-75" th:text="'작성자  ' + ${comment.username}"></p>
+                        <button class="btn-secondary" th:if="${comment.memberId} == ${session['id']}" type="button" th:id="commentDeleteBtn" th:onclick="deleteComment([[${comment.commentId}]]);" th:text="#{button.commentDelete}"></button>
+                        <div th:if="${comment.recommentId} != null">
+                            <br>
+                            <p>판매자의 답글</p>
+                            <p th:text="${comment.recomment}"></p>
+                            <p th:text="${comment.recommentCreatedDate}"></p>
+                            <button class="btn-secondary" type="button" th:id="recommentDeleteBtn" th:onclick="deleteRecomment([[${comment.recommentId}]]);" th:text="#{button.recommentDelete}"></button>
                         </div>
-                </div>
+                        <div th:if="${comment.recommentId} == null">
+                            <button class="btn-secondary"  th:if="${SELLER} == true" th:id="recommentFormBtn + ${comment.commentId}" type="button" th:onclick="uploadFormRecomment([[${comment.commentId}]]);" th:text="#{button.recommentUpload}"></button>
+                            <input th:type="text" th:id="recommentForm + ${comment.commentId}" hidden>
+                            <button class="btn-secondary" th:id="recommentUploadBtn + ${comment.commentId}" type="button" th:onclick="uploadRecomment([[${comment.commentId}]]);" th:text="#{button.recommentUpload}" hidden></button>
+                        </div>
+                    </div>
             </div>
         </div>
     </div>

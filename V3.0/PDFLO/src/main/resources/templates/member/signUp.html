@@ -31,7 +31,7 @@
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
 <main class="form-signin">
-    <h1 class="h3 mb-3 fw-normal text-center">Please sign in</h1>
+    <h1 class="h3 mb-3 fw-normal text-center">회원가입</h1>
     <form role="form" th:action th:object="${signUpForm}" method="post">
         <label class="text-start" th:text="#{label.username}"></label>
         <input type="text" class="form-control" th:field="*{username}" th:errorclass="field-error" placeholder="아이디를 입력해주세요.">

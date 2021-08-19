@@ -10,11 +10,10 @@
 </head>
 <body>
 <th:block th:replace="fragments/header.html"></th:block>
-
-    주문내역!<br>
     <th:block th:if="${not #arrays.isEmpty(orderItems)}">
         <div class="album py-5 bg-light">
             <div class="container">
+                <h1>주문 상세 내역</h1>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
                     <div class="col" th:each="orderItem : ${orderItems}">
                         <div class="card shadow-sm">
@@ -35,6 +34,8 @@
             </div>
         </div>
     </th:block>
+
+<th:block th:replace="fragments/footer.html"></th:block>
 
 </body>
 </html>

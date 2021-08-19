@@ -39,6 +39,9 @@
         </div>
     </div>
     <br>
+    <div th:if="${#arrays.isEmpty(orders)}" class="col-lg-6 mx-auto">
+        <h3 class="fw-lighter">아직 판매 내역이 없습니다.</h3>
+    </div>
     <div th:if="${not #arrays.isEmpty(orders)}" class="col-lg-6 mx-auto">
         판매 내역<br>
         <div class="list-group" th:each="order : ${orders}">
