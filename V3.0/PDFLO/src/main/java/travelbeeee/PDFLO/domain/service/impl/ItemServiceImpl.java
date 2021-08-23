@@ -31,8 +31,6 @@ public class ItemServiceImpl implements ItemService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final PopularItemRepository popularItemRepository;
-    private final PdfRepository pdfRepository;
-    private final ThumbnailRepository thumbnailRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderRepository orderRepository;
     private final FileManager fileManager;

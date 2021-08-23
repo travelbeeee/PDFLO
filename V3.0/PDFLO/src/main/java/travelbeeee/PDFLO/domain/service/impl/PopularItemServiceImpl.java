@@ -7,10 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import travelbeeee.PDFLO.domain.model.entity.Comment;
-import travelbeeee.PDFLO.domain.model.entity.Item;
-import travelbeeee.PDFLO.domain.model.entity.Order;
-import travelbeeee.PDFLO.domain.model.entity.OrderItem;
+import travelbeeee.PDFLO.domain.model.entity.*;
 import travelbeeee.PDFLO.domain.repository.*;
 import travelbeeee.PDFLO.domain.service.PopularItemService;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,22 +49,25 @@ public class PopularItemServiceImpl implements PopularItemService {
      */
     //TODO : 인기도 계산 Batch하기
     @Scheduled(cron = "0 0 00 * * ?") // 매일 0시에 실행
-    @Scheduled(fixedDelay = 100000)
     @Override
     public void updatePopularScore() {
         LocalDateTime curTime = LocalDateTime.now();
 
         final Double MAX_COMMENT_SCORE = 5.0;
-        final Integer BATCH_SIZE = 5;
+        final Integer BATCH_SIZE = 2000
+                ;
         Integer pageNum = 0;
         List<Long> itemIds = new ArrayList<>();
 
         while (pageNum == 0 || itemIds.size() == BATCH_SIZE) {
+            log.info("{} : {} 번 째 배치작업진행중", LocalDateTime.now(), pageNum);
             PageRequest pageRequest = PageRequest.of(pageNum, BATCH_SIZE, Sort.by(Sort.Direction.ASC, "id"));
             itemIds = itemRepository.findAllId(pageRequest);
+            List<PopularItem> popularItems = popularItemRepository.findAllByIds(itemIds);
             Map<Long, ArrayList<OrderItem>> orderItemMap = makeOrderItemMap(orderItemRepository.findAllByItems(itemIds));
             Map<Long, ArrayList<Comment>> commentMap = makeCommentMap(commentRepository.findAllByItems(itemIds));
-            for (Long itemId : itemIds) {
+            for (PopularItem popularItem : popularItems) {
+                Long itemId = popularItem.getItem().getId();
                 Double orderScore = 0.0;
                 Integer orderCnt = 0;
                 Double commentScore = 0.0;
@@ -92,7 +92,8 @@ public class PopularItemServiceImpl implements PopularItemService {
                     }
                     orderCnt = orderItems.size();
                 }
-                popularItemRepository.updatePopular(itemId, orderScore + commentScore, commentAvg, commentCnt, orderCnt);
+                popularItem.updatePopularity(orderScore + commentScore, commentAvg, commentCnt, orderCnt);
+//                popularItemRepository.updatePopular(itemId, orderScore + commentScore, commentAvg, commentCnt, orderCnt);
             }
             if(pageNum == 0 && itemIds.size() == 0){ // 초기 아무것도 없는 상태
                 break;

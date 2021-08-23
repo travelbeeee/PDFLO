@@ -44,4 +44,11 @@ public class PopularItem extends BaseEntity {
         this.commentCnt = commentCnt;
         this.orderCnt = orderCnt;
     }
+
+    public void updatePopularity(Double score, Double commentAvg, Integer commentCnt, Integer orderCnt) {
+        this.score = score;
+        this.commentAvg = commentAvg;
+        this.commentCnt = commentCnt;
+        this.orderCnt = orderCnt;
+    }
 }
