@@ -22,4 +22,7 @@ public interface PopularItemRepository extends JpaRepository<PopularItem, Long> 
     @Modifying
     @Query("update PopularItem pi SET pi.score = :totalScore, pi.commentAvg = :commentAvg, pi.commentCnt = :commentCnt, pi.orderCnt = :orderCnt where pi.item.id = :itemId")
     void updatePopular(Long itemId, Double totalScore, Double commentAvg, Integer commentCnt, Integer orderCnt);
+
+    @Query("select pi from PopularItem pi where pi.item.id in :itemIds")
+    List<PopularItem> findAllByIds(List<Long> itemIds);
 }
