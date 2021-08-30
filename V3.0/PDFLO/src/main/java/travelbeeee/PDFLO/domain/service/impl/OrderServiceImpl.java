@@ -76,6 +76,8 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = new OrderItem(order, item, item.getPrice());
             orderItemRepository.save(orderItem);
             pointHistoryRepository.save(new PointHistory(member, item.getPrice(), PointType.USE));
+            item.sellItem();
+
             Optional<Cart> findCart = cartRepository.findByMemberAndItem(memberId, item.getId());
             if (!findCart.isEmpty()) {
                 Cart cart = findCart.get();

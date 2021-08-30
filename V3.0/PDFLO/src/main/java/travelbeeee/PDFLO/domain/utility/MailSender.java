@@ -41,8 +41,8 @@ public class MailSender {
         messageHelper.setSubject(title); // 메일제목은 생략이 가능하다
         messageHelper.setText(content); // 메일 내용
 
+        log.info("메일 발송 성공 : {}", code);
         javaMailSender.send(message);
-        log.info("메일 발송 성공");
         return code;
     }
 }

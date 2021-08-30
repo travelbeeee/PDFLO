@@ -26,6 +26,9 @@ public class Item extends BaseEntity {
     private String title;
     private String content;
     private Integer price;
+    private Long orderCnt;
+    private Long commentCnt;
+    private Double commentAvg;
 
     @Enumerated(EnumType.STRING)
     private ItemType type;
@@ -49,6 +52,9 @@ public class Item extends BaseEntity {
         this.thumbnail = thumbnail;
         this.pdf = pdf;
         this.type = type;
+        this.orderCnt = 0L;
+        this.commentCnt = 0L;
+        this.commentAvg = 0.0;
     }
 
     public Item(Member member, String title, String content, Integer price, Thumbnail thumbnail, Pdf pdf) {
@@ -59,12 +65,24 @@ public class Item extends BaseEntity {
         this.thumbnail = thumbnail;
         this.pdf = pdf;
         this.type = ItemType.SELL;
+        this.orderCnt = 0L;
+        this.commentCnt = 0L;
+        this.commentAvg = 0.0;
     }
 
     public void changeItem(String title, String content, Integer price){
         this.title = title;
         this.content = content;
         this.price = price;
+    }
+
+    public void uploadComment(Double commentScore){
+        this.commentAvg = ((this.commentAvg * this.commentCnt) + commentScore) / (this.commentCnt + 1);
+        this.commentCnt++;
+    }
+
+    public void sellItem(){
+        this.orderCnt++;
     }
 
     public void stopSell() {

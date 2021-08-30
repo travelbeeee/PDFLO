@@ -57,6 +57,7 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = new Comment(member, item, commentForm.getComment(), commentForm.getScore());
         commentRepository.save(comment);
+        item.uploadComment(commentForm.getScore());
 
         return ReturnCode.SUCCESS;
     }

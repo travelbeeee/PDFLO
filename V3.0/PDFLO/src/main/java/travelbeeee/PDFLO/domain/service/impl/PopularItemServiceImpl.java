@@ -69,19 +69,16 @@ public class PopularItemServiceImpl implements PopularItemService {
             for (PopularItem popularItem : popularItems) {
                 Long itemId = popularItem.getItem().getId();
                 Double orderScore = 0.0;
-                Integer orderCnt = 0;
                 Double commentScore = 0.0;
                 Double commentAvg = 0.0;
-                Integer commentCnt = 0;
                 if(commentMap.containsKey(itemId)){
                     ArrayList<Comment> comments = commentMap.get(itemId);
-                    commentCnt = comments.size();
                     for (Comment c : comments) {
                         long betweenDays = ChronoUnit.DAYS.between(curTime, c.getCreatedDate());
                         commentAvg += c.getScore();
                         commentScore += calculateExtraPoints(betweenDays);
                     }
-                    commentAvg /= commentCnt;
+                    commentAvg /= comments.size();
                     commentScore *= (commentAvg / MAX_COMMENT_SCORE);
                 }
                 if(orderItemMap.containsKey(itemId)){
@@ -90,10 +87,8 @@ public class PopularItemServiceImpl implements PopularItemService {
                         long betweenDays = ChronoUnit.DAYS.between(curTime, oi.getCreatedDate());
                         orderScore += calculateExtraPoints(betweenDays);
                     }
-                    orderCnt = orderItems.size();
                 }
-                popularItem.updatePopularity(orderScore + commentScore, commentAvg, commentCnt, orderCnt);
-//                popularItemRepository.updatePopular(itemId, orderScore + commentScore, commentAvg, commentCnt, orderCnt);
+                popularItem.updatePopularity(orderScore + commentScore);
             }
             if(pageNum == 0 && itemIds.size() == 0){ // 초기 아무것도 없는 상태
                 break;

@@ -19,10 +19,6 @@ public interface PopularItemRepository extends JpaRepository<PopularItem, Long> 
             countQuery = "select count(pi) from PopularItem pi where pi.item.member.id = :memberId")
     Page<PopularItem> findPopularItemWithItemAndThumbnailPagingByMember(Pageable pageable, Long memberId);
 
-    @Modifying
-    @Query("update PopularItem pi SET pi.score = :totalScore, pi.commentAvg = :commentAvg, pi.commentCnt = :commentCnt, pi.orderCnt = :orderCnt where pi.item.id = :itemId")
-    void updatePopular(Long itemId, Double totalScore, Double commentAvg, Integer commentCnt, Integer orderCnt);
-
     @Query("select pi from PopularItem pi where pi.item.id in :itemIds")
     List<PopularItem> findAllByIds(List<Long> itemIds);
 }
