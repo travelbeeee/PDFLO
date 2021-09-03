@@ -40,7 +40,7 @@ public class MemberRestController {
         String email = form.getEmail();
         int authCode = mailSender.sendingAuthMail(email);
         session.setAttribute("authCode", String.valueOf(authCode));
-
+        log.info("authCode : {}", authCode);
         return ReturnCode.SUCCESS;
     }
 

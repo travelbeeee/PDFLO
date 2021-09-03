@@ -27,8 +27,8 @@ public class ItemDto {
     String title;
     String createdDate;
     String commentAvg;
-    Integer commentCnt;
-    Integer orderCnt;
+    Long commentCnt;
+    Long orderCnt;
     String thumbnail;
     ItemType itemType;
 
@@ -37,9 +37,9 @@ public class ItemDto {
         this.title = pi.getItem().getTitle();
         this.createdDate = pi.getItem().getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy년 M월 d일 h시 m분"));
         DecimalFormat df = new DecimalFormat("0.00");
-        this.commentAvg = df.format(pi.getCommentAvg());
-        this.commentCnt = pi.getCommentCnt();
-        this.orderCnt = pi.getOrderCnt();
+        this.commentAvg = df.format(pi.getItem().getCommentAvg());
+        this.commentCnt = pi.getItem().getCommentCnt();
+        this.orderCnt = pi.getItem().getOrderCnt();
         this.thumbnail = pi.getItem().getThumbnail().getFileInfo().resizedFileReference();
         this.itemType = pi.getItem().getType();
     }

@@ -58,7 +58,7 @@ public class ItemServiceImpl implements ItemService {
         Thumbnail thumbnail = new Thumbnail(thumbnailFileInformation);
 
         Item item = new Item(member, itemForm.getTitle(), itemForm.getContent(), itemForm.getPrice(), thumbnail, pdf, ItemType.SELL);
-        PopularItem popularItem = new PopularItem(item, 0.0, 0.0, 0, 0);
+        PopularItem popularItem = new PopularItem(item, 0.0);
 
         itemRepository.save(item);
         popularItemRepository.save(popularItem);
