@@ -35,6 +35,7 @@ class PopularItemServiceTest {
     @Rollback(value = false)
     @Transactional
     void 테스트데이터생성(){
+        long start = System.currentTimeMillis();
         Member member = new Member("username", "password", "salt", "email", 0);
         memberRepository.save(member);
 
@@ -62,6 +63,8 @@ class PopularItemServiceTest {
                 commentRepository.save(comment);
             }
         }
+        long end = System.currentTimeMillis();
+        System.out.println("4000개의 상품과 약 2만개의 주문, 후기 생성 결과 : " + (end - start)/1000.0);
     }
 
     @Test

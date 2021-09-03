@@ -54,8 +54,8 @@ public class PopularItemServiceImpl implements PopularItemService {
         LocalDateTime curTime = LocalDateTime.now();
 
         final Double MAX_COMMENT_SCORE = 5.0;
-        final Integer BATCH_SIZE = 2000
-                ;
+        final Integer BATCH_SIZE = 2000;
+
         Integer pageNum = 0;
         List<Long> itemIds = new ArrayList<>();
 

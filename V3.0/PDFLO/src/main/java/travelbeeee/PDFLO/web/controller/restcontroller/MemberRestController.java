@@ -31,7 +31,7 @@ public class MemberRestController {
     /**
      * 이메일 input Form에서 가져온 이메일에 인증 코드 보내기.
      */
-    @PostMapping("/member/sendMail")
+    @PostMapping("/sendMail")
     public ReturnCode sendAuthMail(@ModelAttribute @Valid EmailForm form, BindingResult bindingResult, HttpSession session) throws MessagingException {
         log.info("sendAuthMail 메소드 동작");
         if (bindingResult.hasErrors()) {
@@ -47,7 +47,7 @@ public class MemberRestController {
     /**
      * 입력된 코드가 우리가 메일로 보낸 인증 코드와 동일하면 member를 인증회원으로 Update해준다.
      */
-    @PostMapping("/member/auth")
+    @PostMapping("/auth")
     public Boolean auth(HttpSession httpSession, @RequestParam String inputCode, @RequestParam String email) throws PDFLOException {
         String authCode = (String) httpSession.getAttribute("authCode");
         if (authCode.equals(inputCode)) {
@@ -60,7 +60,7 @@ public class MemberRestController {
     /**
      * 아이디 중복 확인
      */
-    @PostMapping("/member/duplicateCheck")
+    @PostMapping("/duplicateCheck")
     public ReturnCode duplicateCheck(@ModelAttribute @Valid UsernameForm form, BindingResult bindingResult){
         log.info("duplicateCheck 메소드실행");
         if (bindingResult.hasErrors()) {
